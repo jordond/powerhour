@@ -1,16 +1,19 @@
 package ca.hoogit.powerhour;
 
+import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ca.hoogit.powerhour.GameType.TypeSelectionFragment;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements TypeSelectionFragment.TypeSelectionListener {
 
     @Bind(R.id.appBar) Toolbar mToolbar;
 
@@ -21,6 +24,16 @@ public class MainActivity extends ActionBarActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+
+        Fragment typeSelection = TypeSelectionFragment.newInstance();
+        launchFragment(typeSelection);
+    }
+
+    public void launchFragment(Fragment fragment) {
+        this.getFragmentManager().beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commit();
     }
 
     @Override
@@ -43,5 +56,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTypeSelection(String type) {
+        Toast.makeText(this, "Item chosen: " + type, Toast.LENGTH_LONG).show();
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GameTypeItem">
+        <attr name="gti_background" format="color" />
+        <attr name="gti_icon" format="reference" />
+        <attr name="gti_title" format="string" />
+        <attr name="gti_hide_button" format="boolean" />
+    </declare-styleable>
+</resources>

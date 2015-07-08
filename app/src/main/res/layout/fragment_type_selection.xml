@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/type_selection_linear"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="ca.hoogit.powerhour.GameType.TypeSelectionFragment">
+
+    <ca.hoogit.powerhour.GameType.GameTypeItem
+        android:id="@+id/type_power_hour"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:gti_icon="@drawable/ic_power"
+        app:gti_title="Power Hour" />
+
+    <ca.hoogit.powerhour.GameType.GameTypeItem
+        android:id="@+id/type_century_club"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:gti_icon="@drawable/ic_century"
+        app:gti_title="Century Club" />
+
+    <ca.hoogit.powerhour.GameType.GameTypeItem
+        android:id="@+id/type_iron_man"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:gti_icon="@drawable/ic_iron_man"
+        app:gti_title="Iron Man" />
+
+    <ca.hoogit.powerhour.GameType.GameTypeItem
+        android:id="@+id/type_custom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:gti_hide_button="true"
+        app:gti_icon="@drawable/ic_custom"
+        app:gti_title="Custom Mode" />
+
+    <ca.hoogit.powerhour.GameType.GameTypeItem
+        android:id="@+id/type_statistics"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:gti_hide_button="true"
+        app:gti_icon="@drawable/ic_stats"
+        app:gti_title="View Statistics"
+        app:gti_background="@color/md_blue_grey_500"/>
+
+</LinearLayout>
