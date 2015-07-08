@@ -57,7 +57,7 @@ public class GameTypeItem extends LinearLayout {
         attr.recycle();
 
         // Setup the items
-        RippleView layout = (RippleView) findViewById(R.id.option_container);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.option_container);
         layout.setBackgroundColor(background);
 
         ImageView icon = (ImageView) findViewById(R.id.option_icon);

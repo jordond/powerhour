@@ -3,6 +3,8 @@ package ca.hoogit.powerhour.GameType;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +23,10 @@ import ca.hoogit.powerhour.R;
  */
 public class TypeSelectionFragment extends Fragment {
 
-    @Bind(R.id.type_power_hour) GameTypeItem mPowerHour;
-    @Bind(R.id.type_century_club) GameTypeItem mCenturyClub;
-    @Bind(R.id.type_spartan) GameTypeItem mSpartan;
-    @Bind(R.id.type_custom) GameTypeItem mCustom;
-    @Bind(R.id.type_statistics) GameTypeItem mStatistics;
-
-    private boolean isRippling;
-    private
+    @Bind(R.id.appBar) Toolbar mToolbar;
 
     private TypeSelectionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment TypeSelectionFragment.
-     */
     public static TypeSelectionFragment newInstance() {
         return new TypeSelectionFragment();
     }
@@ -56,7 +45,9 @@ public class TypeSelectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_type_selection, container, false);
         ButterKnife.bind(this, view);
 
-        mPowerHour.
+        ActionBarActivity activity = (ActionBarActivity) getActivity();
+        mToolbar.setTitle("Choose an Option");
+        activity.setSupportActionBar(mToolbar);
 
         return view;
     }

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
     tools:context="ca.hoogit.powerhour.GameType.TypeSelectionFragment">
 
     <LinearLayout
@@ -12,55 +11,59 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/appBar"
+            layout="@layout/app_bar" />
+
         <ca.hoogit.powerhour.GameType.GameTypeItem
             android:id="@+id/type_power_hour"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_icon="@drawable/ic_power"
-            app:gti_title="Power Hour"
             app:gti_background="@color/md_teal_600"
-            app:gti_button_color="@color/md_teal_800" />
+            app:gti_button_color="@color/md_teal_800"
+            app:gti_icon="@drawable/ic_power"
+            app:gti_title="Power Hour" />
 
         <ca.hoogit.powerhour.GameType.GameTypeItem
             android:id="@+id/type_century_club"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_icon="@drawable/ic_century"
-            app:gti_title="Century Club"
             app:gti_background="@color/md_blue_600"
-            app:gti_button_color="@color/md_blue_800" />
+            app:gti_button_color="@color/md_blue_800"
+            app:gti_icon="@drawable/ic_century"
+            app:gti_title="Century Club" />
 
         <ca.hoogit.powerhour.GameType.GameTypeItem
             android:id="@+id/type_spartan"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_icon="@drawable/ic_spartan"
-            app:gti_title="Spartan"
             app:gti_background="@color/md_deep_purple_600"
-            app:gti_button_color="@color/md_deep_purple_800" />
+            app:gti_button_color="@color/md_deep_purple_800"
+            app:gti_icon="@drawable/ic_spartan"
+            app:gti_title="Spartan" />
 
         <ca.hoogit.powerhour.GameType.GameTypeItem
             android:id="@+id/type_custom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:gti_background="@color/md_red_400"
             app:gti_hide_button="true"
             app:gti_icon="@drawable/ic_custom"
-            app:gti_title="Custom Mode"
-            app:gti_background="@color/md_red_600" />
+            app:gti_title="Custom Mode" />
 
         <ca.hoogit.powerhour.GameType.GameTypeItem
             android:id="@+id/type_statistics"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:gti_background="@color/md_blue_grey_800"
             app:gti_hide_button="true"
             app:gti_icon="@drawable/ic_stats"
-            app:gti_title="View Statistics"
-            app:gti_background="@color/md_blue_grey_800" />
+            app:gti_title="View Statistics" />
 
     </LinearLayout>
 

@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.andexert.library.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--suppress AndroidElementNotAllowed -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/option_container"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <com.andexert.library.RippleView
+        android:id="@+id/option_ripple"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/option_icon"
@@ -20,9 +29,9 @@
 
         <TextView
             android:id="@+id/option_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:clickable="false"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
@@ -30,16 +39,18 @@
             android:textSize="18sp"
             android:textStyle="italic" />
 
-        <at.markushi.ui.CircleButton
-            android:id="@+id/option_configure"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_cog"
-            android:focusable="true"
-            app:cb_color="@color/accent"
-            app:cb_pressedRingWidth="6dp" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </com.andexert.library.RippleView>
 
-</com.andexert.library.RippleView>
+    <at.markushi.ui.CircleButton
+        android:id="@+id/option_configure"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:src="@drawable/ic_cog"
+        app:cb_color="@color/accent"
+        app:cb_pressedRingWidth="6dp" />
+
+</LinearLayout>
 
