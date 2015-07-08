@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.R;
 
@@ -19,6 +20,15 @@ import ca.hoogit.powerhour.R;
  * create an instance of this fragment.
  */
 public class TypeSelectionFragment extends Fragment {
+
+    @Bind(R.id.type_power_hour) GameTypeItem mPowerHour;
+    @Bind(R.id.type_century_club) GameTypeItem mCenturyClub;
+    @Bind(R.id.type_spartan) GameTypeItem mSpartan;
+    @Bind(R.id.type_custom) GameTypeItem mCustom;
+    @Bind(R.id.type_statistics) GameTypeItem mStatistics;
+
+    private boolean isRippling;
+    private
 
     private TypeSelectionListener mListener;
 
@@ -45,6 +55,8 @@ public class TypeSelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_type_selection, container, false);
         ButterKnife.bind(this, view);
+
+        mPowerHour.
 
         return view;
     }

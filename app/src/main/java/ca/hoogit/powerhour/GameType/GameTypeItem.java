@@ -13,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
+
+import at.markushi.ui.CircleButton;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -50,10 +53,11 @@ public class GameTypeItem extends LinearLayout {
         int mIcon = attr.getResourceId(R.styleable.GameTypeItem_gti_icon, R.drawable.ic_action);
         final String mTitle = attr.getString(R.styleable.GameTypeItem_gti_title);
         boolean mHideButton = attr.getBoolean(R.styleable.GameTypeItem_gti_hide_button, false);
+        int buttonColor = attr.getColor(R.styleable.GameTypeItem_gti_button_color, R.color.accent);
         attr.recycle();
 
         // Setup the items
-        LinearLayout layout = (LinearLayout) findViewById(R.id.option_container);
+        RippleView layout = (RippleView) findViewById(R.id.option_container);
         layout.setBackgroundColor(background);
 
         ImageView icon = (ImageView) findViewById(R.id.option_icon);
@@ -62,11 +66,12 @@ public class GameTypeItem extends LinearLayout {
         TextView title = (TextView) findViewById(R.id.option_title);
         title.setText(mTitle);
 
-        ImageButton configure = (ImageButton) findViewById(R.id.option_configure);
+        CircleButton configure = (CircleButton) findViewById(R.id.option_configure);
         if (mHideButton) {
             configure.setVisibility(View.GONE);
         } else {
             configure.setFocusable(false);
+            configure.setColor(buttonColor);
             configure.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
