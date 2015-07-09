@@ -1,13 +1,12 @@
-package ca.hoogit.powerhour.GameType;
+package ca.hoogit.powerhour.Selection;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,9 +26,12 @@ import ca.hoogit.powerhour.R;
 public class GameTypeItem extends LinearLayout {
 
     @Bind(R.id.option_container) LinearLayout mLayout;
+    @Bind(R.id.option_click) RippleView mRippleView;
     @Bind(R.id.option_icon) ImageView mIcon;
     @Bind(R.id.option_title) TextView mTitle;
     @Bind(R.id.option_configure) CircleButton mConfigureButton;
+
+    private GameOptions mOptions;
 
     public GameTypeItem(Context context) {
         super(context);
@@ -69,18 +71,28 @@ public class GameTypeItem extends LinearLayout {
         attr.recycle();
 
         // Setup the items
+        mOptions = GameOptions.getDefault(GameOptions.intToType(type));
         if (hideButton) {
             mConfigureButton.setVisibility(View.GONE);
         } else {
-            GameOptions options = new GameOptions(mTitle.getText().toString(), type);
             mConfigureButton.setFocusable(false);
             mConfigureButton.setColor(buttonColor);
-            mConfigureButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "Configure button pressed, value: " + mTitle, Toast.LENGTH_SHORT).show();
-                }
-            });
         }
+    }
+
+    public GameOptions getOptions() {
+        return mOptions;
+    }
+
+    public boolean hasButton() {
+        return mConfigureButton.getVisibility() == View.VISIBLE;
+    }
+
+    public void setItemOnClick(View.OnClickListener l) {
+        mRippleView.setOnClickListener(l);
+    }
+
+    public void setConfigureOnClick(View.OnClickListener l) {
+        mConfigureButton.setOnClickListener(l);
     }
 }

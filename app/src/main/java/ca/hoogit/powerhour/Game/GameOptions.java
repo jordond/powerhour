@@ -1,9 +1,11 @@
 package ca.hoogit.powerhour.Game;
 
+import java.io.Serializable;
+
 /**
  * Created by jordon on 08/07/15.
  */
-public class GameOptions {
+public class GameOptions implements Serializable {
 
     public enum Type {
         NONE, POWER_HOUR, CENTURY, SPARTAN, CUSTOM
@@ -14,29 +16,32 @@ public class GameOptions {
     private int rounds;
     private int maxPauses;
 
-    public GameOptions(String title, int type) {
+    public GameOptions() {
+    }
+
+    public GameOptions(String title, Type type) {
         this.title = title;
-        this.type = intToType(type);
+        this.type = type;
         this.rounds = getRoundsForType(this.type);
         this.maxPauses = -1;
     }
 
-    public GameOptions(String title, int type, int rounds) {
+    public GameOptions(String title, Type type, int rounds) {
         this.title = title;
-        this.type = intToType(type);
+        this.type = type;
         this.rounds = rounds;
         this.maxPauses = -1;
     }
 
-    public GameOptions(String title, int type, int rounds, int maxPauses) {
+    public GameOptions(String title, Type type, int rounds, int maxPauses) {
         this.title = title;
-        this.type = intToType(type);
+        this.type = type;
         this.rounds = rounds;
         this.maxPauses = maxPauses;
     }
 
     // Helpers
-    public Type intToType(int i) {
+    public static Type intToType(int i) {
         switch (i) {
             case 1:
                 return Type.POWER_HOUR;
@@ -46,7 +51,7 @@ public class GameOptions {
                 return Type.SPARTAN;
             case 4:
                 return Type.CUSTOM;
-            case 5:
+            case 0:
             default:
                 return Type.NONE;
         }
@@ -65,6 +70,22 @@ public class GameOptions {
                 return -1;
         }
     }
+
+    public static GameOptions getDefault(Type t) {
+        switch (t) {
+            case POWER_HOUR:
+                return new GameOptions("Power Hour", Type.POWER_HOUR, 60, -1);
+            case CENTURY:
+                return new GameOptions("Century Club", Type.CENTURY, 100, -1);
+            case SPARTAN:
+                return new GameOptions("Spartan", Type.SPARTAN, 300, 3);
+            case CUSTOM:
+            default:
+                return new GameOptions("Custom", Type.CUSTOM, 60, 5);
+        }
+    }
+
+    // Accessors
 
     public String getTitle() {
         return title;
