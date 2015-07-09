@@ -1,9 +1,9 @@
 package ca.hoogit.powerhour.Configure;
 
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,10 +17,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.CloseFragmentEvent;
-import ca.hoogit.powerhour.Util.ChangeStatusColor;
-import ca.hoogit.powerhour.Util.ColorUtil;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.ChangeStatusColor;
+import ca.hoogit.powerhour.Util.ColorUtil;
 
 /**
  */

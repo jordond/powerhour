@@ -1,22 +1,18 @@
 package ca.hoogit.powerhour.Selection;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
-import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;

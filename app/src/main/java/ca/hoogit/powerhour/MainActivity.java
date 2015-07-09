@@ -60,13 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void addFragment(Fragment fragment) {
-        mFragmentManager.beginTransaction()
-                .add(R.id.container, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
