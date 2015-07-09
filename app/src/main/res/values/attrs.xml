@@ -4,6 +4,13 @@
         <attr name="gti_background" format="color" />
         <attr name="gti_icon" format="reference" />
         <attr name="gti_title" format="string" />
+        <attr name="gti_type" format="enum">
+            <enum name="NONE" value="0" />
+            <enum name="POWER_HOUR" value="1" />
+            <enum name="CENTURY" value="2" />
+            <enum name="SPARTAN" value="3" />
+            <enum name="CUSTOM" value="4" />
+        </attr>
         <attr name="gti_hide_button" format="boolean" />
         <attr name="gti_button_color" format="color" />
     </declare-styleable>

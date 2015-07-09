@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,7 @@ public class TypeSelectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_type_selection, container, false);
         ButterKnife.bind(this, view);
 
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
         mToolbar.setTitle("Choose an Option");
         activity.setSupportActionBar(mToolbar);
 

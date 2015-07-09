@@ -16,12 +16,20 @@ import android.widget.Toast;
 import com.andexert.library.RippleView;
 
 import at.markushi.ui.CircleButton;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;
 
 /**
  * Created by jordon on 07/07/15.
  */
 public class GameTypeItem extends LinearLayout {
+
+    @Bind(R.id.option_container) LinearLayout mLayout;
+    @Bind(R.id.option_icon) ImageView mIcon;
+    @Bind(R.id.option_title) TextView mTitle;
+    @Bind(R.id.option_configure) CircleButton mConfigureButton;
 
     public GameTypeItem(Context context) {
         super(context);
@@ -46,33 +54,28 @@ public class GameTypeItem extends LinearLayout {
 
     private void init(final Context context, AttributeSet attributeSet) {
         inflate(getContext(), R.layout.game_type_item, this);
+        ButterKnife.bind(this);
 
         // Get the attributes
         TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.GameTypeItem, 0, 0);
-        int background = attr.getColor(R.styleable.GameTypeItem_gti_background, R.color.primary);
-        int mIcon = attr.getResourceId(R.styleable.GameTypeItem_gti_icon, R.drawable.ic_action);
-        final String mTitle = attr.getString(R.styleable.GameTypeItem_gti_title);
-        boolean mHideButton = attr.getBoolean(R.styleable.GameTypeItem_gti_hide_button, false);
+
+        mLayout.setBackgroundColor(attr.getColor(R.styleable.GameTypeItem_gti_background, R.color.primary));
+        mIcon.setImageResource(attr.getResourceId(R.styleable.GameTypeItem_gti_icon, R.drawable.ic_action));
+        mTitle.setText(attr.getString(R.styleable.GameTypeItem_gti_title));
+
+        boolean hideButton = attr.getBoolean(R.styleable.GameTypeItem_gti_hide_button, false);
         int buttonColor = attr.getColor(R.styleable.GameTypeItem_gti_button_color, R.color.accent);
+        int type = attr.getInteger(R.styleable.GameTypeItem_gti_type, 0);
         attr.recycle();
 
         // Setup the items
-        LinearLayout layout = (LinearLayout) findViewById(R.id.option_container);
-        layout.setBackgroundColor(background);
-
-        ImageView icon = (ImageView) findViewById(R.id.option_icon);
-        icon.setImageResource(mIcon);
-
-        TextView title = (TextView) findViewById(R.id.option_title);
-        title.setText(mTitle);
-
-        CircleButton configure = (CircleButton) findViewById(R.id.option_configure);
-        if (mHideButton) {
-            configure.setVisibility(View.GONE);
+        if (hideButton) {
+            mConfigureButton.setVisibility(View.GONE);
         } else {
-            configure.setFocusable(false);
-            configure.setColor(buttonColor);
-            configure.setOnClickListener(new OnClickListener() {
+            GameOptions options = new GameOptions(mTitle.getText().toString(), type);
+            mConfigureButton.setFocusable(false);
+            mConfigureButton.setColor(buttonColor);
+            mConfigureButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context, "Configure button pressed, value: " + mTitle, Toast.LENGTH_SHORT).show();
