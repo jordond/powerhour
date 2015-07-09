@@ -9,4 +9,5 @@
     <string name="option_item_title_placeholder">Game Mode Name</string>
     <string name="option_icon_description">Game Mode Icon</string>
     <string name="option_configure_description">Icon for configuring game mode</string>
+    <string name="configure_game_title">Placeholder</string>
 </resources>

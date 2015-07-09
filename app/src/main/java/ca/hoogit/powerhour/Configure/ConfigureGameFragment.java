@@ -12,6 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.gc.materialdesign.views.Slider;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +34,10 @@ import ca.hoogit.powerhour.Util.ColorUtil;
 public class ConfigureGameFragment extends Fragment {
 
     @Bind(R.id.appBar) Toolbar mToolbar;
-    @Bind(R.id.configure_container) FrameLayout mLayout;
+    @Bind(R.id.configure_container) LinearLayout mLayout;
+    @Bind(R.id.configure_game_title) TextView mTitle;
+    @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
+    @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
@@ -87,7 +97,7 @@ public class ConfigureGameFragment extends Fragment {
 
         // Setup the toolbar
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        mToolbar.setTitle("Configure " + mOptions.getTitle());
+        mToolbar.setTitle("Configure");
         mToolbar.setBackgroundColor(mOptions.getBackgroundColor());
         activity.setSupportActionBar(mToolbar);
 
@@ -98,7 +108,27 @@ public class ConfigureGameFragment extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
+        // Setup layout elements
         mLayout.setBackgroundColor(mOptions.getBackgroundColor());
+        mTitle.setText(mOptions.getTitle());
+        if (mOptions.getRounds() > -1) {
+            mRoundsValue.setText(String.format("%03d", mOptions.getRounds()));
+            mRoundsSlider.setValue(mOptions.getRounds());
+        } else {
+            mRoundsValue.setText("001");
+            mRoundsSlider.setValue(1);
+        }
+
+        mRoundsSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int i) {
+                if (i == mRoundsSlider.getMax()) {
+                    mRoundsValue.setText("∞");
+                } else {
+                    mRoundsValue.setText(String.format("%03d", i));
+                }
+            }
+        });
 
         // Change status bar color
         BusProvider.getInstance().post(new ChangeStatusColor(mOptions.getBackgroundColor()));
