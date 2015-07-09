@@ -61,7 +61,8 @@ public class GameTypeItem extends LinearLayout {
         // Get the attributes
         TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.GameTypeItem, 0, 0);
 
-        mLayout.setBackgroundColor(attr.getColor(R.styleable.GameTypeItem_gti_background, R.color.primary));
+        int backgroundColor = attr.getColor(R.styleable.GameTypeItem_gti_background, R.color.primary);
+        mLayout.setBackgroundColor(backgroundColor);
         mIcon.setImageResource(attr.getResourceId(R.styleable.GameTypeItem_gti_icon, R.drawable.ic_action));
         mTitle.setText(attr.getString(R.styleable.GameTypeItem_gti_title));
 
@@ -72,6 +73,7 @@ public class GameTypeItem extends LinearLayout {
 
         // Setup the items
         mOptions = GameOptions.getDefault(GameOptions.intToType(type));
+        mOptions.setBackgroundColor(backgroundColor);
         if (hideButton) {
             mConfigureButton.setVisibility(View.GONE);
         } else {

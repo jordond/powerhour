@@ -1,9 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/configure_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.hoogit.powerhour.Configure.ConfigureGameFragment"
-    android:background="@color/primary">
+    android:background="@color/primary"
+    tools:context="ca.hoogit.powerhour.Configure.ConfigureGameFragment">
 
     <include
         android:id="@+id/appBar"

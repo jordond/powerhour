@@ -1,7 +1,7 @@
 package ca.hoogit.powerhour.Configure;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,20 +11,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.CloseFragmentEvent;
+import ca.hoogit.powerhour.Util.ChangeStatusColor;
+import ca.hoogit.powerhour.Util.ColorUtil;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Selection.TypeSelectionFragment;
 
 /**
  */
 public class ConfigureGameFragment extends Fragment {
 
     @Bind(R.id.appBar) Toolbar mToolbar;
+    @Bind(R.id.configure_container) FrameLayout mLayout;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
@@ -82,8 +85,10 @@ public class ConfigureGameFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_configure_game, container, false);
         ButterKnife.bind(this, view);
 
+        // Setup the toolbar
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         mToolbar.setTitle("Configure " + mOptions.getTitle());
+        mToolbar.setBackgroundColor(mOptions.getBackgroundColor());
         activity.setSupportActionBar(mToolbar);
 
         try {
@@ -93,7 +98,20 @@ public class ConfigureGameFragment extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
+        mLayout.setBackgroundColor(mOptions.getBackgroundColor());
+
+        // Change status bar color
+        BusProvider.getInstance().post(new ChangeStatusColor(mOptions.getBackgroundColor()));
+
         return view;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void darkenStatusBar(AppCompatActivity activity) {
+        int darkerBackground = ColorUtil.darken(mOptions.getBackgroundColor(), 0.5);
+        activity.getWindow().setStatusBarColor(darkerBackground);
+
+        mLayout.setBackgroundColor(mOptions.getBackgroundColor());
     }
 
     @Override

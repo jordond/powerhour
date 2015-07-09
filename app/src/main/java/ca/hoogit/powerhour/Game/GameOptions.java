@@ -2,6 +2,8 @@ package ca.hoogit.powerhour.Game;
 
 import java.io.Serializable;
 
+import ca.hoogit.powerhour.R;
+
 /**
  * Created by jordon on 08/07/15.
  */
@@ -15,6 +17,7 @@ public class GameOptions implements Serializable {
     private Type type;
     private int rounds;
     private int maxPauses;
+    private int backgroundColor;
 
     public GameOptions() {
     }
@@ -24,6 +27,7 @@ public class GameOptions implements Serializable {
         this.type = type;
         this.rounds = getRoundsForType(this.type);
         this.maxPauses = -1;
+        this.backgroundColor = R.color.primary;
     }
 
     public GameOptions(String title, Type type, int rounds) {
@@ -31,6 +35,7 @@ public class GameOptions implements Serializable {
         this.type = type;
         this.rounds = rounds;
         this.maxPauses = -1;
+        this.backgroundColor = R.color.primary;
     }
 
     public GameOptions(String title, Type type, int rounds, int maxPauses) {
@@ -38,6 +43,7 @@ public class GameOptions implements Serializable {
         this.type = type;
         this.rounds = rounds;
         this.maxPauses = maxPauses;
+        this.backgroundColor = R.color.primary;
     }
 
     // Helpers
@@ -117,5 +123,13 @@ public class GameOptions implements Serializable {
 
     public void setMaxPauses(int maxPauses) {
         this.maxPauses = maxPauses;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }
