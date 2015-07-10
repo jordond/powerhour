@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="primary">@color/md_blue_600</color>
-    <color name="primaryDark">@color/md_blue_800</color>
+    <!--Main app-->
+    <color name="primary">@color/md_indigo_600</color>
+    <color name="primaryDark">@color/md_indigo_800</color>
     <color name="accent">@color/md_pink_A400</color>
     <color name="accentDark">@color/md_pink_A700</color>
 
-    <color name="powerHour">@color/md_teal_600</color>
-    <color name="centuryClub">@color/md_deep_purple_700</color>
-    <color name="spartan">@color/md_cyan_800</color>
-    <color name="custom">#45CB85</color>
-    <color name="statistics">#153131</color>
+    <!--Game Mode Colors-->
+    <color name="powerHour">@color/md_teal_500</color>
+    <color name="powerHourAccent">#EE2E31</color>
+
+    <color name="centuryClub">@color/md_light_blue_700</color>
+    <color name="centuryClubAccent">#FF8B00</color>
+
+    <color name="spartan">@color/md_deep_purple_400</color>
+    <color name="spartanAccent">@color/md_teal_A700</color>
+
+    <color name="custom">@color/md_red_400</color>
+    <color name="customAccent">#3FBC47</color>
+
+    <color name="statistics">@color/md_blue_grey_800</color>
+    <color name="statisticsAccent">#7D6A55</color>
+
+    <color name="transparent">#80000000</color>
 
 
 </resources>

@@ -21,8 +21,10 @@ import com.gc.materialdesign.views.Slider;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.CloseFragmentEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
@@ -38,14 +40,21 @@ public class ConfigureGameFragment extends Fragment {
     @Bind(R.id.appBar) Toolbar mToolbar;
     @Bind(R.id.configure_container) LinearLayout mLayout;
     @Bind(R.id.configure_game_title) TextView mTitle;
+
     @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
     @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
+
+    @Bind(R.id.configure_pauses_value) TextView mPausesValue;
+    @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
+
     @Bind(R.id.configure_start) FButton mStartButton;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
 
     private GameOptions mOptions;
+    private int mPrimaryColor;
+    private int mAccentColor;
 
     public static ConfigureGameFragment newInstance(GameOptions options) {
         ConfigureGameFragment fragment = new ConfigureGameFragment();
@@ -65,6 +74,8 @@ public class ConfigureGameFragment extends Fragment {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             mOptions = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
+            mPrimaryColor = mOptions.getBackgroundColor();
+            mAccentColor = mOptions.getAccentColor();
         }
     }
 
@@ -101,7 +112,7 @@ public class ConfigureGameFragment extends Fragment {
         // Setup the toolbar
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         mToolbar.setTitle("Configure");
-        mToolbar.setBackgroundColor(mOptions.getBackgroundColor());
+        mToolbar.setBackgroundColor(mPrimaryColor);
         activity.setSupportActionBar(mToolbar);
 
         try {
@@ -112,28 +123,41 @@ public class ConfigureGameFragment extends Fragment {
         }
 
         // Setup layout elements
-        mLayout.setBackgroundColor(mOptions.getBackgroundColor());
+        mLayout.setBackgroundColor(mPrimaryColor);
         mTitle.setText(mOptions.getTitle());
-        mRoundsSlider.setBackgroundColor(mOptions.getAccentColor());
 
-        mStartButton.setButtonColor(mOptions.getAccentColor());
-        mStartButton.setShadowColor(ColorUtil.darken(mOptions.getAccentColor()));
+        mRoundsSlider.setBackgroundColor(mAccentColor);
+        mPausesSlider.setBackgroundColor(mAccentColor);
 
-        if (mOptions.getRounds() > -1) {
-            mRoundsValue.setText(String.format("%03d", mOptions.getRounds()));
-            mRoundsSlider.setValue(mOptions.getRounds());
-        } else {
-            mRoundsValue.setText("001");
-            mRoundsSlider.setValue(1);
-        }
+        mStartButton.setButtonColor(mAccentColor);
+        mStartButton.setShadowColor(ColorUtil.darken(mAccentColor));
 
+
+        setRoundsValue(mOptions.getRounds());
         mRoundsSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
             @Override
             public void onValueChanged(int i) {
-                if (i == mRoundsSlider.getMax()) {
-                    mRoundsValue.setText("∞");
+                setRoundsValue(i);
+            }
+        });
+
+        if (mOptions.getMaxPauses() == -1) {
+            mPausesValue.setText("∞");
+            mPausesSlider.setValue(mPausesSlider.getMax() - 1);
+        } else {
+            mPausesValue.setText(String.valueOf(mOptions.getMaxPauses()));
+            mPausesSlider.setValue(mOptions.getMaxPauses());
+        }
+
+        mPausesSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int i) {
+                if (i == mPausesSlider.getMax()) {
+                    mPausesValue.setText("∞");
+                } else if (i == mPausesSlider.getMin()) {
+                    mPausesValue.setText("none");
                 } else {
-                    mRoundsValue.setText(String.format("%03d", i));
+                    mPausesValue.setText("" + i);
                 }
             }
         });
@@ -148,6 +172,36 @@ public class ConfigureGameFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    public void setRoundsValue(int rounds) {
+        if (rounds == mRoundsSlider.getMax()) {
+            mRoundsValue.setText("∞");
+        } else if (rounds == mRoundsSlider.getMin()) {
+            mRoundsValue.setText("nil");
+            mStartButton.setEnabled(false);
+        } else {
+            mRoundsValue.setText(String.format("%03d", rounds));
+            mStartButton.setEnabled(true);
+        }
+        mRoundsSlider.setValue(rounds);
+    }
+
+    @OnClick(R.id.configure_reset_rounds)
+    public void resetRounds() {
+        setRoundsValue(mOptions.getRounds());
+    }
+
+    @OnClick(R.id.configure_start)
+    public void launchGame() {
+        GameOptions options = new GameOptions();
+        options.setTitle(mOptions.getTitle());
+        options.setType(mOptions.getType());
+        options.setRounds(mRoundsSlider.getValue());
+        options.setMaxPauses(mPausesSlider.getValue());
+        options.setColors(mPrimaryColor, mAccentColor);
+
+        options.toLog();
     }
 
 }

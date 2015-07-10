@@ -1,5 +1,7 @@
 package ca.hoogit.powerhour.Game;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 import ca.hoogit.powerhour.R;
@@ -8,6 +10,8 @@ import ca.hoogit.powerhour.R;
  * Created by jordon on 08/07/15.
  */
 public class GameOptions implements Serializable {
+
+    private final String TAG = GameOptions.class.getSimpleName();
 
     public enum Type {
         NONE, POWER_HOUR, CENTURY, SPARTAN, CUSTOM
@@ -29,6 +33,7 @@ public class GameOptions implements Serializable {
         this.rounds = getRoundsForType(this.type);
         this.maxPauses = -1;
         this.backgroundColor = R.color.primary;
+        this.accentColor = R.color.accent;
     }
 
     public GameOptions(String title, Type type, int rounds) {
@@ -37,6 +42,7 @@ public class GameOptions implements Serializable {
         this.rounds = rounds;
         this.maxPauses = -1;
         this.backgroundColor = R.color.primary;
+        this.accentColor = R.color.accent;
     }
 
     public GameOptions(String title, Type type, int rounds, int maxPauses) {
@@ -45,6 +51,7 @@ public class GameOptions implements Serializable {
         this.rounds = rounds;
         this.maxPauses = maxPauses;
         this.backgroundColor = R.color.primary;
+        this.accentColor = R.color.accent;
     }
 
     // Helpers
@@ -90,6 +97,17 @@ public class GameOptions implements Serializable {
             default:
                 return new GameOptions("Custom", Type.CUSTOM, 60, 5);
         }
+    }
+
+    public void setColors(int primary, int accent) {
+        this.backgroundColor = primary;
+        this.accentColor = accent;
+    }
+
+    public void toLog() {
+        Log.d(TAG, "Title : " + this.title);
+        Log.d(TAG, "Rounds: " + this.rounds);
+        Log.d(TAG, "Pauses: " + this.maxPauses);
     }
 
     // Accessors

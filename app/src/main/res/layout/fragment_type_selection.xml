@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_teal_500"
+            app:gti_background="@color/powerHour"
+            app:gti_accent="@color/powerHourAccent"
             app:gti_icon="@drawable/ic_power"
             app:gti_title="Power Hour"
             app:gti_type="POWER_HOUR" />
@@ -30,7 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_light_blue_700"
+            app:gti_background="@color/centuryClub"
+            app:gti_accent="@color/centuryClubAccent"
             app:gti_icon="@drawable/ic_century"
             app:gti_title="Century Club"
             app:gti_type="CENTURY" />
@@ -40,8 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_deep_purple_400"
+            app:gti_background="@color/spartan"
             app:gti_icon="@drawable/ic_spartan"
+            app:gti_accent="@color/spartanAccent"
             app:gti_title="Spartan"
             app:gti_type="SPARTAN" />
 
@@ -50,8 +53,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_red_400"
-            app:gti_accent="#EF9950"
+            app:gti_background="@color/custom"
+            app:gti_accent="@color/customAccent"
             app:gti_hide_button="true"
             app:gti_icon="@drawable/ic_custom"
             app:gti_title="Custom Mode"
@@ -62,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_blue_grey_800"
+            app:gti_background="@color/statistics"
             app:gti_hide_button="true"
             app:gti_icon="@drawable/ic_stats"
             app:gti_title="View Statistics" />
