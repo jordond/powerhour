@@ -12,36 +12,50 @@
         android:id="@+id/appBar"
         layout="@layout/app_bar" />
 
-    <TextView
-        android:id="@+id/configure_game_title"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/configure_game_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/configure_game_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/configure_rounds_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="25dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/configure_rounds_value_placeholder"
+            android:textColor="@color/md_white_1000"
+            android:textSize="100sp" />
+
+        <com.gc.materialdesign.views.Slider
+            android:id="@+id/configure_rounds_slider"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:background="@color/accent"
+            app:max="301"
+            app:min="1" />
+
+    </LinearLayout>
+
+    <com.gc.materialdesign.views.ButtonRectangle
+        android:id="@+id/configure_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/configure_game_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="44sp" />
-
-    <TextView
-        android:id="@+id/configure_rounds_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="25dp"
-        android:fontFamily="sans-serif-black"
-        android:text="00"
-        android:textColor="@color/md_white_1000"
-        android:textSize="70sp" />
-
-    <com.gc.materialdesign.views.Slider
-        android:id="@+id/configure_rounds_slider"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginStart="40dp"
         android:background="@color/accent"
-        app:max="301"
-        app:min="1" />
-
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="Start" />
 
 </LinearLayout>

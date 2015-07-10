@@ -131,7 +131,7 @@ public class ConfigureGameFragment extends Fragment {
         });
 
         // Change status bar color
-        BusProvider.getInstance().post(new ChangeStatusColor(mOptions.getBackgroundColor()));
+        BusProvider.getInstance().post(new ChangeStatusColor(activity, mOptions.getBackgroundColor()));
 
         return view;
     }

@@ -1,9 +1,7 @@
 package ca.hoogit.powerhour;
 
-import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,8 +16,7 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
 import ca.hoogit.powerhour.Selection.ItemSelectedEvent;
 import ca.hoogit.powerhour.Selection.TypeSelectionFragment;
-import ca.hoogit.powerhour.Util.ChangeStatusColor;
-import ca.hoogit.powerhour.Util.ColorUtil;
+import ca.hoogit.powerhour.Util.StatusBarUtil;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mToolbar;
 
     private FragmentManager mFragmentManager;
-    private ChangeStatusColor mOriginalStatusColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +37,17 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            mOriginalStatusColor = new ChangeStatusColor(getWindow().getStatusBarColor());
+        mFragmentManager = getFragmentManager();
+        if (savedInstanceState == null) {
+            StatusBarUtil.getInstance().init(this);
+            Fragment typeSelection = TypeSelectionFragment.newInstance();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.container, typeSelection, "selection")
+                    .commit();
+        } else {
+            savedInstanceState.putInt("original_bar_color", StatusBarUtil.getInstance().getOriginal());
         }
 
-        mFragmentManager = getFragmentManager();
-
-        Fragment typeSelection = TypeSelectionFragment.newInstance();
-        mFragmentManager.beginTransaction()
-                .replace(R.id.container, typeSelection)
-                .commit();
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -111,15 +108,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             this.getFragmentManager().popBackStack();
         }
-        onChangeStatusColor(mOriginalStatusColor);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Subscribe
-    public void onChangeStatusColor(ChangeStatusColor color) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            int darkerBackground = ColorUtil.darken(color.getColor(), 0.3);
-            getWindow().setStatusBarColor(darkerBackground);
-        }
+        StatusBarUtil.getInstance().resetColor(this);
     }
 }
