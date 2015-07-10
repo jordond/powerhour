@@ -29,6 +29,10 @@ public class ColorUtil {
         return Color.argb(alpha, red, green, blue);
     }
 
+    public static int darken(int color) {
+        return darken(color, 0.3);
+    }
+
     private static int darkenColor(int color, double fraction) {
         return (int)Math.max(color - (color * fraction), 0);
     }

@@ -48,7 +48,7 @@ public class StatusBarUtil {
     @Subscribe
     public void onChangeColor(ChangeStatusColor event) {
         if (Build.VERSION.SDK_INT >= 21) {
-            int darker = ColorUtil.darken(event.getColor(), 0.3);
+            int darker = ColorUtil.darken(event.getColor());
             event.getActivity().getWindow().setStatusBarColor(darker);
         }
     }

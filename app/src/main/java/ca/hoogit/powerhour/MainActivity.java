@@ -14,6 +14,7 @@ import com.squareup.otto.Subscribe;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.Selection.ItemSelectedEvent;
 import ca.hoogit.powerhour.Selection.TypeSelectionFragment;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(mFragmentManager.getBackStackEntryCount() != 0) {
+            StatusBarUtil.getInstance().resetColor(this);
             mFragmentManager.popBackStack();
         } else {
             super.onBackPressed();
@@ -92,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onItemSelected(ItemSelectedEvent item) {
-        if (item.isConfiguring) {
+        if (item.isConfiguring || item.options.getType() == GameOptions.Type.CUSTOM) {
+            Log.i(TAG, "Configuring  " + item.options.getTitle());
             Fragment fragment = ConfigureGameFragment.newInstance(item.options);
             replaceFragment(fragment);
         } else if (item.itemIsAGame) {

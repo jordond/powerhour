@@ -18,6 +18,7 @@ public class GameOptions implements Serializable {
     private int rounds;
     private int maxPauses;
     private int backgroundColor;
+    private int accentColor;
 
     public GameOptions() {
     }
@@ -127,6 +128,14 @@ public class GameOptions implements Serializable {
 
     public int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    public int getAccentColor() {
+        return accentColor;
+    }
+
+    public void setAccentColor(int accentColor) {
+        this.accentColor = accentColor;
     }
 
     public void setBackgroundColor(int backgroundColor) {

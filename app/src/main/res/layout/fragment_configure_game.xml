@@ -14,7 +14,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical|top"
         android:orientation="vertical">
 
         <TextView
@@ -48,14 +50,18 @@
             app:max="301"
             app:min="1" />
 
-    </LinearLayout>
+        <info.hoang8f.widget.FButton
+            android:id="@+id/configure_start"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="START"
+            app:buttonColor="@color/accent"
+            app:shadowColor="@color/accentDark"
+            app:shadowEnabled="true"
+            app:shadowHeight="5dp"
+            app:cornerRadius="5dp"/>
 
-    <com.gc.materialdesign.views.ButtonRectangle
-        android:id="@+id/configure_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/accent"
-        android:layout_gravity="center_horizontal|bottom"
-        android:text="Start" />
+    </LinearLayout>
 
 </LinearLayout>

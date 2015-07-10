@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_teal_600"
-            app:gti_button_color="@color/md_teal_800"
+            app:gti_background="@color/md_teal_500"
             app:gti_icon="@drawable/ic_power"
             app:gti_title="Power Hour"
             app:gti_type="POWER_HOUR" />
@@ -31,8 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_blue_600"
-            app:gti_button_color="@color/md_blue_800"
+            app:gti_background="@color/md_light_blue_700"
             app:gti_icon="@drawable/ic_century"
             app:gti_title="Century Club"
             app:gti_type="CENTURY" />
@@ -42,8 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:gti_background="@color/md_deep_purple_600"
-            app:gti_button_color="@color/md_deep_purple_800"
+            app:gti_background="@color/md_deep_purple_400"
             app:gti_icon="@drawable/ic_spartan"
             app:gti_title="Spartan"
             app:gti_type="SPARTAN" />
@@ -54,6 +51,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:gti_background="@color/md_red_400"
+            app:gti_accent="#EF9950"
             app:gti_hide_button="true"
             app:gti_icon="@drawable/ic_custom"
             app:gti_title="Custom Mode"

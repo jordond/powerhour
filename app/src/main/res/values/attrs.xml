@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="GameTypeItem">
         <attr name="gti_background" format="color" />
+        <attr name="gti_accent" format="color" />
         <attr name="gti_icon" format="reference" />
         <attr name="gti_title" format="string" />
         <attr name="gti_type" format="enum">
@@ -12,6 +13,5 @@
             <enum name="CUSTOM" value="4" />
         </attr>
         <attr name="gti_hide_button" format="boolean" />
-        <attr name="gti_button_color" format="color" />
     </declare-styleable>
 </resources>
