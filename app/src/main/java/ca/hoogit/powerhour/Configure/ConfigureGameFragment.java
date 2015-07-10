@@ -143,7 +143,7 @@ public class ConfigureGameFragment extends Fragment {
 
         if (mOptions.getMaxPauses() == -1) {
             mPausesValue.setText("∞");
-            mPausesSlider.setValue(mPausesSlider.getMax() - 1);
+            mPausesSlider.setValue(mPausesSlider.getMax());
         } else {
             mPausesValue.setText(String.valueOf(mOptions.getMaxPauses()));
             mPausesSlider.setValue(mOptions.getMaxPauses());
