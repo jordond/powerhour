@@ -18,4 +18,5 @@
     <string name="button_minus_1_desc">subtract one round</string>
     <string name="button_plus_1_desc">add one round</string>
     <string name="button_plus_10_desc">add 10 rounds</string>
+    <string name="menu_configure_reset">Reset</string>
 </resources>

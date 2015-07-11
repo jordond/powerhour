@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,18 +44,27 @@ import info.hoang8f.widget.FButton;
  */
 public class ConfigureGameFragment extends Fragment {
 
-    @Bind(R.id.appBar) Toolbar mToolbar;
-    @Bind(R.id.configure_container) RelativeLayout mLayout;
-    @Bind(R.id.configure_game_title) TextView mTitle;
+    @Bind(R.id.appBar)
+    Toolbar mToolbar;
+    @Bind(R.id.configure_container)
+    RelativeLayout mLayout;
+    @Bind(R.id.configure_game_title)
+    TextView mTitle;
 
-    @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
-    @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
-    @Bind(R.id.configure_rounds_buttons) PlusMinusButtons mRoundsButtons;
+    @Bind(R.id.configure_rounds_value)
+    TextView mRoundsValue;
+    @Bind(R.id.configure_rounds_slider)
+    Slider mRoundsSlider;
+    @Bind(R.id.configure_rounds_buttons)
+    PlusMinusButtons mRoundsButtons;
 
-    @Bind(R.id.configure_pauses_value) TextView mPausesValue;
-    @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
+    @Bind(R.id.configure_pauses_value)
+    TextView mPausesValue;
+    @Bind(R.id.configure_pauses_slider)
+    Slider mPausesSlider;
 
-    @Bind(R.id.configure_start) FButton mStartButton;
+    @Bind(R.id.configure_start)
+    FButton mStartButton;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
@@ -75,6 +86,12 @@ public class ConfigureGameFragment extends Fragment {
 
     public ConfigureGameFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_configure_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -111,14 +128,38 @@ public class ConfigureGameFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            BusProvider.getInstance().post(new CloseFragmentEvent(false));
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                BusProvider.getInstance().post(new CloseFragmentEvent(false));
+                return true;
+            case R.id.action_reset:
+                reset();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void reset() {
+        changeColors(mOptions.getBackgroundColor(), mOptions.getAccentColor());
+        setRoundsValue(mOptions.getRounds());
+        setPausesValue(mOptions.getMaxPauses());
+    }
+
+    private void changeColors(int primary, int accent) {
+        mToolbar.setBackgroundColor(mPrimaryColor);
+
+        mLayout.setBackgroundColor(primary);
+
+        mRoundsSlider.setBackgroundColor(accent);
+        mPausesSlider.setBackgroundColor(accent);
+
+        mStartButton.setButtonColor(accent);
+        mStartButton.setShadowColor(ColorUtil.darken(accent));
+
+        // Change status bar color
+        BusProvider.getInstance().post(
+                new ChangeStatusColor(getActivity(), mOptions.getBackgroundColor()));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -130,7 +171,6 @@ public class ConfigureGameFragment extends Fragment {
         // Setup the toolbar
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         mToolbar.setTitle("Configure");
-        mToolbar.setBackgroundColor(mPrimaryColor);
         activity.setSupportActionBar(mToolbar);
 
         try {
@@ -141,14 +181,8 @@ public class ConfigureGameFragment extends Fragment {
         }
 
         // Setup layout elements
-        mLayout.setBackgroundColor(mPrimaryColor);
+        changeColors(mOptions.getBackgroundColor(), mOptions.getAccentColor());
         mTitle.setText(mOptions.getTitle());
-
-        mRoundsSlider.setBackgroundColor(mAccentColor);
-        mPausesSlider.setBackgroundColor(mAccentColor);
-
-        mStartButton.setButtonColor(mAccentColor);
-        mStartButton.setShadowColor(ColorUtil.darken(mAccentColor));
 
         if (savedInstanceState == null) {
             setRoundsValue(mOptions.getRounds());
@@ -183,12 +217,8 @@ public class ConfigureGameFragment extends Fragment {
             @Override
             public void onValueChanged(int i) {
                 setPausesValue(i);
-
             }
         });
-
-        // Change status bar color
-        BusProvider.getInstance().post(new ChangeStatusColor(activity, mOptions.getBackgroundColor()));
 
         return view;
     }
@@ -203,7 +233,7 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             setRoundsValue(savedInstanceState.getInt("rounds"));
             setPausesValue(savedInstanceState.getInt("pauses"));
         }

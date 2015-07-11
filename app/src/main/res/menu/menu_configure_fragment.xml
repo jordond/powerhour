@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ca.hoogit.powerhour.Configure.ConfigureGameFragment">
+    <item
+        android:id="@+id/action_reset"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_restore"
+        android:title="@string/menu_configure_reset"
+        app:showAsAction="always" />
+</menu>
