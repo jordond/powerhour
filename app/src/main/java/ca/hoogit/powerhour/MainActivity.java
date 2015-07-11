@@ -1,7 +1,8 @@
 package ca.hoogit.powerhour;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             StatusBarUtil.getInstance().init(this);
             Fragment typeSelection = TypeSelectionFragment.newInstance();
@@ -53,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void replaceFragment(Fragment fragment) {
         mFragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
+                .setCustomAnimations( R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .add(R.id.container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(fragment);
         } else if (item.itemIsAGame) {
             // TODO Launch Game activity
-            Log.d(TAG, "Starting new game in " + item.options.getTitle() + " mode.");
+            Log.i(TAG, "Starting new game in " + item.options.getTitle() + " mode.");
         }
     }
 

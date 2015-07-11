@@ -1,6 +1,6 @@
 package ca.hoogit.powerhour;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by jordon on 09/07/15.

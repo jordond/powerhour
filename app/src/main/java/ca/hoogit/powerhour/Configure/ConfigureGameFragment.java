@@ -1,7 +1,7 @@
 package ca.hoogit.powerhour.Configure;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -105,7 +105,7 @@ public class ConfigureGameFragment extends Fragment {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_configure_game, container, false);
         ButterKnife.bind(this, view);
 
@@ -132,8 +132,11 @@ public class ConfigureGameFragment extends Fragment {
         mStartButton.setButtonColor(mAccentColor);
         mStartButton.setShadowColor(ColorUtil.darken(mAccentColor));
 
+        if (savedInstanceState == null) {
+            setRoundsValue(mOptions.getRounds());
+            setPausesValue(mOptions.getMaxPauses());
+        }
 
-        setRoundsValue(mOptions.getRounds());
         mRoundsSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
             @Override
             public void onValueChanged(int i) {
@@ -141,24 +144,11 @@ public class ConfigureGameFragment extends Fragment {
             }
         });
 
-        if (mOptions.getMaxPauses() == -1) {
-            mPausesValue.setText("∞");
-            mPausesSlider.setValue(mPausesSlider.getMax());
-        } else {
-            mPausesValue.setText(String.valueOf(mOptions.getMaxPauses()));
-            mPausesSlider.setValue(mOptions.getMaxPauses());
-        }
-
         mPausesSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
             @Override
             public void onValueChanged(int i) {
-                if (i == mPausesSlider.getMax()) {
-                    mPausesValue.setText("∞");
-                } else if (i == mPausesSlider.getMin()) {
-                    mPausesValue.setText("none");
-                } else {
-                    mPausesValue.setText("" + i);
-                }
+                setPausesValue(i);
+
             }
         });
 
@@ -166,6 +156,22 @@ public class ConfigureGameFragment extends Fragment {
         BusProvider.getInstance().post(new ChangeStatusColor(activity, mOptions.getBackgroundColor()));
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("rounds", mRoundsSlider.getValue());
+        outState.putInt("pauses", mPausesSlider.getValue());
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null){
+            setRoundsValue(savedInstanceState.getInt("rounds"));
+            setPausesValue(savedInstanceState.getInt("pauses"));
+        }
     }
 
     @Override
@@ -185,6 +191,17 @@ public class ConfigureGameFragment extends Fragment {
             mStartButton.setEnabled(true);
         }
         mRoundsSlider.setValue(rounds);
+    }
+
+    public void setPausesValue(int pauses) {
+        if (pauses == mPausesSlider.getMax()) {
+            mPausesValue.setText("∞");
+        } else if (pauses == mPausesSlider.getMin()) {
+            mPausesValue.setText("none");
+        } else {
+            mPausesValue.setText(String.valueOf(pauses));
+        }
+        mPausesSlider.setValue(pauses);
     }
 
     @OnClick(R.id.configure_reset_rounds)

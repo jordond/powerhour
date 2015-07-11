@@ -1,6 +1,6 @@
 package ca.hoogit.powerhour.Selection;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,10 +23,14 @@ public class TypeSelectionFragment extends Fragment {
 
     public final String TAG = TypeSelectionFragment.class.getSimpleName();
 
-    @Bind(R.id.appBar) Toolbar mToolbar;
-    @Bind(R.id.type_statistics) GameTypeItem mStatistics;
+    @Bind(R.id.appBar)
+    Toolbar mToolbar;
+    @Bind(R.id.type_statistics)
+    GameTypeItem mStatistics;
     @Bind({R.id.type_power_hour, R.id.type_century_club, R.id.type_spartan, R.id.type_custom})
     List<GameTypeItem> mGameTypes;
+
+    private boolean mItemSelected;
 
     public static TypeSelectionFragment newInstance() {
         return new TypeSelectionFragment();
@@ -77,22 +81,23 @@ public class TypeSelectionFragment extends Fragment {
         for (GameTypeItem item : mGameTypes) {
             final GameOptions options = item.getOptions();
 
+            // Has configure button
             if (item.hasButton()) {
                 item.setConfigureOnClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(TAG, "Configuring game options for " + options.getTitle());
+                        Log.d(TAG, "Configure button for " + options.getTitle() + " was pressed");
                         ItemSelectedEvent event = new ItemSelectedEvent(options, true);
-                        BusProvider.getInstance().post(event);
+                        delayEvent(event);
                     }
                 });
             }
             item.setItemOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, options.getTitle() + " mode was selected");
+                    Log.d(TAG, options.getTitle() + " mode was selected");
                     ItemSelectedEvent event = new ItemSelectedEvent(options);
-                    BusProvider.getInstance().post(event);
+                    delayEvent(event);
                 }
             });
         }
@@ -103,5 +108,19 @@ public class TypeSelectionFragment extends Fragment {
                 Log.d("TypeSelectionFragment", "Stats was pressed");
             }
         });
+    }
+
+    public void delayEvent(final Object event) {
+        if (!mItemSelected) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            BusProvider.getInstance().post(event);
+                            mItemSelected = false;
+                        }
+                    },
+                    300);
+            mItemSelected = true;
+        }
     }
 }
