@@ -15,7 +15,7 @@
             android:id="@+id/appBar"
             layout="@layout/app_bar" />
 
-        <ca.hoogit.powerhour.Selection.GameTypeItem
+        <ca.hoogit.powerhour.Views.GameTypeItem
             android:id="@+id/type_power_hour"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -26,7 +26,7 @@
             app:gti_title="Power Hour"
             app:gti_type="POWER_HOUR" />
 
-        <ca.hoogit.powerhour.Selection.GameTypeItem
+        <ca.hoogit.powerhour.Views.GameTypeItem
             android:id="@+id/type_century_club"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -37,7 +37,7 @@
             app:gti_title="Century Club"
             app:gti_type="CENTURY" />
 
-        <ca.hoogit.powerhour.Selection.GameTypeItem
+        <ca.hoogit.powerhour.Views.GameTypeItem
             android:id="@+id/type_spartan"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -48,7 +48,7 @@
             app:gti_title="Spartan"
             app:gti_type="SPARTAN" />
 
-        <ca.hoogit.powerhour.Selection.GameTypeItem
+        <ca.hoogit.powerhour.Views.GameTypeItem
             android:id="@+id/type_custom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -60,7 +60,7 @@
             app:gti_title="Custom Mode"
             app:gti_type="CUSTOM" />
 
-        <ca.hoogit.powerhour.Selection.GameTypeItem
+        <ca.hoogit.powerhour.Views.GameTypeItem
             android:id="@+id/type_statistics"
             android:layout_width="match_parent"
             android:layout_height="0dp"

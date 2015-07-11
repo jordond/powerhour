@@ -14,4 +14,9 @@
         </attr>
         <attr name="gti_hide_button" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="PlusMinusButtons">
+        <attr name="pmb_width" format="dimension" />
+        <attr name="pmb_height" format="dimension" />
+    </declare-styleable>
 </resources>

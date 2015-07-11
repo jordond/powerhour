@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Views.GameTypeItem;
 
 /**
  */

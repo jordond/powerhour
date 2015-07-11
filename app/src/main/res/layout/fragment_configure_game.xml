@@ -45,18 +45,17 @@
                 android:textColor="@color/md_white_1000"
                 android:textSize="100sp" />
 
-            <ImageButton
-                android:id="@+id/configure_reset_rounds"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignBottom="@id/configure_rounds_value"
-                android:layout_toEndOf="@+id/configure_rounds_value"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/configure_reset_rounds_description"
-                android:src="@drawable/ic_restore" />
-
-
         </RelativeLayout>
+
+        <ca.hoogit.powerhour.Views.PlusMinusButtons
+            android:id="@+id/configure_rounds_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal">
+
+        </ca.hoogit.powerhour.Views.PlusMinusButtons>
 
         <LinearLayout
             android:layout_width="match_parent"

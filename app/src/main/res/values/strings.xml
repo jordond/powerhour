@@ -14,4 +14,8 @@
     <string name="configure_reset_rounds_description">Reset the rounds</string>
     <string name="configure_rounds_text">rounds</string>
     <string name="configure_pauses_text">pauses</string>
+    <string name="button_minus_10_desc">subtract ten rounds</string>
+    <string name="button_minus_1_desc">subtract one round</string>
+    <string name="button_plus_1_desc">add one round</string>
+    <string name="button_plus_10_desc">add 10 rounds</string>
 </resources>

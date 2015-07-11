@@ -35,6 +35,7 @@ import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
 import ca.hoogit.powerhour.Util.ColorUtil;
+import ca.hoogit.powerhour.Views.PlusMinusButtons;
 import info.hoang8f.widget.FButton;
 
 /**
@@ -47,6 +48,7 @@ public class ConfigureGameFragment extends Fragment {
 
     @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
     @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
+    @Bind(R.id.configure_rounds_buttons) PlusMinusButtons mRoundsButtons;
 
     @Bind(R.id.configure_pauses_value) TextView mPausesValue;
     @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
@@ -59,6 +61,9 @@ public class ConfigureGameFragment extends Fragment {
     private GameOptions mOptions;
     private int mPrimaryColor;
     private int mAccentColor;
+
+    private int mRounds;
+    private int mPauses;
 
     public static ConfigureGameFragment newInstance(GameOptions options) {
         ConfigureGameFragment fragment = new ConfigureGameFragment();
@@ -150,6 +155,23 @@ public class ConfigureGameFragment extends Fragment {
             setPausesValue(mOptions.getMaxPauses());
         }
 
+        mRoundsButtons.setOnButtonPressed(new PlusMinusButtons.ButtonInteraction() {
+            @Override
+            public void minusPressed(int amount) {
+                setRoundsValue(mRounds - amount);
+            }
+
+            @Override
+            public void resetPressed() {
+                setRoundsValue(mOptions.getRounds());
+            }
+
+            @Override
+            public void plusPressed(int amount) {
+                setRoundsValue(mRounds + amount);
+            }
+        });
+
         mRoundsSlider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
             @Override
             public void onValueChanged(int i) {
@@ -190,20 +212,24 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mRoundsButtons.removeOnButtonPressed();
         ButterKnife.unbind(this);
     }
 
     public void setRoundsValue(int rounds) {
-        if (rounds == mRoundsSlider.getMax()) {
-            mRoundsValue.setText("∞");
-        } else if (rounds == mRoundsSlider.getMin()) {
-            mRoundsValue.setText("nil");
-            mStartButton.setEnabled(false);
-        } else {
-            mRoundsValue.setText(String.format("%03d", rounds));
-            mStartButton.setEnabled(true);
+        if (rounds <= mRoundsSlider.getMax()) {
+            if (rounds == mRoundsSlider.getMax()) {
+                mRoundsValue.setText("∞");
+            } else if (rounds == mRoundsSlider.getMin()) {
+                mRoundsValue.setText("nil");
+                mStartButton.setEnabled(false);
+            } else {
+                mRoundsValue.setText(String.format("%03d", rounds));
+                mStartButton.setEnabled(true);
+            }
+            mRounds = rounds;
+            mRoundsSlider.setValue(rounds);
         }
-        mRoundsSlider.setValue(rounds);
     }
 
     public void setPausesValue(int pauses) {
@@ -216,11 +242,7 @@ public class ConfigureGameFragment extends Fragment {
             mPausesValue.setText(String.valueOf(pauses));
             mPausesSlider.setValue(pauses);
         }
-    }
-
-    @OnClick(R.id.configure_reset_rounds)
-    public void resetRounds() {
-        setRoundsValue(mOptions.getRounds());
+        mPauses = pauses;
     }
 
     @OnClick(R.id.configure_start)
@@ -228,8 +250,8 @@ public class ConfigureGameFragment extends Fragment {
         GameOptions options = new GameOptions();
         options.setTitle(mOptions.getTitle());
         options.setType(mOptions.getType());
-        options.setRounds(mRoundsSlider.getValue());
-        options.setMaxPauses(mPausesSlider.getValue());
+        options.setRounds(mRounds);
+        options.setMaxPauses(mPauses);
         options.setColors(mPrimaryColor, mAccentColor);
 
         options.toLog();
