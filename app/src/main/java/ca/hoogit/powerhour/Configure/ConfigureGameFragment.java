@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour.Configure;
 
+import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.support.v4.app.Fragment;
 import android.os.Build;
@@ -11,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ButtonRectangle;
@@ -38,7 +42,7 @@ import info.hoang8f.widget.FButton;
 public class ConfigureGameFragment extends Fragment {
 
     @Bind(R.id.appBar) Toolbar mToolbar;
-    @Bind(R.id.configure_container) LinearLayout mLayout;
+    @Bind(R.id.configure_container) RelativeLayout mLayout;
     @Bind(R.id.configure_game_title) TextView mTitle;
 
     @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
@@ -89,6 +93,15 @@ public class ConfigureGameFragment extends Fragment {
     public void onPause() {
         super.onPause();
         BusProvider.getInstance().unregister(this);
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (!enter) {
+            //return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
+            return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_right);
+        }
+        return super.onCreateAnimation(transit, true, nextAnim);
     }
 
     @Override
@@ -194,14 +207,15 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     public void setPausesValue(int pauses) {
-        if (pauses == mPausesSlider.getMax()) {
+        if (pauses == mPausesSlider.getMax() || pauses == -1) {
             mPausesValue.setText("∞");
+            mPausesSlider.setValue(mPausesSlider.getMax());
         } else if (pauses == mPausesSlider.getMin()) {
             mPausesValue.setText("none");
         } else {
             mPausesValue.setText(String.valueOf(pauses));
+            mPausesSlider.setValue(pauses);
         }
-        mPausesSlider.setValue(pauses);
     }
 
     @OnClick(R.id.configure_reset_rounds)

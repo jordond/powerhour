@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void replaceFragment(Fragment fragment) {
         mFragmentManager.beginTransaction()
-                .setCustomAnimations( R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.container, fragment)
                 .addToBackStack(null)
                 .commit();
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         if (e.launchFragment) {
             replaceFragment(e.fragment);
         } else {
-            this.getFragmentManager().popBackStack();
+            mFragmentManager.popBackStack();
         }
         StatusBarUtil.getInstance().resetColor(this);
     }

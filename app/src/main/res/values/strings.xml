@@ -12,4 +12,6 @@
     <string name="configure_game_title">Placeholder</string>
     <string name="configure_rounds_value_placeholder">000</string>
     <string name="configure_reset_rounds_description">Reset the rounds</string>
+    <string name="configure_rounds_text">rounds</string>
+    <string name="configure_pauses_text">pauses</string>
 </resources>
