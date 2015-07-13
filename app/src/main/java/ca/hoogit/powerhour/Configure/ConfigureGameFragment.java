@@ -1,34 +1,22 @@
 package ca.hoogit.powerhour.Configure;
 
-import android.animation.AnimatorInflater;
-import android.annotation.TargetApi;
-import android.support.v4.app.Fragment;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.Slider;
 import com.gc.materialdesign.widgets.ColorSelector;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
