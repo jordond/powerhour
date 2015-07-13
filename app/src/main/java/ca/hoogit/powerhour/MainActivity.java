@@ -109,7 +109,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onCloseFragment(CloseFragmentEvent e) {
         if (e.launchFragment) {
-            replaceFragment(e.fragment);
+            //TODO make a fragment util?
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.container, e.fragment)
+                    .addToBackStack(null)
+                    .commit();
         } else {
             mFragmentManager.popBackStack();
         }

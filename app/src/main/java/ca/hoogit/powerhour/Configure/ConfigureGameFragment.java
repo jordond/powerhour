@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.Slider;
+import com.gc.materialdesign.widgets.ColorSelector;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -63,11 +64,19 @@ public class ConfigureGameFragment extends Fragment {
     @Bind(R.id.configure_pauses_slider)
     Slider mPausesSlider;
 
+    @Bind(R.id.configure_color_background)
+    FButton mChangeBackground;
+
+    @Bind(R.id.configure_color_accent)
+    FButton mChangeAccent;
+
     @Bind(R.id.configure_start)
     FButton mStartButton;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
+
+    private AppCompatActivity mActivity;
 
     private GameOptions mOptions;
     private int mPrimaryColor;
@@ -90,6 +99,7 @@ public class ConfigureGameFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_configure_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -147,19 +157,36 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     private void changeColors(int primary, int accent) {
-        mToolbar.setBackgroundColor(mPrimaryColor);
+        changePrimary(primary);
+        changeAccent(accent);
+    }
+
+    private void changePrimary(int primary) {
+        mToolbar.setBackgroundColor(primary);
+        mActivity.setSupportActionBar(mToolbar);
 
         mLayout.setBackgroundColor(primary);
 
+        // Change status bar color
+        BusProvider.getInstance().post(
+                new ChangeStatusColor(mActivity, primary));
+
+        mPrimaryColor = primary;
+    }
+
+    private void changeAccent(int accent) {
         mRoundsSlider.setBackgroundColor(accent);
         mPausesSlider.setBackgroundColor(accent);
+
+        mChangeBackground.setButtonColor(accent);
+        mChangeBackground.setShadowColor(ColorUtil.darken(accent));
+        mChangeAccent.setButtonColor(accent);
+        mChangeAccent.setShadowColor(ColorUtil.darken(accent));
 
         mStartButton.setButtonColor(accent);
         mStartButton.setShadowColor(ColorUtil.darken(accent));
 
-        // Change status bar color
-        BusProvider.getInstance().post(
-                new ChangeStatusColor(getActivity(), mOptions.getBackgroundColor()));
+        mAccentColor = accent;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -169,13 +196,13 @@ public class ConfigureGameFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         // Setup the toolbar
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        mActivity = (AppCompatActivity) getActivity();
         mToolbar.setTitle("Configure");
-        activity.setSupportActionBar(mToolbar);
+        mActivity.setSupportActionBar(mToolbar);
 
         try {
-            activity.getSupportActionBar().setHomeButtonEnabled(true);
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mActivity.getSupportActionBar().setHomeButtonEnabled(true);
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ex) {
             Log.e(TAG, ex.getMessage());
         }
@@ -275,8 +302,43 @@ public class ConfigureGameFragment extends Fragment {
         mPauses = pauses;
     }
 
+    public void createColorPicker(int initialColor, ColorSelector.OnColorSelectedListener callback) {
+        ColorSelector colorSelector = new ColorSelector(mActivity, initialColor, callback);
+        colorSelector.show();
+    }
+
+    @OnClick({R.id.configure_color_background, R.id.configure_color_accent})
+    public void chooseColor(View v) {
+        switch (v.getId()) {
+            case R.id.configure_color_background:
+                createColorPicker(mPrimaryColor, new ColorSelector.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        changePrimary(i);
+                    }
+                });
+                break;
+            case R.id.configure_color_accent:
+                createColorPicker(mAccentColor, new ColorSelector.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        changeAccent(i);
+                        setRoundsValue(mRounds);
+                        setPausesValue(mPauses);
+                    }
+                });
+                break;
+            default:
+                Log.e(TAG, "Invalid view was clicked?");
+        }
+    }
+
     @OnClick(R.id.configure_start)
     public void launchGame() {
+        createOptions().toLog();
+    }
+
+    private GameOptions createOptions() {
         GameOptions options = new GameOptions();
         options.setTitle(mOptions.getTitle());
         options.setType(mOptions.getType());
@@ -284,7 +346,7 @@ public class ConfigureGameFragment extends Fragment {
         options.setMaxPauses(mPauses);
         options.setColors(mPrimaryColor, mAccentColor);
 
-        options.toLog();
+        return options;
     }
 
 }

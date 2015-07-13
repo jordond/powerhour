@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
+    android:clickable="true"
     tools:context="ca.hoogit.powerhour.Configure.ConfigureGameFragment">
 
     <include
@@ -111,9 +112,72 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight=".25"
                 android:fontFamily="sans-serif-light"
                 android:text="0" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:text="background color" />
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/configure_color_background"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_weight=".5"
+                android:text="pick"
+                app:buttonColor="@color/accent"
+                app:cornerRadius="5dp"
+                app:shadowColor="@color/accentDark"
+                app:shadowEnabled="true"
+                app:shadowHeight="3dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:text="accent color" />
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/configure_color_accent"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_weight=".5"
+                android:text="pick"
+                app:buttonColor="@color/accent"
+                app:cornerRadius="5dp"
+                app:shadowColor="@color/accentDark"
+                app:shadowEnabled="true"
+                app:shadowHeight="3dp" />
 
         </LinearLayout>
 
