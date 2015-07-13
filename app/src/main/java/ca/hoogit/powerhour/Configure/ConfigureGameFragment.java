@@ -98,13 +98,6 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_configure_fragment, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -130,7 +123,6 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (!enter) {
-            //return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
             return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_right);
         }
         return super.onCreateAnimation(transit, true, nextAnim);
