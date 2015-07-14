@@ -17,7 +17,7 @@ public class ColorUtil {
         return Color.argb(alpha, red, green, blue);
     }
 
-    public static int darken(int color, double fraction) {
+    private static int darken(int color, double fraction) {
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);

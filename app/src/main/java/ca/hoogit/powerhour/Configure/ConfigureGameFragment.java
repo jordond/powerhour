@@ -33,33 +33,29 @@ import info.hoang8f.widget.FButton;
  */
 public class ConfigureGameFragment extends Fragment {
 
-    @Bind(R.id.appBar)
-    Toolbar mToolbar;
-    @Bind(R.id.configure_container)
-    RelativeLayout mLayout;
-    @Bind(R.id.configure_game_title)
-    TextView mTitle;
+    @Bind(R.id.appBar) private Toolbar mToolbar;
+    @Bind(R.id.configure_container) private RelativeLayout mLayout;
+    @Bind(R.id.configure_game_title) private TextView mTitle;
 
-    @Bind(R.id.configure_rounds_value)
-    TextView mRoundsValue;
+    @Bind(R.id.configure_rounds_value) private TextView mRoundsValue;
     @Bind(R.id.configure_rounds_slider)
-    Slider mRoundsSlider;
+    private Slider mRoundsSlider;
     @Bind(R.id.configure_rounds_buttons)
-    PlusMinusButtons mRoundsButtons;
+    private PlusMinusButtons mRoundsButtons;
 
     @Bind(R.id.configure_pauses_value)
-    TextView mPausesValue;
+    private TextView mPausesValue;
     @Bind(R.id.configure_pauses_slider)
-    Slider mPausesSlider;
+    private Slider mPausesSlider;
 
     @Bind(R.id.configure_color_background)
-    FButton mChangeBackground;
+    private FButton mChangeBackground;
 
     @Bind(R.id.configure_color_accent)
-    FButton mChangeAccent;
+    private FButton mChangeAccent;
 
     @Bind(R.id.configure_start)
-    FButton mStartButton;
+    private FButton mStartButton;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
@@ -253,7 +249,7 @@ public class ConfigureGameFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    public void setRoundsValue(int rounds) {
+    private void setRoundsValue(int rounds) {
         if (rounds <= mRoundsSlider.getMax()) {
             if (rounds == mRoundsSlider.getMax()) {
                 mRoundsValue.setText("∞");
@@ -269,7 +265,7 @@ public class ConfigureGameFragment extends Fragment {
         }
     }
 
-    public void setPausesValue(int pauses) {
+    private void setPausesValue(int pauses) {
         if (pauses == mPausesSlider.getMax() || pauses == -1) {
             mPausesValue.setText("∞");
             mPausesSlider.setValue(mPausesSlider.getMax());
@@ -282,7 +278,7 @@ public class ConfigureGameFragment extends Fragment {
         mPauses = pauses;
     }
 
-    public void createColorPicker(int initialColor, ColorSelector.OnColorSelectedListener callback) {
+    private void createColorPicker(int initialColor, ColorSelector.OnColorSelectedListener callback) {
         ColorSelector colorSelector = new ColorSelector(mActivity, initialColor, callback);
         colorSelector.show();
     }

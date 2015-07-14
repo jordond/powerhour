@@ -71,7 +71,7 @@ public class GameOptions implements Serializable {
         }
     }
 
-    public int getRoundsForType(Type t) {
+    private int getRoundsForType(Type t) {
         switch (t) {
             case CENTURY:
                 return 100;

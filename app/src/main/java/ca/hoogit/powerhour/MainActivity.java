@@ -25,7 +25,7 @@ import ca.hoogit.powerhour.Views.GameTypeItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
 
     @Bind(R.id.appBar)
     Toolbar mToolbar;
