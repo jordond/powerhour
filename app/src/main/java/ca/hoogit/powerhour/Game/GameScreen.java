@@ -1,11 +1,19 @@
 package ca.hoogit.powerhour.Game;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -15,14 +23,20 @@ import ca.hoogit.powerhour.R;
  */
 public class GameScreen extends Fragment {
 
+    private static final String TAG = GameScreen.class.getSimpleName();
     private static final String ARG_OPTIONS = "options";
 
     private GameOptions mOptions;
 
+    private AppCompatActivity mActivity;
+
+    private int mPrimaryColor;
+    private int mAccentColor;
+
+    @Bind(R.id.appBar) Toolbar mToolbar;
+    @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
+
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @param options Parameter 1.
      * @return A new instance of fragment GameScreen.
      */
@@ -46,9 +60,24 @@ public class GameScreen extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_game_screen, container, false);
+    @SuppressWarnings("ConstantConditions")
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_game_screen, container, false);
+        ButterKnife.bind(this, view);
+
+        // Setup the toolbar
+        mActivity = (AppCompatActivity) getActivity();
+        mActivity.setSupportActionBar(mToolbar);
+
+        try {
+            mActivity.getSupportActionBar().setHomeButtonEnabled(true);
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } catch (NullPointerException ex) {
+            Log.e(TAG, ex.getMessage());
+        }
+
+        return view;
     }
 
 }

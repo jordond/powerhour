@@ -296,8 +296,6 @@ public class ConfigureGameFragment extends Fragment {
                     }
                 });
                 break;
-            default:
-                Log.e(TAG, "Invalid view was clicked?");
         }
     }
 

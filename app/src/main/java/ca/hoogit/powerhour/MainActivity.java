@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     List<GameTypeItem> mGameTypes;
 
     private FragmentManager mFragmentManager;
+    private boolean mChosen;
 
     public enum FragmentEvents {
         HOME_PRESSED, BACK_PRESSED, NOTHING
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         if (mFragmentManager.getBackStackEntryCount() != 0) {
             StatusBarUtil.getInstance().resetColor(this);
             mFragmentManager.popBackStack();
+            mChosen = false;
         } else {
             super.onBackPressed();
         }
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             case BACK_PRESSED:
                 mFragmentManager.popBackStack();
                 StatusBarUtil.getInstance().resetColor(this);
+                mChosen = false;
                 break;
             case NOTHING:
                 break;
@@ -119,16 +122,30 @@ public class MainActivity extends AppCompatActivity {
                 item.setConfigureOnClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Configure button for " + options.getType().name() + " was pressed");
-                        configureGame(options);
+                        if (!mChosen) {
+                            Log.d(TAG, "Configure button for " + options.getType().name() + " was pressed");
+                            configureGame(options);
+                            mChosen = true;
+                        } else {
+                            Log.d(TAG, "Someones been tapping too fast");
+                        }
                     }
                 });
             }
             item.setItemOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, options.getType().name() + " mode was selected");
-                    launchGame(options, true);
+                    if (!mChosen) {
+                        Log.d(TAG, options.getType().name() + " mode was selected");
+                        if (v.getId() == R.id.type_custom) {
+                            configureGame(options);
+                        } else {
+                            launchGame(options, true);
+                        }
+                        mChosen = true;
+                    } else {
+                        Log.d(TAG, "Someones been tapping too fast");
+                    }
                 }
             });
         }
