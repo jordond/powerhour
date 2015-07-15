@@ -23,6 +23,7 @@ import butterknife.OnClick;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.CloseFragmentEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
+import ca.hoogit.powerhour.MainActivity;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
 import ca.hoogit.powerhour.Util.ColorUtil;
@@ -33,29 +34,21 @@ import info.hoang8f.widget.FButton;
  */
 public class ConfigureGameFragment extends Fragment {
 
-    @Bind(R.id.appBar) private Toolbar mToolbar;
-    @Bind(R.id.configure_container) private RelativeLayout mLayout;
-    @Bind(R.id.configure_game_title) private TextView mTitle;
+    @Bind(R.id.appBar) Toolbar mToolbar;
+    @Bind(R.id.configure_container) RelativeLayout mLayout;
+    @Bind(R.id.configure_game_title) TextView mTitle;
 
-    @Bind(R.id.configure_rounds_value) private TextView mRoundsValue;
-    @Bind(R.id.configure_rounds_slider)
-    private Slider mRoundsSlider;
-    @Bind(R.id.configure_rounds_buttons)
-    private PlusMinusButtons mRoundsButtons;
+    @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
+    @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
+    @Bind(R.id.configure_rounds_buttons) PlusMinusButtons mRoundsButtons;
 
-    @Bind(R.id.configure_pauses_value)
-    private TextView mPausesValue;
-    @Bind(R.id.configure_pauses_slider)
-    private Slider mPausesSlider;
+    @Bind(R.id.configure_pauses_value) TextView mPausesValue;
+    @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
 
-    @Bind(R.id.configure_color_background)
-    private FButton mChangeBackground;
+    @Bind(R.id.configure_color_background) FButton mChangeBackground;
+    @Bind(R.id.configure_color_accent) FButton mChangeAccent;
 
-    @Bind(R.id.configure_color_accent)
-    private FButton mChangeAccent;
-
-    @Bind(R.id.configure_start)
-    private FButton mStartButton;
+    @Bind(R.id.configure_start) FButton mStartButton;
 
     private static final String ARG_OPTIONS = "game_options";
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
@@ -116,7 +109,7 @@ public class ConfigureGameFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                BusProvider.getInstance().post(new CloseFragmentEvent(false));
+                BusProvider.getInstance().post(MainActivity.FragmentEvents.HOME_PRESSED);
                 return true;
             case R.id.action_reset:
                 reset();
@@ -144,8 +137,7 @@ public class ConfigureGameFragment extends Fragment {
         mLayout.setBackgroundColor(primary);
 
         // Change status bar color
-        BusProvider.getInstance().post(
-                new ChangeStatusColor(mActivity, primary));
+        BusProvider.getInstance().post(new ChangeStatusColor(mActivity, primary));
 
         mPrimaryColor = primary;
     }
@@ -311,7 +303,9 @@ public class ConfigureGameFragment extends Fragment {
 
     @OnClick(R.id.configure_start)
     public void launchGame() {
-        createOptions().toLog();
+        GameOptions options = createOptions();
+        options.toLog();
+        BusProvider.getInstance().post(options);
     }
 
     private GameOptions createOptions() {

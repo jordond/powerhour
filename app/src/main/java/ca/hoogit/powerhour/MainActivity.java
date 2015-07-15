@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour;
 
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -18,6 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
 import ca.hoogit.powerhour.Game.GameOptions;
+import ca.hoogit.powerhour.Game.GameScreen;
 import ca.hoogit.powerhour.Selection.ItemSelectedEvent;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
@@ -36,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
     List<GameTypeItem> mGameTypes;
 
     private FragmentManager mFragmentManager;
-    private boolean mItemSelected;
+
+    public enum FragmentEvents {
+        HOME_PRESSED, BACK_PRESSED, NOTHING
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +61,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             savedInstanceState.putInt("original_bar_color", StatusBarUtil.getInstance().getOriginal());
         }
-    }
-
-    public void replaceFragment(Fragment fragment) {
-        mFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .replace(R.id.container, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mFragmentManager.getBackStackEntryCount() != 0) {
+        if (mFragmentManager.getBackStackEntryCount() != 0) {
             StatusBarUtil.getInstance().resetColor(this);
             mFragmentManager.popBackStack();
         } else {
@@ -99,32 +97,20 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void onItemSelected(ItemSelectedEvent item) {
-        if (item.isConfiguring || item.options.getType() == GameOptions.Type.CUSTOM) {
-            Log.i(TAG, "Configuring  " + item.options.getTitle());
-            Fragment fragment = ConfigureGameFragment.newInstance(item.options);
-            replaceFragment(fragment);
-        } else if (item.itemIsAGame) {
-            // TODO Launch Game activity
-            Log.i(TAG, "Starting new game in " + item.options.getTitle() + " mode.");
-        }
-    }
-
     @Subscribe
-    public void onCloseFragment(CloseFragmentEvent e) {
-        if (e.launchFragment) {
-            //TODO make a fragment util?
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.container, e.fragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            mFragmentManager.popBackStack();
+    public void onFragmentEvent(FragmentEvents event) {
+        switch (event) {
+            case HOME_PRESSED:
+            case BACK_PRESSED:
+                mFragmentManager.popBackStack();
+                StatusBarUtil.getInstance().resetColor(this);
+                break;
+            case NOTHING:
+                break;
         }
-        StatusBarUtil.getInstance().resetColor(this);
     }
 
-    public void setupListeners() {
+    private void setupListeners() {
         for (GameTypeItem item : mGameTypes) {
             final GameOptions options = item.getOptions();
 
@@ -133,18 +119,16 @@ public class MainActivity extends AppCompatActivity {
                 item.setConfigureOnClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Configure button for " + options.getTitle() + " was pressed");
-                        ItemSelectedEvent event = new ItemSelectedEvent(options, true);
-                        delayEvent(event);
+                        Log.d(TAG, "Configure button for " + options.getType().name() + " was pressed");
+                        configureGame(options);
                     }
                 });
             }
             item.setItemOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, options.getTitle() + " mode was selected");
-                    ItemSelectedEvent event = new ItemSelectedEvent(options);
-                    delayEvent(event);
+                    Log.d(TAG, options.getType().name() + " mode was selected");
+                    launchGame(options, true);
                 }
             });
         }
@@ -153,21 +137,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Stats was pressed");
+                Toast.makeText(getApplication(), "Not implemented yet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void delayEvent(final Object event) {
-        if (!mItemSelected) {
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            onItemSelected((ItemSelectedEvent) event);
-                            mItemSelected = false;
-                        }
-                    },
-                    300);
-            mItemSelected = true;
-        }
+    private void configureGame(GameOptions options) {
+        Log.i(TAG, "Configuring  " + options.getType().name());
+        Fragment fragment = ConfigureGameFragment.newInstance(options);
+        mFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .replace(R.id.container, fragment)
+                .addToBackStack("configureScreen")
+                .commit();
     }
+
+    private void launchGame(GameOptions options) {
+        launchGame(options, false);
+    }
+
+    private void launchGame(GameOptions options, boolean animate) {
+        Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
+        Fragment fragment = GameScreen.newInstance(options);
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        if (animate) {
+            ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
+        }
+        ft.replace(R.id.container, fragment);
+        ft.addToBackStack("gameScreen");
+        ft.commit();
+    }
+
 }

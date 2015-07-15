@@ -27,24 +27,6 @@ public class GameOptions implements Serializable {
     public GameOptions() {
     }
 
-    public GameOptions(String title, Type type) {
-        this.title = title;
-        this.type = type;
-        this.rounds = getRoundsForType(this.type);
-        this.maxPauses = -1;
-        this.backgroundColor = R.color.primary;
-        this.accentColor = R.color.accent;
-    }
-
-    public GameOptions(String title, Type type, int rounds) {
-        this.title = title;
-        this.type = type;
-        this.rounds = rounds;
-        this.maxPauses = -1;
-        this.backgroundColor = R.color.primary;
-        this.accentColor = R.color.accent;
-    }
-
     public GameOptions(String title, Type type, int rounds, int maxPauses) {
         this.title = title;
         this.type = type;
@@ -106,6 +88,7 @@ public class GameOptions implements Serializable {
 
     public void toLog() {
         Log.d(TAG, "Title : " + this.title);
+        Log.d(TAG, "Type  : " + this.type.name());
         Log.d(TAG, "Rounds: " + this.rounds);
         Log.d(TAG, "Pauses: " + this.maxPauses);
     }

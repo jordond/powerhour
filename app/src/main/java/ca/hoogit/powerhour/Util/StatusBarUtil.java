@@ -10,6 +10,7 @@ import ca.hoogit.powerhour.BusProvider;
 
 /**
  * Created by jordon on 09/07/15.
+ * A Simple utility for changing the color of the status bar
  */
 public class StatusBarUtil {
     private static StatusBarUtil instance = new StatusBarUtil();
