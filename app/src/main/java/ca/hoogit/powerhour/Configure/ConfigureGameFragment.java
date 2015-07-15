@@ -62,6 +62,8 @@ public class ConfigureGameFragment extends Fragment {
     private int mRounds;
     private int mPauses;
 
+    private boolean mGameStarting;
+
     public static ConfigureGameFragment newInstance(GameOptions options) {
         ConfigureGameFragment fragment = new ConfigureGameFragment();
         Bundle args = new Bundle();
@@ -100,6 +102,9 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (!enter) {
+            if (mGameStarting) {
+                return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_left);
+            }
             return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_right);
         }
         return super.onCreateAnimation(transit, true, nextAnim);
@@ -131,13 +136,9 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     private void changePrimary(int primary) {
-        mToolbar.setBackgroundColor(primary);
-        mActivity.setSupportActionBar(mToolbar);
-
-        mLayout.setBackgroundColor(primary);
-
-        // Change status bar color
         BusProvider.getInstance().post(new ChangeStatusColor(mActivity, primary));
+        mToolbar.setBackgroundColor(primary);
+        mLayout.setBackgroundColor(primary);
 
         mPrimaryColor = primary;
     }
@@ -214,6 +215,8 @@ public class ConfigureGameFragment extends Fragment {
                 setPausesValue(i);
             }
         });
+
+        mGameStarting = false;
 
         return view;
     }
@@ -303,6 +306,7 @@ public class ConfigureGameFragment extends Fragment {
     public void launchGame() {
         GameOptions options = createOptions();
         options.toLog();
+        mGameStarting = true;
         BusProvider.getInstance().post(options);
     }
 

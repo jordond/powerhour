@@ -14,7 +14,9 @@ import android.widget.RelativeLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.ChangeStatusColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,9 +31,6 @@ public class GameScreen extends Fragment {
     private GameOptions mOptions;
 
     private AppCompatActivity mActivity;
-
-    private int mPrimaryColor;
-    private int mAccentColor;
 
     @Bind(R.id.appBar) Toolbar mToolbar;
     @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
@@ -67,6 +66,7 @@ public class GameScreen extends Fragment {
 
         // Setup the toolbar
         mActivity = (AppCompatActivity) getActivity();
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_icon);
         mActivity.setSupportActionBar(mToolbar);
 
         try {
@@ -76,6 +76,12 @@ public class GameScreen extends Fragment {
         } catch (NullPointerException ex) {
             Log.e(TAG, ex.getMessage());
         }
+
+        // Change colors to those set in options;
+        int mPrimaryColor = mOptions.getBackgroundColor();
+        mToolbar.setBackgroundColor(mPrimaryColor);
+        mLayout.setBackgroundColor(mPrimaryColor);
+        BusProvider.getInstance().post(new ChangeStatusColor(mActivity, mPrimaryColor));
 
         return view;
     }

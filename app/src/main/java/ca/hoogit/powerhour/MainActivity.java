@@ -137,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (!mChosen) {
                         Log.d(TAG, options.getType().name() + " mode was selected");
-                        if (v.getId() == R.id.type_custom) {
+                        if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGame(options, true);
+                            launchGame(options);
                         }
                         mChosen = true;
                     } else {
@@ -169,10 +169,29 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void launchGame(GameOptions options) {
-        launchGame(options, false);
+    /**
+     * Otto event
+     * Called from {@link ConfigureGameFragment#launchGame()}
+     * @param options game settings
+     */
+    @Subscribe
+    public void onStartGame(GameOptions options) {
+        launchGame(options, true);
     }
 
+    /**
+     * Overloaded function, defaults to always animating the transition
+     * @param options options for the game
+     */
+    private void launchGame(GameOptions options) {
+        launchGame(options, true);
+    }
+
+    /**
+     * Launch the game given the options
+     * @param options options for the game
+     * @param animate whether or not to animate the transition
+     */
     private void launchGame(GameOptions options, boolean animate) {
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
         Fragment fragment = GameScreen.newInstance(options);
@@ -181,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
         }
         ft.replace(R.id.container, fragment);
-        ft.addToBackStack("gameScreen");
+        ft.addToBackStack("gameScreen"); // TODO remove after testing
         ft.commit();
     }
 
