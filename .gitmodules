@@ -1,0 +1,3 @@
+[submodule "android-HoloCircularProgressBar"]
+	path = android-HoloCircularProgressBar
+	url = git@github.com:jordond/android-HoloCircularProgressBar.git
