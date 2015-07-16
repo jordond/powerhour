@@ -22,5 +22,6 @@
 
     <declare-styleable name="GameControlButtons">
         <attr name="gcb_maxPauses" format="integer" />
+        <attr name="gcb_color" format="color" />
     </declare-styleable>
 </resources>
