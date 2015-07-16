@@ -1,20 +1,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/game_screen_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:background="@color/primary"
+    android:clickable="true"
     tools:context="ca.hoogit.powerhour.Game.GameScreen">
 
     <include
         android:id="@+id/appBar"
         layout="@layout/app_bar" />
 
-    <TextView
-        android:layout_below="@id/appBar"
+    <!--Main container-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_gravity="center_vertical|top"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/configure_game_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="10dp"
+            android:text="@string/configure_game_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="44sp" />
+
+        <!--Progress container-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:id="@+id/game_screen_countdown_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/game_screen_circle_progress"
+                android:layout_alignEnd="@+id/game_screen_circle_progress"
+                android:layout_alignStart="@+id/game_screen_circle_progress"
+                android:layout_alignTop="@+id/game_screen_circle_progress"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="60.0"
+                android:textColor="@color/md_white_1000"
+                android:textSize="80sp" />
+
+            <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
+                android:id="@+id/game_screen_circle_progress"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                app:cpb_progress=".505"
+                app:cpb_progress_background_color="@color/md_white_1000"
+                app:cpb_progress_color="@color/accent" />
+
+        </RelativeLayout>
+        <!--End Progress container-->
+
+    </LinearLayout>
+    <!--End main container-->
+
+    <ca.hoogit.powerhour.Views.GameControlButtons
+        android:id="@+id/game_screen_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal" />
 
 </RelativeLayout>

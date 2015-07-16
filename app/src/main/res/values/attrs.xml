@@ -19,4 +19,8 @@
         <attr name="pmb_width" format="dimension" />
         <attr name="pmb_height" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="GameControlButtons">
+        <attr name="gcb_maxPauses" format="integer" />
+    </declare-styleable>
 </resources>

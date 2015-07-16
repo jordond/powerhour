@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/sound_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_action_bell"
+        android:contentDescription="@string/game_control_sound_chooser_desc" />
+
+    <at.markushi.ui.CircleButton
+        android:id="@+id/timer_control"
+        app:cb_color="#F50057"
+        app:cb_pressedRingWidth="6dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginStart="60dp"
+        android:focusable="true"
+        android:src="@drawable/ic_av_pause" />
+
+    <ImageButton
+        android:id="@+id/timer_stop"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_action_playback_stop"
+        android:contentDescription="@string/game_control_buttons_stop_desc" />
+
+</LinearLayout>

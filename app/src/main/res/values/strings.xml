@@ -19,4 +19,6 @@
     <string name="button_plus_1_desc">add one round</string>
     <string name="button_plus_10_desc">add 10 rounds</string>
     <string name="menu_configure_reset">Reset</string>
+    <string name="game_control_buttons_stop_desc">Stop or delete the game</string>
+    <string name="game_control_sound_chooser_desc">Shot sound selector</string>
 </resources>
