@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             savedInstanceState.putInt("original_bar_color",
                     StatusBarUtil.getInstance().getOriginal());
             setupListeners();
-        } else {
+        } else { // TODO remove, implement better with service
             mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
             if (mIsGameStarted) {
                 launchGame((GameOptions) savedInstanceState.getSerializable(
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { // TODO check if game has been started
         if (mFragmentManager.getBackStackEntryCount() != 0) {
             reset();
         } else {

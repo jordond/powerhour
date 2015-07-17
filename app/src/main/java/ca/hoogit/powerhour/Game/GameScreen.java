@@ -1,6 +1,7 @@
+
+
 package ca.hoogit.powerhour.Game;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
+import ca.hoogit.powerhour.Util.ColorUtil;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
 import ca.hoogit.powerhour.Game.GameEvent.GameStatus;
@@ -48,17 +49,14 @@ public class GameScreen extends Fragment {
 
     private AppCompatActivity mActivity;
 
-    @Bind(R.id.appBar)
-    Toolbar mToolbar;
-    @Bind(R.id.game_screen_layout)
-    RelativeLayout mLayout;
-    @Bind(R.id.game_screen_control)
-    GameControlButtons mControl;
+    @Bind(R.id.appBar) Toolbar mToolbar;
+    @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
+    @Bind(R.id.game_screen_control) GameControlButtons mControl;
 
-    @Bind(R.id.game_screen_title)
-    TextView mTitle;
-    @Bind(R.id.game_screen_circle_progress)
-    HoloCircularProgressBar mProgress;
+    @Bind(R.id.game_screen_title) TextView mTitle;
+
+    @Bind(R.id.game_screen_circle_progress_seconds) HoloCircularProgressBar mProgressSeconds;
+    @Bind(R.id.game_screen_circle_progress_rounds) HoloCircularProgressBar mProgressRounds;
 
     /**
      * @param options Parameter 1.
@@ -118,8 +116,11 @@ public class GameScreen extends Fragment {
 
         // Setup view items
         mTitle.setText(mOptions.getTitle());
-        mProgress.setProgressColor(mOptions.getAccentColor());
-        mProgress.setProgress(0.6f);
+        mProgressRounds.setProgressColor(mOptions.getAccentColor());
+        mProgressRounds.setProgress(0.3f); // TODO REMOVE
+        mProgressSeconds.setProgressColor(mOptions.getAccentColor());
+        mProgressSeconds.setProgressBackgroundColor(mOptions.getBackgroundColor());
+        mProgressSeconds.setProgress(0.6f); // TODO REMOVE
 
         setupControlButtons();
 

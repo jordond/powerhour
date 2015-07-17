@@ -21,4 +21,6 @@
     <string name="menu_configure_reset">Reset</string>
     <string name="game_control_buttons_stop_desc">Stop or delete the game</string>
     <string name="game_control_sound_chooser_desc">Shot sound selector</string>
+    <string name="game_screen_countdown_text_default">60.0</string>
+    <string name="game_screen_round_text">Round</string>
 </resources>

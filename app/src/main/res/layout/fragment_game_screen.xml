@@ -43,26 +43,45 @@
                 android:id="@+id/game_screen_countdown_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/game_screen_circle_progress"
-                android:layout_alignEnd="@+id/game_screen_circle_progress"
-                android:layout_alignStart="@+id/game_screen_circle_progress"
-                android:layout_alignTop="@+id/game_screen_circle_progress"
+                android:layout_alignBottom="@+id/game_screen_circle_progress_rounds"
+                android:layout_alignEnd="@+id/game_screen_circle_progress_rounds"
+                android:layout_alignStart="@+id/game_screen_circle_progress_rounds"
+                android:layout_alignTop="@+id/game_screen_circle_progress_rounds"
                 android:fontFamily="sans-serif-thin"
                 android:gravity="center"
-                android:text="60.0"
+                android:text="@string/game_screen_countdown_text_default"
                 android:textColor="@color/md_white_1000"
                 android:textSize="65sp" />
 
             <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
-                android:id="@+id/game_screen_circle_progress"
-                android:layout_width="240dp"
-                android:layout_height="240dp"
+                android:id="@+id/game_screen_circle_progress_rounds"
+                android:layout_width="@dimen/circle_progress_rounds"
+                android:layout_height="@dimen/circle_progress_rounds"
                 app:cpb_progress=".505"
                 app:cpb_progress_background_color="@color/md_white_1000"
-                app:cpb_progress_color="@color/accent" />
+                app:cpb_progress_color="@color/accent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
+                android:id="@+id/game_screen_circle_progress_seconds"
+                android:layout_width="@dimen/circle_progress_seconds"
+                android:layout_height="@dimen/circle_progress_seconds"
+                app:cpb_progress=".505"
+                app:cpb_progress_background_color="@color/primary"
+                app:cpb_progress_color="@color/accent"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
         <!--End Progress container-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/game_screen_round_text"/>
 
     </LinearLayout>
     <!--End main container-->

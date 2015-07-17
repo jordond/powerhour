@@ -6,7 +6,7 @@ import android.graphics.Color;
  * Created by jordon on 09/07/15.
  */
 public class ColorUtil {
-    public static int lighten(int color, double fraction) {
+    public static int lighten(int color, float fraction) {
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);
@@ -17,7 +17,7 @@ public class ColorUtil {
         return Color.argb(alpha, red, green, blue);
     }
 
-    private static int darken(int color, double fraction) {
+    public static int darken(int color, float fraction) {
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);
@@ -30,14 +30,14 @@ public class ColorUtil {
     }
 
     public static int darken(int color) {
-        return darken(color, 0.3);
+        return darken(color, 0.3f);
     }
 
-    private static int darkenColor(int color, double fraction) {
+    private static int darkenColor(int color, float fraction) {
         return (int)Math.max(color - (color * fraction), 0);
     }
 
-    private static int lightenColor(int color, double fraction) {
+    private static int lightenColor(int color, float fraction) {
         return (int) Math.min(color + (color * fraction), 255);
     }
 }
