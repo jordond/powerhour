@@ -2,7 +2,6 @@ package ca.hoogit.powerhour;
 
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,9 +18,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.Game.GameScreen;
-import ca.hoogit.powerhour.Selection.ItemSelectedEvent;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 
@@ -39,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     List<GameTypeItem> mGameTypes;
 
     private FragmentManager mFragmentManager;
+    private ConfigureGameFragment mConfigure;
+    private GameScreen mGameScreen;
+
+    private boolean mIsGameStarted;
     private boolean mChosen;
 
     public enum FragmentEvents {
@@ -57,10 +60,17 @@ public class MainActivity extends AppCompatActivity {
 
         mFragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
+            savedInstanceState = new Bundle();
             StatusBarUtil.getInstance().init(this);
+            savedInstanceState.putInt("original_bar_color",
+                    StatusBarUtil.getInstance().getOriginal());
             setupListeners();
         } else {
-            savedInstanceState.putInt("original_bar_color", StatusBarUtil.getInstance().getOriginal());
+            mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
+            if (mIsGameStarted) {
+                launchGame((GameOptions) savedInstanceState.getSerializable(
+                        GameScreen.INSTANCE_STATE_GAME_OPTIONS), false);
+            }
         }
     }
 
@@ -85,9 +95,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (mFragmentManager.getBackStackEntryCount() != 0) {
-            StatusBarUtil.getInstance().resetColor(this);
-            mFragmentManager.popBackStack();
-            mChosen = false;
+            reset();
         } else {
             super.onBackPressed();
         }
@@ -104,9 +112,7 @@ public class MainActivity extends AppCompatActivity {
         switch (event) {
             case HOME_PRESSED:
             case BACK_PRESSED:
-                mFragmentManager.popBackStack();
-                StatusBarUtil.getInstance().resetColor(this);
-                mChosen = false;
+                reset();
                 break;
             case NOTHING:
                 break;
@@ -161,17 +167,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void configureGame(GameOptions options) {
         Log.i(TAG, "Configuring  " + options.getType().name());
-        Fragment fragment = ConfigureGameFragment.newInstance(options);
+        mConfigure = ConfigureGameFragment.newInstance(options);
         mFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .replace(R.id.container, fragment)
+                .replace(R.id.container, mConfigure)
                 .addToBackStack("configureScreen")
                 .commit();
+    }
+
+    private void reset() {
+        mFragmentManager.popBackStack();
+        StatusBarUtil.getInstance().resetColor(this);
+        mChosen = false;
     }
 
     /**
      * Otto event
      * Called from {@link ConfigureGameFragment#launchGame()}
+     *
      * @param options game settings
      */
     @Subscribe
@@ -181,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Overloaded function, defaults to always animating the transition
+     *
      * @param options options for the game
      */
     private void launchGame(GameOptions options) {
@@ -189,19 +203,30 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Launch the game given the options
+     *
      * @param options options for the game
      * @param animate whether or not to animate the transition
      */
     private void launchGame(GameOptions options, boolean animate) {
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
-        Fragment fragment = GameScreen.newInstance(options);
+        mGameScreen = GameScreen.newInstance(options);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
         }
-        ft.replace(R.id.container, fragment);
-        ft.addToBackStack("gameScreen"); // TODO remove after testing
+        ft.replace(R.id.container, mGameScreen);
         ft.commit();
+    }
+
+    @Subscribe
+    public void onGameEvent(GameEvent event) {
+        switch (event.status) {
+            case STOPPED:
+                mFragmentManager.beginTransaction().remove(mGameScreen).commitAllowingStateLoss();
+                reset();
+                break;
+            // TODO handle other events
+        }
     }
 
 }

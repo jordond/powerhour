@@ -224,8 +224,8 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("rounds", mRoundsSlider.getValue());
-        outState.putInt("pauses", mPausesSlider.getValue());
+        outState.putInt("rounds", mRounds);
+        outState.putInt("pauses", mPauses);
     }
 
     @Override
@@ -265,7 +265,7 @@ public class ConfigureGameFragment extends Fragment {
             mPausesValue.setText("∞");
             mPausesSlider.setValue(mPausesSlider.getMax());
         } else if (pauses == mPausesSlider.getMin()) {
-            mPausesValue.setText("none");
+            mPausesValue.setText("0");
         } else {
             mPausesValue.setText(String.valueOf(pauses));
             mPausesSlider.setValue(pauses);
@@ -321,4 +321,8 @@ public class ConfigureGameFragment extends Fragment {
         return options;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

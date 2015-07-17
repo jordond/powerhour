@@ -29,5 +29,6 @@ dependencies {
     compile 'com.github.traex.rippleeffect:library:1.3'
     compile 'com.github.navasmdc:MaterialDesign:1.5@aar'
     compile 'info.hoang8f:fbutton:1.0.5'
+    compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile project(':circleProgress')
 }

@@ -9,11 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
@@ -23,6 +26,7 @@ import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
+import ca.hoogit.powerhour.Game.GameEvent.GameStatus;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,17 +38,27 @@ public class GameScreen extends Fragment {
     private static final String TAG = GameScreen.class.getSimpleName();
     private static final String ARG_OPTIONS = "options";
 
+    public static final String INSTANCE_STATE_GAME_STARTED = "gameStarted";
+    public static final String INSTANCE_STATE_GAME_OPTIONS = "gameOptions";
+
+
     private GameOptions mOptions;
     private boolean mIsActive = false;
+    private boolean mIsGameStarted = false;
 
     private AppCompatActivity mActivity;
 
-    @Bind(R.id.appBar) Toolbar mToolbar;
-    @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
-    @Bind(R.id.game_screen_control) GameControlButtons mControl;
+    @Bind(R.id.appBar)
+    Toolbar mToolbar;
+    @Bind(R.id.game_screen_layout)
+    RelativeLayout mLayout;
+    @Bind(R.id.game_screen_control)
+    GameControlButtons mControl;
 
-    @Bind(R.id.game_screen_title) TextView mTitle;
-    @Bind(R.id.game_screen_circle_progress) HoloCircularProgressBar mProgress;
+    @Bind(R.id.game_screen_title)
+    TextView mTitle;
+    @Bind(R.id.game_screen_circle_progress)
+    HoloCircularProgressBar mProgress;
 
     /**
      * @param options Parameter 1.
@@ -59,6 +73,14 @@ public class GameScreen extends Fragment {
     }
 
     public GameScreen() {
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (!enter) {
+            return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_right);
+        }
+        return super.onCreateAnimation(transit, true, nextAnim);
     }
 
     @Override
@@ -104,6 +126,13 @@ public class GameScreen extends Fragment {
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(INSTANCE_STATE_GAME_STARTED, mIsGameStarted);
+        outState.putSerializable(INSTANCE_STATE_GAME_OPTIONS, mOptions);
+    }
+
     public void setupControlButtons() {
         mControl.setMaxPauses(mOptions.getMaxPauses());
         mControl.setIsAcitve(mIsActive);
@@ -117,6 +146,7 @@ public class GameScreen extends Fragment {
 
             @Override
             public void controlPressed(boolean isActive, int numberOfPauses) {
+                mIsGameStarted = true;
                 if (isActive) {
                     Toast.makeText(getActivity(), "Game running", Toast.LENGTH_SHORT).show();
                 } else {
@@ -128,10 +158,33 @@ public class GameScreen extends Fragment {
 
             @Override
             public void stopPressed() {
-                Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show();
+                stopGame();
             }
         };
         mControl.setOnButtonPressed(buttonPressed);
     }
 
+    public void stopGame() {
+        new MaterialDialog.Builder(getActivity())
+                .title("Stop the game?")
+                .content("Are you sure you want to stop this game of " + mOptions.getTitle() + "?")
+                .positiveText("Quit!")
+                .negativeText("Keep drinking!")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        mIsGameStarted = false;
+                        Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show();
+                        BusProvider.getInstance().post(new GameEvent(GameStatus.STOPPED));
+                    }
+                }).show();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // TODO handle back button, sharedprefs?
+    }
 }
