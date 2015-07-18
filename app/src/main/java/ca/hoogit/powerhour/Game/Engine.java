@@ -91,8 +91,8 @@ public class Engine extends Service {
     }
 
     private void start() {
-        long milliseconds = roundsToMilliseconds(mGame.getOptions().getRounds());
-        Log.i(TAG, "Starting the game with " + mGame.getOptions().getRounds() + " rounds");
+        long milliseconds = roundsToMilliseconds(mGame.getTotalRounds());
+        Log.i(TAG, "Starting the game with " + mGame.getTotalRounds() + " rounds");
         createTimer(milliseconds).start();
         mGame.setStarted(true);
         mGame.setState(State.ACTIVE);
@@ -152,7 +152,7 @@ public class Engine extends Service {
             public void onFinish() {
                 mGame.setMillisRemainingGame(0);
                 mGame.setMillisRemainingRound(0);
-                mGame.setRound(mGame.getOptions().getRounds());
+                mGame.setRound(mGame.getTotalRounds());
                 mGame.setState(State.FINISHED);
                 mBus.post(new GameEvent(Action.FINISH, mGame));
                 finish();

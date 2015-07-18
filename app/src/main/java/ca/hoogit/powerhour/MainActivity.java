@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     List<GameTypeItem> mGameTypes;
 
     private FragmentManager mFragmentManager;
-    private ConfigureGameFragment mConfigure;
-    private GameScreen mGameScreen;
 
     private boolean mIsGameStarted;
     private boolean mChosen;
@@ -69,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         } else { // TODO remove, implement better with service
             mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
             if (mIsGameStarted) {
-                launchGame((Game) savedInstanceState.getSerializable(
-                        GameScreen.INSTANCE_STATE_GAME), false);
+                launchGame((GameOptions) savedInstanceState.getSerializable(
+                        GameScreen.INSTANCE_STATE_GAME_OPTIONS), false);
             }
         }
         setupListeners();
@@ -148,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGame(new Game(options));
+                            launchGame(options);
                         }
                         mChosen = true;
                     } else {
@@ -169,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void configureGame(GameOptions options) {
         Log.i(TAG, "Configuring  " + options.getType().name());
-        mConfigure = ConfigureGameFragment.newInstance(options);
+        ConfigureGameFragment configure = ConfigureGameFragment.newInstance(options);
         mFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .replace(R.id.container, mConfigure)
-                .addToBackStack("configureScreen")
+                .replace(R.id.container, configure)
+                .addToBackStack("configure")
                 .commit();
     }
 
@@ -187,36 +185,36 @@ public class MainActivity extends AppCompatActivity {
      * Otto event
      * Called from {@link ConfigureGameFragment#launchGame()}
      *
-     * @param game game settings
+     * @param options game settings
      */
     @Subscribe
-    public void onStartGame(Game game) {
-        launchGame(game, true);
+    public void onStartGame(GameOptions options) {
+        launchGame(options, true);
     }
 
     /**
      * Overloaded function, defaults to always animating the transition
      *
-     * @param game options for the game
+     * @param options options for the game
      */
-    private void launchGame(Game game) {
-        launchGame(game, true);
+    private void launchGame(GameOptions options) {
+        launchGame(options, true);
     }
 
     /**
      * Launch the game given the options
      *
-     * @param game options for the game
+     * @param options options for the game
      * @param animate whether or not to animate the transition
      */
-    private void launchGame(Game game, boolean animate) {
-        Log.i(TAG, "Launching game in " + game.getOptions().getType().name() + " mode");
-        mGameScreen = GameScreen.newInstance(game);
+    private void launchGame(GameOptions options, boolean animate) {
+        Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
+        GameScreen gameScreen = GameScreen.newInstance(options);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
         }
-        ft.replace(R.id.container, mGameScreen, "gameScreen");
+        ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
     }
 

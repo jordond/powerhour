@@ -21,21 +21,21 @@ import java.io.Serializable;
 
 /**
  * @author jordon
- *
- * Date    18/07/15
- * Description 
- *
+ *         <p/>
+ *         Date    18/07/15
+ *         Description
  */
 public class Game implements Serializable {
 
-    private GameOptions options;
     private boolean started;
     private State state;
     private int round;
+    private int totalRounds;
     private int pauses;
+    private int maxPauses;
     private long millisRemainingGame;
     private long millisRemainingRound;
-    private boolean isMuted;
+    private boolean muted;
 
     /**
      * Constructors
@@ -45,11 +45,13 @@ public class Game implements Serializable {
     }
 
     public Game(GameOptions options) {
-        this.options = options;
+        this.totalRounds = options.getRounds();
+        this.maxPauses = options.getMaxPauses();
     }
 
     public Game(GameOptions options, boolean started) {
-        this.options = options;
+        this.totalRounds = options.getRounds();
+        this.maxPauses = options.getMaxPauses();
         this.started = started;
     }
 
@@ -62,7 +64,7 @@ public class Game implements Serializable {
     }
 
     public boolean canPause() {
-        return this.pauses <= options.getMaxPauses();
+        return this.pauses <= maxPauses;
     }
 
     public boolean is(State state) {
@@ -72,14 +74,6 @@ public class Game implements Serializable {
     /**
      * Accessors
      */
-
-    public GameOptions getOptions() {
-        return options;
-    }
-
-    public void setOptions(GameOptions options) {
-        this.options = options;
-    }
 
     public boolean hasStarted() {
         return started;
@@ -129,11 +123,27 @@ public class Game implements Serializable {
         this.millisRemainingRound = millisRemainingRound;
     }
 
-    public boolean isMuted() {
-        return isMuted;
+    public int getTotalRounds() {
+        return totalRounds;
     }
 
-    public void setIsMuted(boolean isMuted) {
-        this.isMuted = isMuted;
+    public void setTotalRounds(int totalRounds) {
+        this.totalRounds = totalRounds;
+    }
+
+    public int getMaxPauses() {
+        return maxPauses;
+    }
+
+    public void setMaxPauses(int maxPauses) {
+        this.maxPauses = maxPauses;
+    }
+
+    public void setMuted(boolean muted) {
+        this.muted = muted;
+    }
+
+    public boolean isMuted() {
+        return muted;
     }
 }
