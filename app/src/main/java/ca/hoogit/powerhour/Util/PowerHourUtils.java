@@ -15,39 +15,26 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+package ca.hoogit.powerhour.Util;
 
-package ca.hoogit.powerhour.Game;
+import android.os.Build;
 
-import android.support.v4.app.Fragment;
+import java.util.Random;
 
 /**
- * Created by jordon on 16/07/15.
- * Handle game events with otto
+ * @author jordon
+ * Date 17/07/15
+ * Description
+ * Some Handy utils
  */
-public class GameEvent {
-    public enum GameStatus {
-        STARTED, ACTIVE, PAUSED, STOPPED, FINISHED
+public class PowerHourUtils {
+
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
     }
 
-    public GameStatus status;
-    public GameOptions options;
-    public Fragment fragment;
-
-    public GameEvent(GameOptions options) {
-        this.options = options;
-    }
-
-    public GameEvent(GameStatus status) {
-        this.status = status;
-    }
-
-    public GameEvent(GameStatus status, Fragment fragment) {
-        this.status = status;
-        this.fragment = fragment;
-    }
-
-    public GameEvent(GameStatus status, GameOptions options) {
-        this.status = status;
-        this.options = options;
+    public static boolean isLollopopUp() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 }

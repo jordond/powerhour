@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"
             android:fontFamily="sans-serif-light"
-            android:paddingBottom="10dp"
+            android:paddingBottom="15dp"
             android:text="@string/configure_game_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="44sp" />
@@ -38,6 +38,19 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             tools:ignore="UselessParent">
+
+            <TextView
+                android:id="@+id/game_screen_rounds_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/game_screen_circle_progress_seconds"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="80dp"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/game_screen_rounds_remaining_placeholder"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/game_screen_countdown_text"
@@ -51,37 +64,57 @@
                 android:gravity="center"
                 android:text="@string/game_screen_countdown_text_default"
                 android:textColor="@color/md_white_1000"
-                android:textSize="65sp" />
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/game_screen_seconds_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/game_screen_circle_progress_seconds"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/game_screen_seconds_remaining"
+                android:textColor="@color/md_white_1000"
+                android:textSize="18sp" />
 
             <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
                 android:id="@+id/game_screen_circle_progress_rounds"
                 android:layout_width="@dimen/circle_progress_rounds"
                 android:layout_height="@dimen/circle_progress_rounds"
-                app:cpb_progress=".505"
-                app:cpb_progress_background_color="@color/md_white_1000"
-                app:cpb_progress_color="@color/accent"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                app:cpb_countdown="false"
+                app:cpb_progress="0.7"
+                app:cpb_progress_background_color="@color/md_white_1000"
+                app:cpb_progress_color="@color/accent" />
 
             <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
                 android:id="@+id/game_screen_circle_progress_seconds"
                 android:layout_width="@dimen/circle_progress_seconds"
                 android:layout_height="@dimen/circle_progress_seconds"
-                app:cpb_progress=".505"
-                app:cpb_progress_background_color="@color/primary"
-                app:cpb_progress_color="@color/accent"
+                android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
+                app:cpb_countdown="true"
+                app:cpb_progress=".96"
+                app:cpb_progress_background_color="@color/primary"
+                app:cpb_progress_color="@color/primary"
+                app:cpb_stroke_width="10dp"
+                app:cpb_thumb_color="@color/accent" />
 
         </RelativeLayout>
         <!--End Progress container-->
 
         <TextView
+            android:id="@+id/game_screen_remaining_pauses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/game_screen_round_text"/>
+            android:layout_marginTop="25dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/game_screen_remaining_pauses_placeholder"
+            android:textSize="24sp" />
 
     </LinearLayout>
     <!--End main container-->
@@ -92,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
-        app:gcb_color="@color/accent"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        app:gcb_color="@color/accent" />
 
 </RelativeLayout>

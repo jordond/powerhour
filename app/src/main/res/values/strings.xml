@@ -23,4 +23,7 @@
     <string name="game_control_sound_chooser_desc">Shot sound selector</string>
     <string name="game_screen_countdown_text_default">60.0</string>
     <string name="game_screen_round_text">Round</string>
+    <string name="game_screen_rounds_remaining_placeholder">150 of 300</string>
+    <string name="game_screen_seconds_remaining">seconds</string>
+    <string name="game_screen_remaining_pauses_placeholder">3 Pauses Remaining</string>
 </resources>
