@@ -19,6 +19,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.Game.GameScreen;
@@ -68,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
         } else { // TODO remove, implement better with service
             mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
             if (mIsGameStarted) {
-                launchGame((GameOptions) savedInstanceState.getSerializable(
-                        GameScreen.INSTANCE_STATE_GAME_OPTIONS), false);
+                launchGame((Game) savedInstanceState.getSerializable(
+                        GameScreen.INSTANCE_STATE_GAME), false);
             }
         }
         setupListeners();
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGame(options);
+                            launchGame(new Game(options));
                         }
                         mChosen = true;
                     } else {
@@ -186,31 +187,31 @@ public class MainActivity extends AppCompatActivity {
      * Otto event
      * Called from {@link ConfigureGameFragment#launchGame()}
      *
-     * @param options game settings
+     * @param game game settings
      */
     @Subscribe
-    public void onStartGame(GameOptions options) {
-        launchGame(options, true);
+    public void onStartGame(Game game) {
+        launchGame(game, true);
     }
 
     /**
      * Overloaded function, defaults to always animating the transition
      *
-     * @param options options for the game
+     * @param game options for the game
      */
-    private void launchGame(GameOptions options) {
-        launchGame(options, true);
+    private void launchGame(Game game) {
+        launchGame(game, true);
     }
 
     /**
      * Launch the game given the options
      *
-     * @param options options for the game
+     * @param game options for the game
      * @param animate whether or not to animate the transition
      */
-    private void launchGame(GameOptions options, boolean animate) {
-        Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
-        mGameScreen = GameScreen.newInstance(options);
+    private void launchGame(Game game, boolean animate) {
+        Log.i(TAG, "Launching game in " + game.getOptions().getType().name() + " mode");
+        mGameScreen = GameScreen.newInstance(game);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
@@ -221,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onGameEvent(GameEvent event) {
-        switch (event.status) {
-            case STOPPED:
+        switch (event.action) {
+            case STOP:
                 Fragment fragment = mFragmentManager.findFragmentByTag("gameScreen");
                 mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 reset();

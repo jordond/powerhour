@@ -15,32 +15,23 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 package ca.hoogit.powerhour.Game;
 
 /**
- * Created by jordon on 16/07/15.
- * Handle game events with otto
+ * @author jordon
+ *
+ * Date    18/07/15
+ * Description 
+ *
  */
-public class GameEvent {
+public class UpdateEvent {
+    public int roundNumber;
+    public int pauses;
+    public long remainingRoundMillis;
 
-    public Action action;
-    public Game game;
-
-    public GameEvent() {
-    }
-
-    public GameEvent(Game game) {
-        this.action = Action.UPDATE;
-        this.game = game;
-    }
-
-    public GameEvent(Action action) {
-        this.action = action;
-    }
-
-    public GameEvent(Action action, Game game) {
-        this.action = action;
-        this.game = game;
+    public UpdateEvent(int roundNumber, int pauses, long remainingRoundMillis) {
+        this.roundNumber = roundNumber;
+        this.pauses = pauses;
+        this.remainingRoundMillis = remainingRoundMillis;
     }
 }

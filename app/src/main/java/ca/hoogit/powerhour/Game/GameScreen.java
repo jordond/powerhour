@@ -2,7 +2,6 @@
 
 package ca.hoogit.powerhour.Game;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -26,11 +24,8 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
-import ca.hoogit.powerhour.Util.ColorUtil;
-import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
-import ca.hoogit.powerhour.Game.GameEvent.GameStatus;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,16 +35,17 @@ import ca.hoogit.powerhour.Game.GameEvent.GameStatus;
 public class GameScreen extends Fragment {
 
     private static final String TAG = GameScreen.class.getSimpleName();
-    private static final String ARG_OPTIONS = "options";
+    private static final String ARG_GAME = "game";
 
     public static final String INSTANCE_STATE_GAME_STARTED = "gameStarted";
-    public static final String INSTANCE_STATE_GAME_OPTIONS = "gameOptions";
+    public static final String INSTANCE_STATE_GAME = "game";
 
     public static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
 
     private AppCompatActivity mActivity;
 
-    private GameOptions mOptions;
+    private Game mGame;
+
     private boolean mIsActive = false;
     private boolean mIsGameStarted = false;
     private int mPrimaryColor;
@@ -71,13 +67,13 @@ public class GameScreen extends Fragment {
     @Bind(R.id.game_screen_circle_progress_rounds) HoloCircularProgressBar mProgressRounds;
 
     /**
-     * @param options Parameter 1.
+     * @param game Parameter 1.
      * @return A new instance of fragment GameScreen.
      */
-    public static GameScreen newInstance(GameOptions options) {
+    public static GameScreen newInstance(Game game) {
         GameScreen fragment = new GameScreen();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_OPTIONS, options);
+        args.putSerializable(ARG_GAME, game);
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,7 +93,7 @@ public class GameScreen extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mOptions = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
+            mGame = (Game) getArguments().getSerializable(ARG_GAME);
         }
     }
 
@@ -121,15 +117,15 @@ public class GameScreen extends Fragment {
         }
 
         // Change colors to those set in options;
-        mPrimaryColor = mOptions.getBackgroundColor();
-        mAccentColor = mOptions.getAccentColor();
+        mPrimaryColor = mGame.getOptions().getBackgroundColor();
+        mAccentColor = mGame.getOptions().getAccentColor();
 
         mToolbar.setBackgroundColor(mPrimaryColor);
         mLayout.setBackgroundColor(mPrimaryColor);
         BusProvider.getInstance().post(new ChangeStatusColor(mActivity, mPrimaryColor));
 
         // Setup view items
-        mTitle.setText(mOptions.getTitle());
+        mTitle.setText(mGame.getOptions().getTitle());
         mProgressRounds.setProgressColor(mAccentColor);
         mProgressSeconds.setThumbColor(mAccentColor);
         mProgressSeconds.setProgressColor(mPrimaryColor);
@@ -137,7 +133,7 @@ public class GameScreen extends Fragment {
 
         //TODO check for active game, or retrieve from saved instance
         updatePauses();
-        updateRoundsText();
+        updateRounds();
 
         setupControlButtons();
 
@@ -148,15 +144,15 @@ public class GameScreen extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(INSTANCE_STATE_GAME_STARTED, mIsGameStarted);
-        outState.putSerializable(INSTANCE_STATE_GAME_OPTIONS, mOptions);
+        outState.putSerializable(INSTANCE_STATE_GAME, mGame);
 
         // TODO save current round and pauses, so on rotate updatePauses/updateRounds will work correctly
     }
 
     private void setupControlButtons() {
-        mControl.setMaxPauses(mOptions.getMaxPauses());
+        mControl.setMaxPauses(mGame.getOptions().getMaxPauses());
         mControl.setIsAcitve(mIsActive);
-        mControl.setColor(mOptions.getAccentColor());
+        mControl.setColor(mGame.getOptions().getAccentColor());
 
         GameControl buttonPressed = new GameControl() {
             @Override
@@ -166,15 +162,18 @@ public class GameScreen extends Fragment {
 
             @Override
             public void controlPressed(boolean isActive, int numberOfPauses) {
-                mIsGameStarted = true;
+                if (!mIsGameStarted) {
+                    updateRounds();
+                }
                 if (isActive) {
                     Toast.makeText(getActivity(), "Game running", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Game has been paused", Toast.LENGTH_SHORT).show();
                     updatePauses();
                     Log.d(TAG, "Paused: " + numberOfPauses + " times");
-                    Log.d(TAG, "Remaining pauses: " + (mOptions.getMaxPauses() - numberOfPauses) + " times");
+                    Log.d(TAG, "Remaining pauses: " + (mGame.getOptions().getMaxPauses() - numberOfPauses) + " times");
                 }
+                mIsGameStarted = true;
             }
 
             @Override
@@ -188,7 +187,7 @@ public class GameScreen extends Fragment {
     private void stopGame() {
         new MaterialDialog.Builder(getActivity())
                 .title("Stop the game?")
-                .content("Are you sure you want to stop this game of " + mOptions.getTitle() + "?")
+                .content("Are you sure you want to stop this game of " + mGame.getOptions().getTitle() + "?")
                 .positiveText("Quit!")
                 .negativeText("Keep drinking!")
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -197,7 +196,7 @@ public class GameScreen extends Fragment {
                         super.onPositive(dialog);
                         mIsGameStarted = false;
                         Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show();
-                        BusProvider.getInstance().post(new GameEvent(GameStatus.STOPPED));
+                        BusProvider.getInstance().post(new GameEvent(Action.STOP));
                     }
                 }).show();
 
@@ -205,20 +204,20 @@ public class GameScreen extends Fragment {
 
     private void updatePauses() {
         mPauses++;
-        if (mOptions.getMaxPauses() == -1) {
+        if (mGame.getOptions().getMaxPauses() == -1) {
             mPausesText.setText("∞ pauses");
-        } else if (mOptions.getMaxPauses() == mPauses) {
+        } else if (mGame.getOptions().getMaxPauses() == mPauses) {
             mPausesText.setText("No more pausing");
         } else {
-            int remaining = mOptions.getMaxPauses() - mPauses;
+            int remaining = mGame.getOptions().getMaxPauses() - mPauses;
             mPausesText.setText(String.valueOf(remaining) + PAUSES_REMAINING_TEXT);
         }
     }
 
-    private void updateRoundsText() {
+    private void updateRounds() {
         mRound++;
-        if (mRound <= mOptions.getRounds()) {
-            mRoundsText.setText(mRound + " of " + mOptions.getRounds());
+        if (mRound <= mGame.getOptions().getRounds()) {
+            mRoundsText.setText(mRound + " of " + mGame.getOptions().getRounds());
         }
 
     }
