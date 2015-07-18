@@ -42,19 +42,10 @@ public class GameScreen extends Fragment {
 
     public static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
 
-    private AppCompatActivity mActivity;
-
     private GameOptions mOptions;
     private Game mGame;
 
-    private boolean mIsActive = false;
     private boolean mIsGameStarted = false;
-    private int mPrimaryColor;
-    private int mAccentColor;
-
-    // Game variables
-    private int mPauses = -1;
-    private int mRound = -1;
 
     @Bind(R.id.appBar) Toolbar mToolbar;
     @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
@@ -105,7 +96,7 @@ public class GameScreen extends Fragment {
         ButterKnife.bind(this, view);
 
         // Setup the toolbar
-        mActivity = (AppCompatActivity) getActivity();
+        AppCompatActivity mActivity = (AppCompatActivity) getActivity();
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_icon);
         mActivity.setSupportActionBar(mToolbar);
 
@@ -118,8 +109,8 @@ public class GameScreen extends Fragment {
         }
 
         // Change colors to those set in options;
-        mPrimaryColor = mOptions.getBackgroundColor();
-        mAccentColor = mOptions.getAccentColor();
+        int mPrimaryColor = mOptions.getBackgroundColor();
+        int mAccentColor = mOptions.getAccentColor();
 
         mToolbar.setBackgroundColor(mPrimaryColor);
         mLayout.setBackgroundColor(mPrimaryColor);
@@ -131,10 +122,6 @@ public class GameScreen extends Fragment {
         mProgressSeconds.setThumbColor(mAccentColor);
         mProgressSeconds.setProgressColor(mPrimaryColor);
         mProgressSeconds.setProgressBackgroundColor(mPrimaryColor);
-
-        //TODO check for active game, or retrieve from saved instance
-        updatePauses();
-        updateRounds();
 
         setupControlButtons();
 
@@ -152,7 +139,6 @@ public class GameScreen extends Fragment {
 
     private void setupControlButtons() {
         mControl.setMaxPauses(mOptions.getMaxPauses());
-        mControl.setIsAcitve(mIsActive);
         mControl.setColor(mOptions.getAccentColor());
 
         GameControl buttonPressed = new GameControl() {
@@ -163,18 +149,6 @@ public class GameScreen extends Fragment {
 
             @Override
             public void controlPressed(boolean isActive, int numberOfPauses) {
-                if (!mIsGameStarted) {
-                    updateRounds();
-                }
-                if (isActive) {
-                    Toast.makeText(getActivity(), "Game running", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Game has been paused", Toast.LENGTH_SHORT).show();
-                    updatePauses();
-                    Log.d(TAG, "Paused: " + numberOfPauses + " times");
-                    Log.d(TAG, "Remaining pauses: " + (mOptions.getMaxPauses() - numberOfPauses) + " times");
-                }
-                mIsGameStarted = true;
             }
 
             @Override
@@ -200,26 +174,6 @@ public class GameScreen extends Fragment {
                         BusProvider.getInstance().post(new GameEvent(Action.STOP));
                     }
                 }).show();
-
-    }
-
-    private void updatePauses() {
-        mPauses++;
-        if (mOptions.getMaxPauses() == -1) {
-            mPausesText.setText("∞ pauses");
-        } else if (mOptions.getMaxPauses() == mPauses) {
-            mPausesText.setText("No more pausing");
-        } else {
-            int remaining = mOptions.getMaxPauses() - mPauses;
-            mPausesText.setText(String.valueOf(remaining) + PAUSES_REMAINING_TEXT);
-        }
-    }
-
-    private void updateRounds() {
-        mRound++;
-        if (mRound <= mOptions.getRounds()) {
-            mRoundsText.setText(mRound + " of " + mOptions.getRounds());
-        }
 
     }
 

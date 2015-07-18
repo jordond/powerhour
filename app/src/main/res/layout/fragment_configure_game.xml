@@ -14,6 +14,7 @@
         layout="@layout/app_bar" />
 
     <LinearLayout
+        android:layout_below="@id/appBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical|top"
@@ -53,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="20dp"
             android:gravity="center_horizontal">
 
         </ca.hoogit.powerhour.Views.PlusMinusButtons>
@@ -112,7 +112,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight=".25"
+                android:layout_weight=".35"
                 android:fontFamily="sans-serif-light"
                 android:text="0" />
 

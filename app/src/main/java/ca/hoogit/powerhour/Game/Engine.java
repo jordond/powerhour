@@ -37,14 +37,15 @@ public class Engine extends Service {
 
     private final int ROUND_COUNTER_MAX = 60 * 1000;
 
+    public static State mState = State.NONE;
+
     private Bus mBus;
-    private Game mGame;
+
+    private static Game mGame;
 
     private long mRoundCounter = 0;
 
     private CountDownTimer mTimer;
-
-    public static State mState = State.NONE;
 
     public Engine() {
     }
@@ -171,6 +172,14 @@ public class Engine extends Service {
         mState = State.NONE;
         mBus.unregister(this);
         stopSelf();
+    }
+
+    public static boolean started() {
+        return mState != State.NONE;
+    }
+
+    public static GameOptions options() {
+        return mGame.getOptions();
     }
 
     /**

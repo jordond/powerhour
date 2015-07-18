@@ -317,6 +317,7 @@ public class ConfigureGameFragment extends Fragment {
         options.setRounds(mRounds);
         options.setMaxPauses(mPauses);
         options.setColors(mPrimaryColor, mAccentColor);
+        options.setAutoStart(true);
 
         return options;
     }

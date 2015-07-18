@@ -25,6 +25,7 @@ package ca.hoogit.powerhour.Game;
  *         Description
  */
 public enum Action {
+    INITIALIZE,
     START,
     PAUSE,
     RESUME,

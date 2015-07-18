@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
@@ -41,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentManager mFragmentManager;
 
-    private boolean mIsGameStarted;
     private boolean mChosen;
 
     public enum FragmentEvents {
@@ -64,12 +65,10 @@ public class MainActivity extends AppCompatActivity {
             StatusBarUtil.getInstance().init(this);
             savedInstanceState.putInt("original_bar_color",
                     StatusBarUtil.getInstance().getOriginal());
-        } else { // TODO remove, implement better with service
-            mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
-            if (mIsGameStarted) {
-                launchGame((GameOptions) savedInstanceState.getSerializable(
-                        GameScreen.INSTANCE_STATE_GAME_OPTIONS), false);
-            }
+        }
+
+        if (Engine.started()) {
+            launchGameScreen(Engine.options(), false);
         }
         setupListeners();
     }
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGame(options);
+                            launchGameScreen(options);
                         }
                         mChosen = true;
                     } else {
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Subscribe
     public void onStartGame(GameOptions options) {
-        launchGame(options, true);
+        launchGameScreen(options, true);
     }
 
     /**
@@ -197,8 +196,8 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param options options for the game
      */
-    private void launchGame(GameOptions options) {
-        launchGame(options, true);
+    private void launchGameScreen(GameOptions options) {
+        launchGameScreen(options, true);
     }
 
     /**
@@ -207,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
      * @param options options for the game
      * @param animate whether or not to animate the transition
      */
-    private void launchGame(GameOptions options, boolean animate) {
+    private void launchGameScreen(GameOptions options, boolean animate) {
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
         GameScreen gameScreen = GameScreen.newInstance(options);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
@@ -221,6 +220,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
+            case INITIALIZE:
+                Intent gameEngine = new Intent(this, Engine.class);
+                gameEngine.putExtra("game", event.game);
+                startService(gameEngine);
+                break;
             case STOP:
                 Fragment fragment = mFragmentManager.findFragmentByTag("gameScreen");
                 mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();

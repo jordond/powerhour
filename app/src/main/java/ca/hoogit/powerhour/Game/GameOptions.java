@@ -23,6 +23,7 @@ public class GameOptions implements Serializable {
     private int maxPauses;
     private int backgroundColor;
     private int accentColor;
+    private boolean autoStart;
 
     public GameOptions() {
     }
@@ -141,5 +142,13 @@ public class GameOptions implements Serializable {
 
     public void setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
     }
 }

@@ -37,6 +37,8 @@ public class Game implements Serializable {
     private long millisRemainingRound;
     private boolean muted;
 
+    private GameOptions options;
+
     /**
      * Constructors
      */
@@ -47,12 +49,14 @@ public class Game implements Serializable {
     public Game(GameOptions options) {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
+        this.options = options;
     }
 
     public Game(GameOptions options, boolean started) {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
         this.started = started;
+        this.options = options;
     }
 
     public void incrementRound() {
@@ -145,5 +149,13 @@ public class Game implements Serializable {
 
     public boolean isMuted() {
         return muted;
+    }
+
+    public GameOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(GameOptions options) {
+        this.options = options;
     }
 }
