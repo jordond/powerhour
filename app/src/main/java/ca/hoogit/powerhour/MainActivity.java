@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             StatusBarUtil.getInstance().init(this);
             savedInstanceState.putInt("original_bar_color",
                     StatusBarUtil.getInstance().getOriginal());
-            setupListeners();
         } else { // TODO remove, implement better with service
             mIsGameStarted = savedInstanceState.getBoolean(GameScreen.INSTANCE_STATE_GAME_STARTED);
             if (mIsGameStarted) {
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         GameScreen.INSTANCE_STATE_GAME_OPTIONS), false);
             }
         }
+        setupListeners();
     }
 
     @Override
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         if (animate) {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
         }
-        ft.replace(R.id.container, mGameScreen);
+        ft.replace(R.id.container, mGameScreen, "gameScreen");
         ft.commit();
     }
 
@@ -222,7 +223,8 @@ public class MainActivity extends AppCompatActivity {
     public void onGameEvent(GameEvent event) {
         switch (event.status) {
             case STOPPED:
-                mFragmentManager.beginTransaction().remove(mGameScreen).commitAllowingStateLoss();
+                Fragment fragment = mFragmentManager.findFragmentByTag("gameScreen");
+                mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 reset();
                 break;
             // TODO handle other events
