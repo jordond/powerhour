@@ -31,9 +31,10 @@ public class GameControlButtons extends LinearLayout {
     private ImageButton mStop;
 
     private int color;
-    private int maxPauses;
-    private int currentPauses;
-    private boolean isActive;
+    private int mIcon;
+
+    private final int STATE_PLAY_ICON = R.drawable.ic_av_play_arrow;
+    private final int STATE_PAUSE_ICON = R.drawable.ic_av_pause;
 
     public GameControlButtons(Context context) {
         super(context);
@@ -56,7 +57,6 @@ public class GameControlButtons extends LinearLayout {
         // Get the attributes
         TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.GameControlButtons, 0, 0);
         color = attr.getColor(R.styleable.GameControlButtons_gcb_color, Color.BLACK);
-        maxPauses = attr.getInteger(R.styleable.GameControlButtons_gcb_maxPauses, -1);
         attr.recycle();
 
         // Grab the views
@@ -64,36 +64,10 @@ public class GameControlButtons extends LinearLayout {
         mControl = (CircleButton) findViewById(R.id.timer_control);
         mStop = (ImageButton) findViewById(R.id.timer_stop);
 
+        mIcon = STATE_PLAY_ICON;
+
         mControl.setColor(color);
 
-        currentPauses = 0;
-        isActive = false;
-    }
-
-    public void updateControlIcon(boolean active) {
-        if (active) {
-            mControl.setImageResource(R.drawable.ic_av_play_arrow);
-            Log.d(TAG, "Play arrow set");
-        } else {
-            mControl.setImageResource(R.drawable.ic_av_pause);
-            Log.d(TAG, "Pause bars set");
-        }
-    }
-
-    public void updateControlIcon(GameStates status) {
-        switch (status) {
-            case ACTIVE:
-                updateControlIcon(true);
-                break;
-            case PAUSED:
-            case STOPPED:
-                updateControlIcon(false);
-                break;
-            case NO_MORE_PAUSES:
-            case HIDE:
-                mControl.setVisibility(INVISIBLE);
-                mControl.setEnabled(false);
-        }
     }
 
     private void registerListeners() {
@@ -106,21 +80,8 @@ public class GameControlButtons extends LinearLayout {
         mControl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentPauses < maxPauses || maxPauses == -1) {
-                    if (isActive) {
-                        updateControlIcon(GameStates.PAUSED);
-                    } else {
-                        updateControlIcon(GameStates.ACTIVE);
-                        currentPauses++;
-                    }
-                } else {
-                    if (!isActive) {
-                        updateControlIcon(GameStates.NO_MORE_PAUSES);
-                        Log.d(TAG, "Disabling the control button");
-                    }
-                }
-                isActive = !isActive;
-                mListener.controlPressed(isActive, currentPauses);
+                toggleCenterButton();
+                mListener.controlPressed();
             }
         });
         mStop.setOnClickListener(new OnClickListener() {
@@ -151,36 +112,46 @@ public class GameControlButtons extends LinearLayout {
         removeListeners();
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setIsActive(boolean active) {
-        this.isActive = active;
-        updateControlIcon(active);
-    }
-
-    public int getMaxPauses() {
-        return maxPauses;
-    }
-
     public void setColor(int color) {
         this.color = color;
         mControl.setColor(color);
     }
 
-    public void setPauseCount(int currentPauses) {
-        this.currentPauses = currentPauses;
+    public void toggleCenterButton() {
+        if (mControl.getVisibility() == View.VISIBLE) {
+            if (mIcon == STATE_PLAY_ICON) {
+                mIcon = STATE_PAUSE_ICON;
+            } else {
+                mIcon = STATE_PLAY_ICON;
+            }
+            mControl.setImageResource(mIcon);
+        }
     }
 
-    public void setMaxPauses(int maxPauses) {
-        this.maxPauses = maxPauses;
+    public void hideCenter() {
+        if (mControl.getVisibility() == View.VISIBLE) {
+            mControl.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void showCenter() {
+        if (mControl.getVisibility() == View.INVISIBLE) {
+            mControl.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public int getIcon() {
+        return mIcon;
+    }
+
+    public void setIcon(int mIcon) {
+        this.mIcon = mIcon;
     }
 
     public interface GameControl {
         void soundPressed();
 
-        void controlPressed(boolean isActive, int numberOfPauses);
+        void controlPressed();
 
         void stopPressed();
     }

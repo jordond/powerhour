@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import java.util.concurrent.TimeUnit;
@@ -35,18 +36,13 @@ public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
 
-    public static final int MINUTE_DURATION = 5; // Default 60
-    private final int ROUND_COUNTER_MAX = MINUTE_DURATION * 1000;
-
     public static State mState = State.NONE;
 
     private Bus mBus;
-
     private static Game mGame;
+    private CountDownTimer mTimer;
 
     private long mRoundCounter = 0;
-
-    private CountDownTimer mTimer;
 
     public Engine() {
     }
@@ -62,12 +58,14 @@ public class Engine extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             mGame = (Game) intent.getSerializableExtra("game");
+            mGame.setState(State.INITIALIZED);
             mState = State.INITIALIZED;
+            broadcast(Action.UPDATE);
         }
         if (mGame == null) {
             throw new NullPointerException("No game object was passed to the service.");
         } else {
-            if (mGame.isAutostart()) {
+            if (mGame.isAutoStart()) {
                 start();
             }
         }
@@ -77,6 +75,10 @@ public class Engine extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private void broadcast(Action action) {
+        mBus.post(new GameEvent(action, mGame));
     }
 
     @Subscribe
@@ -97,6 +99,11 @@ public class Engine extends Service {
         }
     }
 
+    @Produce
+    public GameEvent produceGameInformation() {
+        return new GameEvent(Action.PRODUCE, mGame);
+    }
+
     private void start() {
         if (!mGame.hasStarted()) {
             long milliseconds = roundsToMilliseconds(mGame.getTotalRounds());
@@ -104,6 +111,7 @@ public class Engine extends Service {
             createTimer(milliseconds);
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
+            broadcast(Action.UPDATE);
         } else {
             Log.e(TAG, "Game already started, cannot start another.");
         }
@@ -112,11 +120,13 @@ public class Engine extends Service {
     private void pause() {
         if (mGame.is(State.ACTIVE)) {
             if (mGame.canPause()) {
-                Log.i(TAG, "Pausing game on round " + mGame.getRound());
+                Log.i(TAG, "Pausing game on round " + mGame.currentRound());
+                Log.i(TAG, "Remaining pauses: " + mGame.remainingPauses());
                 logTimeLeft();
                 mTimer.cancel();
                 mGame.incrementPauses();
                 mGame.setState(State.PAUSED);
+                broadcast(Action.UPDATE);
             } else {
                 Log.i(TAG, "No pauses remaining");
             }
@@ -124,18 +134,20 @@ public class Engine extends Service {
     }
 
     private void resume(long milliseconds) {
-        if (mGame.is(State.ACTIVE)) {
-            mTimer.cancel();
+        if (mGame.is(State.PAUSED)) {
+            Log.i(TAG, "Resuming game on round " + mGame.currentRound());
+            logTimeLeft();
+            createTimer(milliseconds);
+            mGame.setState(State.ACTIVE);
+            broadcast(Action.UPDATE);
+        } else {
+            Log.e(TAG, "Trying to resume an active game");
         }
-        Log.i(TAG, "Resuming game on round " + mGame.getRound());
-        logTimeLeft();
-        createTimer(milliseconds);
-        mGame.setState(State.ACTIVE);
     }
 
     private void stop() {
         if (mGame.hasStarted()) {
-            Log.i(TAG, "Stopping game on round " + mGame.getRound());
+            Log.i(TAG, "Stopping game on round " + mGame.currentRound());
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
             }
@@ -149,9 +161,8 @@ public class Engine extends Service {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     Action action;
-                    Game game;
                     mRoundCounter += 100;
-                    if (mRoundCounter == ROUND_COUNTER_MAX) {
+                    if (mRoundCounter == Game.ROUND_DURATION_MILLIS) {
                         action = Action.NEW_ROUND;
                         mGame.incrementRound();
                         mRoundCounter = 0;
@@ -160,10 +171,8 @@ public class Engine extends Service {
                         action = Action.UPDATE;
                     }
                     updateGameMilliseconds(millisUntilFinished);
-                    game = mGame;
-                    game.setOptions(null);
-                    mBus.post(new GameEvent(action, game));
                     mGame.setState(State.ACTIVE);
+                    broadcast(action);
                     // TODO Pause the timer to allow for animations, maybe do so in fragment
                 }
 
@@ -173,7 +182,7 @@ public class Engine extends Service {
                     mGame.setMillisRemainingRound(0);
                     mGame.setRound(mGame.getTotalRounds());
                     mGame.setState(State.FINISHED);
-                    mBus.post(new GameEvent(Action.FINISH, mGame));
+                    broadcast(Action.FINISH);
                     Log.d(TAG, "Game has completed");
                     finish();
                 }
@@ -183,7 +192,7 @@ public class Engine extends Service {
     }
 
     private void updateGameMilliseconds(long millis) {
-        long roundMillis = ROUND_COUNTER_MAX - mRoundCounter;
+        long roundMillis = Game.ROUND_DURATION_MILLIS - mRoundCounter;
         mGame.setMillisRemainingGame(millis);
         mGame.setMillisRemainingRound(roundMillis);
     }
@@ -200,7 +209,7 @@ public class Engine extends Service {
     }
 
     public static GameOptions options() {
-        return mGame.getOptions();
+        return mGame.options();
     }
 
     /**
@@ -208,7 +217,7 @@ public class Engine extends Service {
      */
 
     private long roundsToMilliseconds(int rounds) {
-        int seconds = rounds * MINUTE_DURATION;
+        int seconds = rounds * Game.ROUND_DURATION_SECONDS;
         return TimeUnit.SECONDS.toMillis(seconds);
     }
 
@@ -217,9 +226,9 @@ public class Engine extends Service {
     }
 
     private void logTimeLeft() {
-        Log.i(TAG, "Game Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
+        Log.d(TAG, "Game Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
                 mGame.getMillisRemainingGame()));
-        Log.i(TAG, "Round Seconds Left: " + TimeUnit.MILLISECONDS.toSeconds(
+        Log.d(TAG, "Round Seconds Left: " + TimeUnit.MILLISECONDS.toSeconds(
                 mGame.getMillisRemainingRound()));
     }
 }

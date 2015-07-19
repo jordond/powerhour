@@ -27,16 +27,19 @@ import java.io.Serializable;
  */
 public class Game implements Serializable {
 
-    private boolean started;
+    public static final int ROUND_DURATION_SECONDS = 5; // Default 60
+    public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
+
+    private boolean started = false;
     private State state;
-    private int round;
+    private int round = 0;
     private int totalRounds;
-    private int pauses;
+    private int pauses = 0;
     private int maxPauses;
     private long millisRemainingGame;
-    private long millisRemainingRound;
+    private long millisRemainingRound = ROUND_DURATION_MILLIS;
     private boolean muted;
-    private boolean autostart;
+    private boolean autoStart;
 
     private GameOptions options;
 
@@ -51,13 +54,15 @@ public class Game implements Serializable {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
         this.options = options;
+        this.millisRemainingGame = this.totalRounds * ROUND_DURATION_MILLIS;
     }
 
-    public Game(GameOptions options, boolean autostart) {
+    public Game(GameOptions options, boolean autoStart) {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
-        this.autostart = autostart;
+        this.autoStart = autoStart;
         this.options = options;
+        this.millisRemainingGame = this.totalRounds * ROUND_DURATION_MILLIS;
     }
 
     public void incrementRound() {
@@ -69,7 +74,11 @@ public class Game implements Serializable {
     }
 
     public boolean canPause() {
-        return this.pauses <= maxPauses || maxPauses == -1;
+        return this.pauses < maxPauses || maxPauses == -1;
+    }
+
+    public int remainingPauses() {
+        return this.maxPauses - this.pauses;
     }
 
     public boolean is(State state) {
@@ -96,7 +105,7 @@ public class Game implements Serializable {
         this.state = state;
     }
 
-    public int getRound() {
+    public int currentRound() {
         return round;
     }
 
@@ -152,7 +161,7 @@ public class Game implements Serializable {
         return muted;
     }
 
-    public GameOptions getOptions() {
+    public GameOptions options() {
         return options;
     }
 
@@ -160,7 +169,7 @@ public class Game implements Serializable {
         this.options = options;
     }
 
-    public boolean isAutostart() {
-        return autostart;
+    public boolean isAutoStart() {
+        return autoStart;
     }
 }

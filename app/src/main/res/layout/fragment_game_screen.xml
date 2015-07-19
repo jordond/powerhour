@@ -44,7 +44,7 @@
                 android:layout_alignTop="@+id/game_screen_circle_progress_seconds"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="85dp"
                 android:fontFamily="sans-serif-thin"
                 android:gravity="center"
                 android:text="@string/game_screen_rounds_remaining_placeholder"

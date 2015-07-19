@@ -1,5 +1,3 @@
-
-
 package ca.hoogit.powerhour.Game;
 
 import android.animation.ObjectAnimator;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
@@ -40,23 +39,12 @@ public class GameScreen extends Fragment {
     private static final String TAG = GameScreen.class.getSimpleName();
     private static final String ARG_OPTIONS = "options";
 
-    public static final String INSTANCE_STATE_OPTIONS = "options";
-    public static final String INSTANCE_STATE_GAME_CURRENT_ROUND = "currentRound";
-    public static final String INSTANCE_STATE_GAME_PAUSED_COUNT = "pauseCount";
-    public static final String INSTANCE_STATE_GAME_ROUND_MILLIS = "roundMillis";
+    private static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
+    private static final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
-    public static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
-
-    private final long DEFAULT_ROUND_MILLISECONDS = Engine.MINUTE_DURATION * 1000;
+    public static final String INSTANCE_STATE_GAME = "game";
 
     private Game mGame;
-
-    private boolean mGameHasStarted;
-
-    private GameOptions mOptions;
-    private int mCurrentRound = 0;
-    private int mPausedCount = 0;
-    private long mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
 
     private String ROUND_OF_MAX_TEXT;
 
@@ -98,9 +86,10 @@ public class GameScreen extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BusProvider.getInstance().register(this);
+        BusProvider.getInstance().register(this); // TODO move to handle the produce? get rid of instance state
         if (getArguments() != null) {
-            mOptions = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
+            GameOptions options = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
+            mGame = new Game(options);
         }
     }
 
@@ -124,36 +113,41 @@ public class GameScreen extends Fragment {
         }
 
         // Change colors to those set in options;
-        int mPrimaryColor = mOptions.getBackgroundColor();
-        int mAccentColor = mOptions.getAccentColor();
+        int mPrimaryColor = mGame.options().getBackgroundColor();
+        int mAccentColor = mGame.options().getAccentColor();
 
         mToolbar.setBackgroundColor(mPrimaryColor);
         mLayout.setBackgroundColor(mPrimaryColor);
         BusProvider.getInstance().post(new ChangeStatusColor(mActivity, mPrimaryColor));
 
         // Setup titles and colors
-        mTitle.setText(mOptions.getTitle());
+        mTitle.setText(mGame.options().getTitle());
         mProgressRounds.setProgressColor(mAccentColor);
         mProgressSeconds.setThumbColor(mAccentColor);
         mProgressSeconds.setProgressColor(mAccentColor);
         mProgressSeconds.setProgressBackgroundColor(mPrimaryColor);
 
-        ROUND_OF_MAX_TEXT = " of " + mOptions.getRounds();
+        ROUND_OF_MAX_TEXT = " of " + mGame.options().getRounds();
 
         // Set the text and progress wheels
-        mRoundsText.setText(mCurrentRound + ROUND_OF_MAX_TEXT);
-        updatePauses();
+        mRoundsText.setText(mGame.currentRound() + ROUND_OF_MAX_TEXT);
+        if (mGame.getMaxPauses() == -1) {
+            mPausesText.setText(PAUSES_UNLIMITED_TEXT);
+        } else {
+            mPausesText.setText(mGame.remainingPauses() + PAUSES_REMAINING_TEXT);
+        }
 
-        updateRoundsProgress(mCurrentRound, false);
-        updateSecondsProgress(mRemainingRoundMillis, false);
+        updateRoundsProgress(mGame.currentRound(), false);
+        updateSecondsProgress(mGame.getMillisRemainingRound(), false);
 
-        // Get status of game, if it hasn't started and auto-start is enabled, go.
-        mGameHasStarted = Engine.started();
+        // Get status of game, if it hasn't started then initialize
+        mGame.setStarted(Engine.started());
 
-        if (!mGameHasStarted) {
-            Game game = new Game(mOptions, mOptions.isAutoStart());
-            BusProvider.getInstance().post(new GameEvent(Action.INITIALIZE, game));
-            mControl.setIsActive(!mOptions.isAutoStart());
+        if (!mGame.hasStarted()) {
+            broadcast(Action.INITIALIZE, mGame);
+            if (mGame.options().isAutoStart()) {
+                mControl.toggleCenterButton();
+            }
         }
 
         setupControlButtons();
@@ -164,28 +158,19 @@ public class GameScreen extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(INSTANCE_STATE_OPTIONS, mOptions);
-        outState.putInt(INSTANCE_STATE_GAME_CURRENT_ROUND, mCurrentRound);
-        outState.putInt(INSTANCE_STATE_GAME_PAUSED_COUNT, mPausedCount);
-        outState.putLong(INSTANCE_STATE_GAME_ROUND_MILLIS, mRemainingRoundMillis);
+        outState.putSerializable(INSTANCE_STATE_GAME, mGame);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            mOptions = (GameOptions) savedInstanceState.getSerializable(INSTANCE_STATE_OPTIONS);
-            mCurrentRound = savedInstanceState.getInt(INSTANCE_STATE_GAME_CURRENT_ROUND);
-            mPausedCount = savedInstanceState.getInt(INSTANCE_STATE_GAME_PAUSED_COUNT);
-            mRemainingRoundMillis = savedInstanceState.getLong(INSTANCE_STATE_GAME_ROUND_MILLIS);
-            // TODO update views
+            mGame = (Game) savedInstanceState.getSerializable(INSTANCE_STATE_GAME);
         }
     }
 
     private void setupControlButtons() {
-        mControl.setPauseCount(mPausedCount);
-        mControl.setMaxPauses(mOptions.getMaxPauses());
-        mControl.setColor(mOptions.getAccentColor());
+        mControl.setColor(mGame.options().getAccentColor());
 
         GameControl buttonPressed = new GameControl() {
             @Override
@@ -194,22 +179,15 @@ public class GameScreen extends Fragment {
             }
 
             @Override
-            public void controlPressed(boolean isActive, int numberOfPauses) {
-                if (mGameHasStarted) {
-                    if (isActive) {
-                        BusProvider.getInstance().post(new GameEvent(Action.RESUME));
-                    } else {
-                        if (numberOfPauses < mOptions.getMaxPauses() || mOptions.unlimitedPauses()) {
-                            updatePauses();
-                            mPausedCount++;
-                            Log.d(TAG, "Paused: " + numberOfPauses + " times");
-                            Log.d(TAG, "Remaining pauses: " + (mOptions.getMaxPauses() - numberOfPauses) + " times");
-                            BusProvider.getInstance().post(new GameEvent(Action.PAUSE));
-                        }
+            public void controlPressed() {
+                if (mGame.is(State.INITIALIZED)) {
+                    broadcast(Action.START, null);
+                } else if (mGame.is(State.ACTIVE)) {
+                    if (mGame.canPause()) {
+                        broadcast(Action.PAUSE, null);
                     }
-                } else {
-                    BusProvider.getInstance().post(new GameEvent(Action.START));
-                    mGameHasStarted = true;
+                } else if (mGame.is(State.PAUSED)) {
+                    broadcast(Action.RESUME, null);
                 }
             }
 
@@ -224,7 +202,7 @@ public class GameScreen extends Fragment {
     private void stopGame() {
         new MaterialDialog.Builder(getActivity())
                 .title("Stop the game?")
-                .content("Are you sure you want to stop this game of " + mOptions.getTitle() + "?")
+                .content("Are you sure you want to stop this game of " + mGame.options().getTitle() + "?")
                 .positiveText("Quit!")
                 .negativeText("Keep drinking!")
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -232,7 +210,7 @@ public class GameScreen extends Fragment {
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
                         Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
-                        BusProvider.getInstance().post(new GameEvent(Action.STOP));
+                        broadcast(Action.STOP, null);
                     }
                 }).show();
 
@@ -245,31 +223,35 @@ public class GameScreen extends Fragment {
         // TODO handle back button, sharedprefs?
     }
 
+    private void broadcast(Action action, Game game) {
+        BusProvider.getInstance().post(new GameEvent(action, game));
+    }
+
     @Subscribe
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
+            case PRODUCE:
+                if (event.game != null) {
+                    mGame = event.game;
+                }
+                break;
             case UPDATE:
-                mGameHasStarted = true;
-                mRemainingRoundMillis = event.game.getMillisRemainingRound();
-
-                updateSecondsProgress(mRemainingRoundMillis);
+                mGame = event.game;
+                updatePauses();
+                updateSecondsProgress(mGame.getMillisRemainingRound());
                 break;
             case NEW_ROUND:
-                mCurrentRound = event.game.getRound();
-                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
-
-                updateRoundsProgress(mCurrentRound);
-                updateSecondsProgress(mRemainingRoundMillis);
+                mGame = event.game;
+                updateRoundsProgress(mGame.currentRound());
+                updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
                 break;
             case FINISH:
-                mCurrentRound = mOptions.getRounds();
-                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
-
-                updateSecondsProgress(DEFAULT_ROUND_MILLISECONDS);
-                updateRoundsProgress(mCurrentRound);
+                mGame = event.game;
+                updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
+                updateRoundsProgress(mGame.currentRound());
                 mRoundsText.setText("finished");
                 mCountdownText.setText("zero");
-                mControl.updateControlIcon(GameControlButtons.GameStates.HIDE);
+                mControl.hideCenter();
                 break;
         }
     }
@@ -280,7 +262,7 @@ public class GameScreen extends Fragment {
 
     private void updateSecondsProgress(long milliseconds, boolean animate) {
         float secondsLeft = milliseconds / 1000.0f;
-        float progress = (secondsLeft / (float) Engine.MINUTE_DURATION);
+        float progress = (secondsLeft / (float) Game.ROUND_DURATION_SECONDS);
 
         mCountdownText.setText(String.format("%.1f", secondsLeft));
 
@@ -296,7 +278,7 @@ public class GameScreen extends Fragment {
     }
 
     private void updateRoundsProgress(int round, boolean animate) {
-        float progress = (float) round / mOptions.getRounds();
+        float progress = (float) round / mGame.options().getRounds();
 
         mRoundsText.setText(String.valueOf(round) + ROUND_OF_MAX_TEXT);
 
@@ -308,15 +290,16 @@ public class GameScreen extends Fragment {
     }
 
     private void updatePauses() {
-        if (mOptions.getMaxPauses() == -1) {
-            mPausesText.setText("∞ pauses");
-        } else if (mOptions.getMaxPauses() == mPausedCount) {
-            mPausesText.setText("No more pausing");
+        if (mGame.getMaxPauses() == -1) {
+            mPausesText.setText(PAUSES_UNLIMITED_TEXT);
+        } else if (mGame.canPause()) {
+            mPausesText.setText(mGame.remainingPauses() + PAUSES_REMAINING_TEXT);
+            Log.d(TAG, "Paused: " + mGame.getPauses() + " times");
+            Log.d(TAG, "Remaining pauses: " + mGame.remainingPauses() + " times");
         } else {
-            int remaining = mOptions.getMaxPauses() - mPausedCount;
-            mPausesText.setText(String.valueOf(remaining) + PAUSES_REMAINING_TEXT);
+            mPausesText.setText("zero pauses");
+            mControl.hideCenter();
         }
-        mControl.setPauseCount(mPausedCount);
     }
 
     private void animateProgressWheel(HoloCircularProgressBar view, float progress) {
