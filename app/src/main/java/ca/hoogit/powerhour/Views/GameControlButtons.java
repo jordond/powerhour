@@ -121,8 +121,10 @@ public class GameControlButtons extends LinearLayout {
         if (mControl.getVisibility() == View.VISIBLE) {
             if (mIcon == STATE_PLAY_ICON) {
                 mIcon = STATE_PAUSE_ICON;
+                Log.v(TAG, "Setting icon to Pause");
             } else {
                 mIcon = STATE_PLAY_ICON;
+                Log.v(TAG, "Setting icon to Play");
             }
             mControl.setImageResource(mIcon);
         }
@@ -131,6 +133,7 @@ public class GameControlButtons extends LinearLayout {
     public void hideCenter() {
         if (mControl.getVisibility() == View.VISIBLE) {
             mControl.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "Hiding the center control button");
         }
     }
 

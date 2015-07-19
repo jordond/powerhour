@@ -39,6 +39,7 @@ public class GameScreen extends Fragment {
     private static final String TAG = GameScreen.class.getSimpleName();
     private static final String ARG_OPTIONS = "options";
 
+    private static final long PROGRESS_WHEEL_ANIMATION_SPEED = 500;
     private static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
     private static final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
@@ -47,6 +48,8 @@ public class GameScreen extends Fragment {
     private AppCompatActivity mActivity;
     private Game mGame;
     private boolean canUpdate = true;
+
+    private int mPauseCount = 0;
 
     private String ROUND_OF_MAX_TEXT;
 
@@ -145,6 +148,7 @@ public class GameScreen extends Fragment {
         } else {
             mPausesText.setText(mGame.remainingPauses() + PAUSES_REMAINING_TEXT);
         }
+        mPauseCount = mGame.getPauses();
 
         updateRoundsProgress(mGame.currentRound(), false);
         updateSecondsProgress(mGame.getMillisRemainingRound(), false);
@@ -194,6 +198,9 @@ public class GameScreen extends Fragment {
                     }
                 } else if (mGame.is(State.PAUSED)) {
                     broadcast(Action.RESUME, null);
+                    if (!mGame.canPause()) {
+                        mControl.hideCenter();
+                    }
                 }
             }
 
@@ -254,25 +261,25 @@ public class GameScreen extends Fragment {
             case UPDATE:
                 if (!canUpdate) break;
 
-                int oldPauses = mGame.getPauses();
                 mGame = event.game;
 
+                updateRoundsProgress(mGame.getMillisRemainingGame());
                 updateSecondsProgress(mGame.getMillisRemainingRound());
-                if (oldPauses != mGame.getPauses()) {
+                if (mPauseCount < mGame.getPauses()) {
                     updatePauses();
                 }
                 break;
             case NEW_ROUND:
                 if (!canUpdate) break;
-
+                // TODO HANDLE NEW ROUND
                 mGame = event.game;
-                updateRoundsProgress(mGame.currentRound());
+                updateRoundsProgress(mGame.getMillisRemainingGame());
                 updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
                 break;
             case FINISH:
                 mGame = event.game;
                 updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
-                updateRoundsProgress(mGame.currentRound());
+                updateRoundsProgress(mGame.gameMillis());
                 mRoundsText.setText("finished");
                 mCountdownText.setText("zero");
                 mControl.hideCenter();
@@ -291,28 +298,29 @@ public class GameScreen extends Fragment {
 
     private void updateSecondsProgress(long milliseconds, boolean animate) {
         float secondsLeft = milliseconds / 1000.0f;
-        float progress = (secondsLeft / (float) Game.ROUND_DURATION_SECONDS);
+        float progress = (float) milliseconds / Game.ROUND_DURATION_MILLIS;
 
         mCountdownText.setText(String.format("%.1f", secondsLeft));
 
         if (animate) {
-            animateProgressWheel(mProgressSeconds, progress);
+            animateProgressWheel(mProgressSeconds, progress, PROGRESS_WHEEL_ANIMATION_SPEED);
         } else {
             mProgressSeconds.setProgress(progress);
         }
     }
 
-    private void updateRoundsProgress(int rounds) {
-        updateRoundsProgress(rounds, true);
+    private void updateRoundsProgress(long milliseconds) {
+        updateRoundsProgress(milliseconds, true);
     }
 
-    private void updateRoundsProgress(int round, boolean animate) {
-        float progress = (float) round / mGame.options().getRounds();
+    private void updateRoundsProgress(long milliseconds, boolean animate) {
+        float elapsed = (float) mGame.gameMillis() - milliseconds;
+        float progress = elapsed / mGame.gameMillis();
 
-        mRoundsText.setText(String.valueOf(round) + ROUND_OF_MAX_TEXT);
+        mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
 
         if (animate) {
-            animateProgressWheel(mProgressRounds, progress);
+            animateProgressWheel(mProgressRounds, progress, 100);
         } else {
             mProgressRounds.setProgress(progress);
         }
@@ -323,23 +331,22 @@ public class GameScreen extends Fragment {
             mPausesText.setText(PAUSES_UNLIMITED_TEXT);
         } else if (mGame.canPause()) {
             mPausesText.setText(mGame.remainingPauses() + PAUSES_REMAINING_TEXT);
-            Log.d(TAG, "Paused: " + mGame.getPauses() + " times");
-            Log.d(TAG, "Remaining pauses: " + mGame.remainingPauses() + " times");
+            Log.d(TAG, "Pause count: " + mGame.getPauses());
+            Log.d(TAG, "Remaining  :" + mGame.remainingPauses());
         } else {
             mPausesText.setText("zero pauses");
-            if (mGame.is(State.ACTIVE)) {
-                mControl.hideCenter();
-            }
+            Log.d(TAG, "All pause breaks have been used");
         }
+        mPauseCount++;
     }
 
     /**
      * Helpers
      */
 
-    private void animateProgressWheel(HoloCircularProgressBar view, float progress) {
+    private void animateProgressWheel(HoloCircularProgressBar view, float progress, long duration) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(view, "progress", progress);
-        animation.setDuration(500); // 0.5 second
+        animation.setDuration(duration);
         animation.setInterpolator(new LinearInterpolator());
         animation.start();
     }
