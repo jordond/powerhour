@@ -44,6 +44,7 @@ public class GameScreen extends Fragment {
 
     public static final String INSTANCE_STATE_GAME = "game";
 
+    private AppCompatActivity mActivity;
     private Game mGame;
     private boolean canUpdate = true;
 
@@ -101,7 +102,7 @@ public class GameScreen extends Fragment {
         ButterKnife.bind(this, view);
 
         // Setup the toolbar
-        AppCompatActivity mActivity = (AppCompatActivity) getActivity();
+        mActivity = (AppCompatActivity) getActivity();
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_icon);
         mActivity.setSupportActionBar(mToolbar);
 
@@ -113,12 +114,19 @@ public class GameScreen extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
+        setup(); // TODO move to the @produce event method
+
+        return view;
+    }
+
+    private void setup() {
         // Change colors to those set in options;
         int mPrimaryColor = mGame.options().getBackgroundColor();
         int mAccentColor = mGame.options().getAccentColor();
 
         mToolbar.setBackgroundColor(mPrimaryColor);
         mLayout.setBackgroundColor(mPrimaryColor);
+
         BusProvider.getInstance().post(new ChangeStatusColor(mActivity, mPrimaryColor));
 
         // Setup titles and colors
@@ -152,8 +160,6 @@ public class GameScreen extends Fragment {
         }
 
         setupControlButtons();
-
-        return view;
     }
 
     @Override
@@ -172,8 +178,7 @@ public class GameScreen extends Fragment {
 
     private void setupControlButtons() {
         mControl.setColor(mGame.options().getAccentColor());
-
-        GameControl buttonPressed = new GameControl() {
+        mControl.setOnButtonPressed(new GameControl() {
             @Override
             public void soundPressed() {
                 Toast.makeText(getActivity(), "Sound button pressed", Toast.LENGTH_SHORT).show();
@@ -197,8 +202,7 @@ public class GameScreen extends Fragment {
                 canUpdate = false;
                 stopGame();
             }
-        };
-        mControl.setOnButtonPressed(buttonPressed);
+        });
     }
 
     private void stopGame() {
@@ -230,6 +234,10 @@ public class GameScreen extends Fragment {
         super.onDestroy();
         // TODO handle back button, sharedprefs?
     }
+
+    /**
+     * Otto Event methods
+     */
 
     private void broadcast(Action action, Game game) {
         BusProvider.getInstance().post(new GameEvent(action, game));
@@ -271,6 +279,11 @@ public class GameScreen extends Fragment {
                 break;
         }
     }
+
+
+    /**
+     * UI Update methods
+     */
 
     private void updateSecondsProgress(long milliseconds) {
         updateSecondsProgress(milliseconds, true);
@@ -319,6 +332,10 @@ public class GameScreen extends Fragment {
             }
         }
     }
+
+    /**
+     * Helpers
+     */
 
     private void animateProgressWheel(HoloCircularProgressBar view, float progress) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(view, "progress", progress);
