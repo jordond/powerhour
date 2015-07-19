@@ -45,6 +45,7 @@ public class GameScreen extends Fragment {
     public static final String INSTANCE_STATE_GAME = "game";
 
     private Game mGame;
+    private boolean canUpdate = true;
 
     private String ROUND_OF_MAX_TEXT;
 
@@ -193,6 +194,7 @@ public class GameScreen extends Fragment {
 
             @Override
             public void stopPressed() {
+                canUpdate = false;
                 stopGame();
             }
         };
@@ -211,6 +213,12 @@ public class GameScreen extends Fragment {
                         super.onPositive(dialog);
                         Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         broadcast(Action.STOP, null);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        canUpdate = true;
                     }
                 }).show();
 
@@ -236,11 +244,19 @@ public class GameScreen extends Fragment {
                 }
                 break;
             case UPDATE:
+                if (!canUpdate) break;
+
+                int oldPauses = mGame.getPauses();
                 mGame = event.game;
-                updatePauses();
+
                 updateSecondsProgress(mGame.getMillisRemainingRound());
+                if (oldPauses != mGame.getPauses()) {
+                    updatePauses();
+                }
                 break;
             case NEW_ROUND:
+                if (!canUpdate) break;
+
                 mGame = event.game;
                 updateRoundsProgress(mGame.currentRound());
                 updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
@@ -298,7 +314,9 @@ public class GameScreen extends Fragment {
             Log.d(TAG, "Remaining pauses: " + mGame.remainingPauses() + " times");
         } else {
             mPausesText.setText("zero pauses");
-            mControl.hideCenter();
+            if (mGame.is(State.ACTIVE)) {
+                mControl.hideCenter();
+            }
         }
     }
 
