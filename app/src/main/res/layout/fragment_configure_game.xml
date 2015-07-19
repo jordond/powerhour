@@ -14,7 +14,6 @@
         layout="@layout/app_bar" />
 
     <LinearLayout
-        android:layout_below="@id/appBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical|top"

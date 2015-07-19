@@ -16,16 +16,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appBar"
-        android:layout_gravity="center_vertical|top"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/game_screen_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|top"
+            android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif-light"
             android:paddingBottom="15dp"
             android:text="@string/configure_game_title"
@@ -62,6 +60,7 @@
                 android:layout_alignTop="@+id/game_screen_circle_progress_rounds"
                 android:fontFamily="sans-serif-thin"
                 android:gravity="center"
+                android:textAlignment="center"
                 android:text="@string/game_screen_countdown_text_default"
                 android:textColor="@color/md_white_1000"
                 android:textSize="80sp" />
@@ -87,9 +86,9 @@
                 android:layout_centerHorizontal="true"
                 app:cpb_countdown="false"
                 app:cpb_progress="0.7"
-                app:cpb_stroke_width="8dp"
                 app:cpb_progress_background_color="@color/md_white_1000"
-                app:cpb_progress_color="@color/accent" />
+                app:cpb_progress_color="@color/accent"
+                app:cpb_stroke_width="8dp" />
 
             <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
                 android:id="@+id/game_screen_circle_progress_seconds"
@@ -117,16 +116,18 @@
             android:text="@string/game_screen_remaining_pauses_placeholder"
             android:textSize="24sp" />
 
+        <ca.hoogit.powerhour.Views.GameControlButtons
+            android:id="@+id/game_screen_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            app:gcb_color="@color/accent" />
+
     </LinearLayout>
     <!--End main container-->
 
-    <ca.hoogit.powerhour.Views.GameControlButtons
-        android:id="@+id/game_screen_control"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_horizontal"
-        app:gcb_color="@color/accent" />
+
 
 </RelativeLayout>

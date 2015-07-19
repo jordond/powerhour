@@ -35,7 +35,8 @@ public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
 
-    private final int ROUND_COUNTER_MAX = 60 * 1000;
+    public static final int MINUTE_DURATION = 5; // Default 60
+    private final int ROUND_COUNTER_MAX = MINUTE_DURATION * 1000;
 
     public static State mState = State.NONE;
 
@@ -173,6 +174,7 @@ public class Engine extends Service {
                     mGame.setRound(mGame.getTotalRounds());
                     mGame.setState(State.FINISHED);
                     mBus.post(new GameEvent(Action.FINISH, mGame));
+                    Log.d(TAG, "Game has completed");
                     finish();
                 }
             };
@@ -189,6 +191,7 @@ public class Engine extends Service {
     private void finish() {
         mState = State.NONE;
         mBus.unregister(this);
+        Log.d(TAG, "Goodnight friend, it was a pleasure");
         stopSelf();
     }
 
@@ -205,7 +208,7 @@ public class Engine extends Service {
      */
 
     private long roundsToMilliseconds(int rounds) {
-        int seconds = rounds * 60;
+        int seconds = rounds * MINUTE_DURATION;
         return TimeUnit.SECONDS.toMillis(seconds);
     }
 

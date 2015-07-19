@@ -21,7 +21,7 @@ public class GameControlButtons extends LinearLayout {
     private static final String TAG = GameControlButtons.class.getSimpleName();
 
     public enum GameStates {
-        ACTIVE, PAUSED, STOPPED, NO_MORE_PAUSES
+        ACTIVE, PAUSED, STOPPED, NO_MORE_PAUSES, HIDE
     }
 
     private GameControl mListener;
@@ -73,10 +73,10 @@ public class GameControlButtons extends LinearLayout {
     public void updateControlIcon(boolean active) {
         if (active) {
             mControl.setImageResource(R.drawable.ic_av_play_arrow);
-            Log.d(TAG, "Changing icon to play");
+            Log.d(TAG, "Play arrow set");
         } else {
             mControl.setImageResource(R.drawable.ic_av_pause);
-            Log.d(TAG, "Changing icon to pause");
+            Log.d(TAG, "Pause bars set");
         }
     }
 
@@ -90,6 +90,7 @@ public class GameControlButtons extends LinearLayout {
                 updateControlIcon(false);
                 break;
             case NO_MORE_PAUSES:
+            case HIDE:
                 mControl.setVisibility(INVISIBLE);
                 mControl.setEnabled(false);
         }
@@ -107,10 +108,10 @@ public class GameControlButtons extends LinearLayout {
             public void onClick(View v) {
                 if (currentPauses < maxPauses || maxPauses == -1) {
                     if (isActive) {
+                        updateControlIcon(GameStates.PAUSED);
+                    } else {
                         updateControlIcon(GameStates.ACTIVE);
                         currentPauses++;
-                    } else {
-                        updateControlIcon(GameStates.PAUSED);
                     }
                 } else {
                     if (!isActive) {
@@ -154,9 +155,9 @@ public class GameControlButtons extends LinearLayout {
         return isActive;
     }
 
-    public void setIsAcitve(boolean isPlaying) {
-        this.isActive = isPlaying;
-        updateControlIcon(isPlaying);
+    public void setIsActive(boolean active) {
+        this.isActive = active;
+        updateControlIcon(active);
     }
 
     public int getMaxPauses() {

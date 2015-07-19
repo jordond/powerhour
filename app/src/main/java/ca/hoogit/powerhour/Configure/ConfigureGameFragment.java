@@ -245,7 +245,7 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     private void setRoundsValue(int rounds) {
-        if (rounds <= mRoundsSlider.getMax()) {
+        if (rounds <= mRoundsSlider.getMax() && rounds >= mRoundsSlider.getMin()) {
             if (rounds == mRoundsSlider.getMax()) {
                 mRoundsValue.setText("∞");
             } else if (rounds == mRoundsSlider.getMin()) {

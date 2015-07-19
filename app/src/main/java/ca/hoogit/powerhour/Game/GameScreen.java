@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -49,7 +47,7 @@ public class GameScreen extends Fragment {
 
     public static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
 
-    private final long DEFAULT_ROUND_MILLISECONDS = 60 * 1000;
+    private final long DEFAULT_ROUND_MILLISECONDS = Engine.MINUTE_DURATION * 1000;
 
     private Game mGame;
 
@@ -155,6 +153,7 @@ public class GameScreen extends Fragment {
         if (!mGameHasStarted) {
             Game game = new Game(mOptions, mOptions.isAutoStart());
             BusProvider.getInstance().post(new GameEvent(Action.INITIALIZE, game));
+            mControl.setIsActive(!mOptions.isAutoStart());
         }
 
         setupControlButtons();
@@ -250,17 +249,27 @@ public class GameScreen extends Fragment {
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
             case UPDATE:
+                mGameHasStarted = true;
                 mRemainingRoundMillis = event.game.getMillisRemainingRound();
 
                 updateSecondsProgress(mRemainingRoundMillis);
                 break;
             case NEW_ROUND:
-                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
                 mCurrentRound = event.game.getRound();
+                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
 
                 updateRoundsProgress(mCurrentRound);
+                updateSecondsProgress(mRemainingRoundMillis);
+                break;
+            case FINISH:
+                mCurrentRound = mOptions.getRounds();
+                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
+
                 updateSecondsProgress(DEFAULT_ROUND_MILLISECONDS);
-                Toast.makeText(getActivity(), "NEW ROUND DO SOMETHING FLASHY", Toast.LENGTH_SHORT).show();
+                updateRoundsProgress(mCurrentRound);
+                mRoundsText.setText("finished");
+                mCountdownText.setText("zero");
+                mControl.updateControlIcon(GameControlButtons.GameStates.HIDE);
                 break;
         }
     }
@@ -271,7 +280,7 @@ public class GameScreen extends Fragment {
 
     private void updateSecondsProgress(long milliseconds, boolean animate) {
         float secondsLeft = milliseconds / 1000.0f;
-        float progress = (secondsLeft / 60.0f);
+        float progress = (secondsLeft / (float) Engine.MINUTE_DURATION);
 
         mCountdownText.setText(String.format("%.1f", secondsLeft));
 
