@@ -36,6 +36,7 @@ public class Game implements Serializable {
     private long millisRemainingGame;
     private long millisRemainingRound;
     private boolean muted;
+    private boolean autostart;
 
     private GameOptions options;
 
@@ -52,10 +53,10 @@ public class Game implements Serializable {
         this.options = options;
     }
 
-    public Game(GameOptions options, boolean started) {
+    public Game(GameOptions options, boolean autostart) {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
-        this.started = started;
+        this.autostart = autostart;
         this.options = options;
     }
 
@@ -68,7 +69,7 @@ public class Game implements Serializable {
     }
 
     public boolean canPause() {
-        return this.pauses <= maxPauses;
+        return this.pauses <= maxPauses || maxPauses == -1;
     }
 
     public boolean is(State state) {
@@ -157,5 +158,9 @@ public class Game implements Serializable {
 
     public void setOptions(GameOptions options) {
         this.options = options;
+    }
+
+    public boolean isAutostart() {
+        return autostart;
     }
 }

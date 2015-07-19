@@ -120,8 +120,6 @@ public class GameControlButtons extends LinearLayout {
                 }
                 isActive = !isActive;
                 mListener.controlPressed(isActive, currentPauses);
-
-                Log.d(TAG, "Timer is active: " + isActive);
             }
         });
         mStop.setOnClickListener(new OnClickListener() {
@@ -158,6 +156,7 @@ public class GameControlButtons extends LinearLayout {
 
     public void setIsAcitve(boolean isPlaying) {
         this.isActive = isPlaying;
+        updateControlIcon(isPlaying);
     }
 
     public int getMaxPauses() {
@@ -167,6 +166,10 @@ public class GameControlButtons extends LinearLayout {
     public void setColor(int color) {
         this.color = color;
         mControl.setColor(color);
+    }
+
+    public void setPauseCount(int currentPauses) {
+        this.currentPauses = currentPauses;
     }
 
     public void setMaxPauses(int maxPauses) {

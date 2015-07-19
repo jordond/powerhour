@@ -87,6 +87,10 @@ public class GameOptions implements Serializable {
         this.accentColor = accent;
     }
 
+    public boolean unlimitedPauses() {
+        return this.maxPauses == -1;
+    }
+
     public void toLog() {
         Log.d(TAG, "Title : " + this.title);
         Log.d(TAG, "Type  : " + this.type.name());

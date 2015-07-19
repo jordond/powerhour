@@ -2,22 +2,27 @@
 
 package ca.hoogit.powerhour.Game;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
+import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,21 +42,32 @@ public class GameScreen extends Fragment {
     private static final String TAG = GameScreen.class.getSimpleName();
     private static final String ARG_OPTIONS = "options";
 
-    public static final String INSTANCE_STATE_GAME_STARTED = "gameStarted";
-    public static final String INSTANCE_STATE_GAME_OPTIONS = "gameOptions";
+    public static final String INSTANCE_STATE_OPTIONS = "options";
+    public static final String INSTANCE_STATE_GAME_CURRENT_ROUND = "currentRound";
+    public static final String INSTANCE_STATE_GAME_PAUSED_COUNT = "pauseCount";
+    public static final String INSTANCE_STATE_GAME_ROUND_MILLIS = "roundMillis";
 
     public static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
 
-    private GameOptions mOptions;
+    private final long DEFAULT_ROUND_MILLISECONDS = 60 * 1000;
+
     private Game mGame;
 
-    private boolean mIsGameStarted = false;
+    private boolean mGameHasStarted;
+
+    private GameOptions mOptions;
+    private int mCurrentRound = 0;
+    private int mPausedCount = 0;
+    private long mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
+
+    private String ROUND_OF_MAX_TEXT;
 
     @Bind(R.id.appBar) Toolbar mToolbar;
     @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
     @Bind(R.id.game_screen_control) GameControlButtons mControl;
 
     @Bind(R.id.game_screen_title) TextView mTitle;
+    @Bind(R.id.game_screen_countdown_text) TextView mCountdownText;
     @Bind(R.id.game_screen_remaining_pauses) TextView mPausesText;
     @Bind(R.id.game_screen_rounds_remaining) TextView mRoundsText;
 
@@ -84,6 +100,7 @@ public class GameScreen extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BusProvider.getInstance().register(this);
         if (getArguments() != null) {
             mOptions = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
         }
@@ -116,12 +133,29 @@ public class GameScreen extends Fragment {
         mLayout.setBackgroundColor(mPrimaryColor);
         BusProvider.getInstance().post(new ChangeStatusColor(mActivity, mPrimaryColor));
 
-        // Setup view items
+        // Setup titles and colors
         mTitle.setText(mOptions.getTitle());
         mProgressRounds.setProgressColor(mAccentColor);
         mProgressSeconds.setThumbColor(mAccentColor);
-        mProgressSeconds.setProgressColor(mPrimaryColor);
+        mProgressSeconds.setProgressColor(mAccentColor);
         mProgressSeconds.setProgressBackgroundColor(mPrimaryColor);
+
+        ROUND_OF_MAX_TEXT = " of " + mOptions.getRounds();
+
+        // Set the text and progress wheels
+        mRoundsText.setText(mCurrentRound + ROUND_OF_MAX_TEXT);
+        updatePauses();
+
+        updateRoundsProgress(mCurrentRound, false);
+        updateSecondsProgress(mRemainingRoundMillis, false);
+
+        // Get status of game, if it hasn't started and auto-start is enabled, go.
+        mGameHasStarted = Engine.started();
+
+        if (!mGameHasStarted) {
+            Game game = new Game(mOptions, mOptions.isAutoStart());
+            BusProvider.getInstance().post(new GameEvent(Action.INITIALIZE, game));
+        }
 
         setupControlButtons();
 
@@ -131,13 +165,26 @@ public class GameScreen extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(INSTANCE_STATE_GAME_STARTED, mIsGameStarted);
-        outState.putSerializable(INSTANCE_STATE_GAME_OPTIONS, mOptions);
+        outState.putSerializable(INSTANCE_STATE_OPTIONS, mOptions);
+        outState.putInt(INSTANCE_STATE_GAME_CURRENT_ROUND, mCurrentRound);
+        outState.putInt(INSTANCE_STATE_GAME_PAUSED_COUNT, mPausedCount);
+        outState.putLong(INSTANCE_STATE_GAME_ROUND_MILLIS, mRemainingRoundMillis);
+    }
 
-        // TODO save current round and pauses, so on rotate updatePauses/updateRounds will work correctly
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mOptions = (GameOptions) savedInstanceState.getSerializable(INSTANCE_STATE_OPTIONS);
+            mCurrentRound = savedInstanceState.getInt(INSTANCE_STATE_GAME_CURRENT_ROUND);
+            mPausedCount = savedInstanceState.getInt(INSTANCE_STATE_GAME_PAUSED_COUNT);
+            mRemainingRoundMillis = savedInstanceState.getLong(INSTANCE_STATE_GAME_ROUND_MILLIS);
+            // TODO update views
+        }
     }
 
     private void setupControlButtons() {
+        mControl.setPauseCount(mPausedCount);
         mControl.setMaxPauses(mOptions.getMaxPauses());
         mControl.setColor(mOptions.getAccentColor());
 
@@ -149,6 +196,22 @@ public class GameScreen extends Fragment {
 
             @Override
             public void controlPressed(boolean isActive, int numberOfPauses) {
+                if (mGameHasStarted) {
+                    if (isActive) {
+                        BusProvider.getInstance().post(new GameEvent(Action.RESUME));
+                    } else {
+                        if (numberOfPauses < mOptions.getMaxPauses() || mOptions.unlimitedPauses()) {
+                            updatePauses();
+                            mPausedCount++;
+                            Log.d(TAG, "Paused: " + numberOfPauses + " times");
+                            Log.d(TAG, "Remaining pauses: " + (mOptions.getMaxPauses() - numberOfPauses) + " times");
+                            BusProvider.getInstance().post(new GameEvent(Action.PAUSE));
+                        }
+                    }
+                } else {
+                    BusProvider.getInstance().post(new GameEvent(Action.START));
+                    mGameHasStarted = true;
+                }
             }
 
             @Override
@@ -169,8 +232,7 @@ public class GameScreen extends Fragment {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
-                        mIsGameStarted = false;
-                        Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         BusProvider.getInstance().post(new GameEvent(Action.STOP));
                     }
                 }).show();
@@ -179,7 +241,79 @@ public class GameScreen extends Fragment {
 
     @Override
     public void onDestroy() {
+        BusProvider.getInstance().unregister(this);
         super.onDestroy();
         // TODO handle back button, sharedprefs?
+    }
+
+    @Subscribe
+    public void onGameEvent(GameEvent event) {
+        switch (event.action) {
+            case UPDATE:
+                mRemainingRoundMillis = event.game.getMillisRemainingRound();
+
+                updateSecondsProgress(mRemainingRoundMillis);
+                break;
+            case NEW_ROUND:
+                mRemainingRoundMillis = DEFAULT_ROUND_MILLISECONDS;
+                mCurrentRound = event.game.getRound();
+
+                updateRoundsProgress(mCurrentRound);
+                updateSecondsProgress(DEFAULT_ROUND_MILLISECONDS);
+                Toast.makeText(getActivity(), "NEW ROUND DO SOMETHING FLASHY", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void updateSecondsProgress(long milliseconds) {
+        updateSecondsProgress(milliseconds, true);
+    }
+
+    private void updateSecondsProgress(long milliseconds, boolean animate) {
+        float secondsLeft = milliseconds / 1000.0f;
+        float progress = (secondsLeft / 60.0f);
+
+        mCountdownText.setText(String.format("%.1f", secondsLeft));
+
+        if (animate) {
+            animateProgressWheel(mProgressSeconds, progress);
+        } else {
+            mProgressSeconds.setProgress(progress);
+        }
+    }
+
+    private void updateRoundsProgress(int rounds) {
+        updateRoundsProgress(rounds, true);
+    }
+
+    private void updateRoundsProgress(int round, boolean animate) {
+        float progress = (float) round / mOptions.getRounds();
+
+        mRoundsText.setText(String.valueOf(round) + ROUND_OF_MAX_TEXT);
+
+        if (animate) {
+            animateProgressWheel(mProgressRounds, progress);
+        } else {
+            mProgressRounds.setProgress(progress);
+        }
+    }
+
+    private void updatePauses() {
+        if (mOptions.getMaxPauses() == -1) {
+            mPausesText.setText("∞ pauses");
+        } else if (mOptions.getMaxPauses() == mPausedCount) {
+            mPausesText.setText("No more pausing");
+        } else {
+            int remaining = mOptions.getMaxPauses() - mPausedCount;
+            mPausesText.setText(String.valueOf(remaining) + PAUSES_REMAINING_TEXT);
+        }
+        mControl.setPauseCount(mPausedCount);
+    }
+
+    private void animateProgressWheel(HoloCircularProgressBar view, float progress) {
+        ObjectAnimator animation = ObjectAnimator.ofFloat(view, "progress", progress);
+        animation.setDuration(500); // 0.5 second
+        animation.setInterpolator(new LinearInterpolator());
+        animation.start();
     }
 }

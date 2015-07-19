@@ -61,11 +61,15 @@ public class Engine extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             mGame = (Game) intent.getSerializableExtra("game");
+            mState = State.INITIALIZED;
         }
         if (mGame == null) {
             throw new NullPointerException("No game object was passed to the service.");
+        } else {
+            if (mGame.isAutostart()) {
+                start();
+            }
         }
-        mState = State.INITIALIZED;
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -75,7 +79,7 @@ public class Engine extends Service {
     }
 
     @Subscribe
-    private void onGameEvent(GameEvent event) {
+    public void onGameEvent(GameEvent event) {
         switch (event.action) {
             case START:
                 start();
@@ -84,7 +88,8 @@ public class Engine extends Service {
                 pause();
                 break;
             case RESUME:
-                resume(event.game.getMillisRemainingGame());
+                resume(mGame.getMillisRemainingGame());
+                break;
             case STOP:
                 stop();
                 break;
@@ -92,11 +97,15 @@ public class Engine extends Service {
     }
 
     private void start() {
-        long milliseconds = roundsToMilliseconds(mGame.getTotalRounds());
-        Log.i(TAG, "Starting the game with " + mGame.getTotalRounds() + " rounds");
-        createTimer(milliseconds).start();
-        mGame.setStarted(true);
-        mGame.setState(State.ACTIVE);
+        if (!mGame.hasStarted()) {
+            long milliseconds = roundsToMilliseconds(mGame.getTotalRounds());
+            Log.i(TAG, "Starting the game with " + mGame.getTotalRounds() + " rounds");
+            createTimer(milliseconds);
+            mGame.setStarted(true);
+            mGame.setState(State.ACTIVE);
+        } else {
+            Log.e(TAG, "Game already started, cannot start another.");
+        }
     }
 
     private void pause() {
@@ -114,9 +123,12 @@ public class Engine extends Service {
     }
 
     private void resume(long milliseconds) {
+        if (mGame.is(State.ACTIVE)) {
+            mTimer.cancel();
+        }
         Log.i(TAG, "Resuming game on round " + mGame.getRound());
         logTimeLeft();
-        createTimer(milliseconds).start();
+        createTimer(milliseconds);
         mGame.setState(State.ACTIVE);
     }
 
@@ -130,36 +142,42 @@ public class Engine extends Service {
         finish();
     }
 
-    private CountDownTimer createTimer(long milliseconds) {
-        mTimer = new CountDownTimer(milliseconds, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                Action action;
-                mRoundCounter += 100;
-                if (mRoundCounter == ROUND_COUNTER_MAX) {
-                    action = Action.NEW_ROUND;
-                    mGame.incrementRound();
-                    mRoundCounter = 0;
-                } else {
-                    action = Action.UPDATE;
+    private void createTimer(long milliseconds) {
+        if (!mGame.is(State.ACTIVE)) {
+            mTimer = new CountDownTimer(milliseconds, 100) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Action action;
+                    Game game;
+                    mRoundCounter += 100;
+                    if (mRoundCounter == ROUND_COUNTER_MAX) {
+                        action = Action.NEW_ROUND;
+                        mGame.incrementRound();
+                        mRoundCounter = 0;
+                        Log.d(TAG, "A Round has been completed");
+                    } else {
+                        action = Action.UPDATE;
+                    }
+                    updateGameMilliseconds(millisUntilFinished);
+                    game = mGame;
+                    game.setOptions(null);
+                    mBus.post(new GameEvent(action, game));
+                    mGame.setState(State.ACTIVE);
+                    // TODO Pause the timer to allow for animations, maybe do so in fragment
                 }
-                updateGameMilliseconds(millisUntilFinished);
-                mBus.post(new GameEvent(action, mGame));
-                mGame.setState(State.ACTIVE);
-                // TODO Pause the timer to allow for animations, maybe do so in fragment
-            }
 
-            @Override
-            public void onFinish() {
-                mGame.setMillisRemainingGame(0);
-                mGame.setMillisRemainingRound(0);
-                mGame.setRound(mGame.getTotalRounds());
-                mGame.setState(State.FINISHED);
-                mBus.post(new GameEvent(Action.FINISH, mGame));
-                finish();
-            }
-        };
-        return mTimer;
+                @Override
+                public void onFinish() {
+                    mGame.setMillisRemainingGame(0);
+                    mGame.setMillisRemainingRound(0);
+                    mGame.setRound(mGame.getTotalRounds());
+                    mGame.setState(State.FINISHED);
+                    mBus.post(new GameEvent(Action.FINISH, mGame));
+                    finish();
+                }
+            };
+            mTimer.start();
+        }
     }
 
     private void updateGameMilliseconds(long millis) {
