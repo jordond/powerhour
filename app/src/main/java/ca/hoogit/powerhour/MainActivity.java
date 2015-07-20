@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGameScreen(options);
+                            launchGame(options);
                         }
                         mChosen = true;
                     } else {
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Subscribe
     public void onStartGame(GameOptions options) {
-        launchGameScreen(options, true);
+        launchGame(options);
     }
 
     /**
@@ -220,14 +220,19 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    private void launchGame(GameOptions options) {
+        if (!Engine.initialized) {
+            Intent gameEngine = new Intent(this, Engine.class);
+            gameEngine.putExtra("game", new Game(options));
+            startService(gameEngine);
+            Log.d(TAG, "Starting new game");
+        }
+        launchGameScreen(options);
+    }
+
     @Subscribe
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
-            case INITIALIZE:
-                Intent gameEngine = new Intent(this, Engine.class);
-                gameEngine.putExtra("game", event.game);
-                startService(gameEngine);
-                break;
             case STOP:
                 Fragment fragment = mFragmentManager.findFragmentByTag("gameScreen");
                 mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();

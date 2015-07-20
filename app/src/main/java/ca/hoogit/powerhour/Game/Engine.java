@@ -37,6 +37,7 @@ public class Engine extends Service {
     private static final String TAG = Engine.class.getSimpleName();
 
     public static State mState = State.NONE;
+    public static boolean initialized = false;
 
     private Bus mBus;
     private static Game mGame;
@@ -60,6 +61,7 @@ public class Engine extends Service {
             mGame = (Game) intent.getSerializableExtra("game");
             mGame.setState(State.INITIALIZED);
             mState = State.INITIALIZED;
+            initialized = true;
             broadcast(Action.UPDATE);
         }
         if (mGame == null) {
@@ -199,8 +201,10 @@ public class Engine extends Service {
 
     private void finish() {
         mState = State.NONE;
-        mBus.unregister(this);
+        mGame = null;
+        initialized = false;
         Log.d(TAG, "Goodnight friend, it was a pleasure");
+        mBus.unregister(this);
         stopSelf();
     }
 

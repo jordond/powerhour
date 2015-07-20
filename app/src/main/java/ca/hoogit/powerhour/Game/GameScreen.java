@@ -43,8 +43,6 @@ public class GameScreen extends Fragment {
     private static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
     private static final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
-    public static final String INSTANCE_STATE_GAME = "game";
-
     private AppCompatActivity mActivity;
     private Game mGame;
     private boolean canUpdate = true;
@@ -89,16 +87,6 @@ public class GameScreen extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        BusProvider.getInstance().register(this); // TODO move to handle the produce? get rid of instance state
-        if (getArguments() != null) {
-            GameOptions options = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
-            mGame = new Game(options);
-        }
-    }
-
-    @Override
     @SuppressWarnings("ConstantConditions")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game_screen, container, false);
@@ -117,7 +105,7 @@ public class GameScreen extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
-        setup(); // TODO move to the @produce event method
+        BusProvider.getInstance().register(this);
 
         return view;
     }
@@ -154,30 +142,11 @@ public class GameScreen extends Fragment {
         updateSecondsProgress(mGame.getMillisRemainingRound(), false);
 
         // Get status of game, if it hasn't started then initialize
-        mGame.setStarted(Engine.started());
-
-        if (!mGame.hasStarted()) {
-            broadcast(Action.INITIALIZE, mGame);
-            if (mGame.options().isAutoStart()) {
-                mControl.toggleCenterButton();
-            }
+        if (mGame.is(State.ACTIVE)) {
+            mControl.toggleCenterButton();
         }
 
         setupControlButtons();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(INSTANCE_STATE_GAME, mGame);
-    }
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            mGame = (Game) savedInstanceState.getSerializable(INSTANCE_STATE_GAME);
-        }
     }
 
     private void setupControlButtons() {
@@ -224,6 +193,7 @@ public class GameScreen extends Fragment {
                         super.onPositive(dialog);
                         Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         broadcast(Action.STOP, null);
+                        BusProvider.getInstance().unregister(this);
                     }
 
                     @Override
@@ -239,7 +209,6 @@ public class GameScreen extends Fragment {
     public void onDestroy() {
         BusProvider.getInstance().unregister(this);
         super.onDestroy();
-        // TODO handle back button, sharedprefs?
     }
 
     /**
@@ -254,15 +223,20 @@ public class GameScreen extends Fragment {
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
             case PRODUCE:
-                if (event.game != null) {
+                if (event.game == null) {
+                    if (getArguments() != null) {
+                        GameOptions options = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
+                        mGame = new Game(options);
+                    }
+                } else {
                     mGame = event.game;
                 }
+                setup();
                 break;
             case UPDATE:
                 if (!canUpdate) break;
 
                 mGame = event.game;
-
                 updateRoundsProgress(mGame.getMillisRemainingGame());
                 updateSecondsProgress(mGame.getMillisRemainingRound());
                 if (mPauseCount < mGame.getPauses()) {
@@ -315,6 +289,7 @@ public class GameScreen extends Fragment {
 
     private void updateRoundsProgress(long milliseconds, boolean animate) {
         float elapsed = (float) mGame.gameMillis() - milliseconds;
+        elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
         float progress = elapsed / mGame.gameMillis();
 
         mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
