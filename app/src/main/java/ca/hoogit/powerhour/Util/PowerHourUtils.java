@@ -42,5 +42,4 @@ public class PowerHourUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-
 }
