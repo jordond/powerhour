@@ -105,6 +105,9 @@ public class GameScreen extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
+        mRoundsUpdater = new ProgressUpdater(mProgressRounds);
+        mSecondsUpdater = new ProgressUpdater(mProgressSeconds);
+
         BusProvider.getInstance().register(this);
 
         return view;
@@ -137,10 +140,7 @@ public class GameScreen extends Fragment {
         }
         mPauseCount = mGame.getPauses();
 
-        mRoundsUpdater = new ProgressUpdater(mProgressRounds);
         mRoundsUpdater.update(calculateRounds(mGame.getMillisRemainingGame()), false);
-
-        mSecondsUpdater = new ProgressUpdater(mProgressSeconds);
         mSecondsUpdater.update(calculateSeconds(mGame.getMillisRemainingRound()), false);
 
         // Get status of game, if it hasn't started then initialize
