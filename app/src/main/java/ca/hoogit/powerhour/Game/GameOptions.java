@@ -78,7 +78,7 @@ public class GameOptions implements Serializable {
                 return new GameOptions("Spartan", Type.SPARTAN, 300, 3);
             case CUSTOM:
             default:
-                return new GameOptions("Custom", Type.CUSTOM, 60, 5);
+                return new GameOptions("Custom Game", Type.CUSTOM, 60, 5);
         }
     }
 

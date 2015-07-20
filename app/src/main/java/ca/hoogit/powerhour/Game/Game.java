@@ -18,6 +18,7 @@
 package ca.hoogit.powerhour.Game;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author jordon
@@ -80,6 +81,18 @@ public class Game implements Serializable {
 
     public long gameMillis() {
         return this.totalRounds * ROUND_DURATION_MILLIS;
+    }
+
+    public long gameMillisToMinutes() {
+        return TimeUnit.MILLISECONDS.toMinutes(this.millisRemainingGame);
+    }
+
+    public String minutesRemaining() {
+        long remaining = TimeUnit.MILLISECONDS.toMinutes(this.millisRemainingGame);
+        if (remaining == 0) {
+            return "Less than a minute remaining...";
+        }
+        return remaining + " minutes remaining.";
     }
 
     /**

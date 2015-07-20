@@ -9,8 +9,17 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.squareup.otto.Subscribe;
+
 import at.markushi.ui.CircleButton;
+import ca.hoogit.powerhour.BusProvider;
+import ca.hoogit.powerhour.Game.Action;
+import ca.hoogit.powerhour.Game.GameEvent;
+import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
+
+import static ca.hoogit.powerhour.Game.Action.*;
+import static ca.hoogit.powerhour.Game.Action.RESUME;
 
 /**
  * Created by jordon on 16/07/15.
@@ -80,7 +89,6 @@ public class GameControlButtons extends LinearLayout {
         mControl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleCenterButton();
                 mListener.controlPressed();
             }
         });
@@ -115,6 +123,15 @@ public class GameControlButtons extends LinearLayout {
     public void setColor(int color) {
         this.color = color;
         mControl.setColor(color);
+    }
+
+    public void setIcon(boolean toPlay) {
+        if (toPlay) {
+            mIcon = STATE_PLAY_ICON;
+        } else {
+            mIcon = STATE_PAUSE_ICON;
+        }
+        mControl.setImageResource(mIcon);
     }
 
     public void toggleCenterButton() {

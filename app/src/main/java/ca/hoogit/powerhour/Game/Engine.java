@@ -18,10 +18,17 @@
 
 package ca.hoogit.powerhour.Game;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
@@ -31,10 +38,18 @@ import com.squareup.otto.Subscribe;
 import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.BusProvider;
+import ca.hoogit.powerhour.MainActivity;
+import ca.hoogit.powerhour.R;
 
 public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
+
+    public static final String ACTION_MAIN = "ca.hoogit.powerhour.game.engine.main";
+    public static final String ACTION_INITIALIZE_GAME = "ca.hoogit.powerhour.game.engine.init";
+    public static final String ACTION_PAUSE_GAME = "ca.hoogit.powerhour.game.engine.pause";
+    public static final String ACTION_RESUME_GAME = "ca.hoogit.powerhour.game.engine.resume";
+    public static final int FOREGROUND_NOTIFICATION_ID = 5673;
 
     public static State mState = State.NONE;
     public static boolean initialized = false;
@@ -58,19 +73,92 @@ public class Engine extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            mGame = (Game) intent.getSerializableExtra("game");
-            mGame.setState(State.INITIALIZED);
-            mState = State.INITIALIZED;
-            initialized = true;
-        }
-        if (mGame == null) {
-            stopSelf();
-        } else {
-            if (mGame.isAutoStart()) {
-                start();
-            }
+            handleIntent(intent);
         }
         return START_NOT_STICKY;
+    }
+
+    private void handleIntent(Intent intent) {
+        switch (intent.getAction()) {
+            case ACTION_INITIALIZE_GAME:
+                mGame = (Game) intent.getSerializableExtra("game");
+                if (mGame != null) {
+                    mGame.setState(State.INITIALIZED);
+                    mState = State.INITIALIZED;
+                    initialized = true;
+                    if (mGame.isAutoStart()) {
+                        start();
+                    }
+                    Log.i(TAG, "Game has been initialized");
+                } else {
+                    stopSelf();
+                    Log.e(TAG, "No game was passed to engine");
+                }
+                break;
+            case ACTION_PAUSE_GAME:
+                Log.d(TAG, "Pause intent has been received");
+                pause();
+                break;
+            case ACTION_RESUME_GAME:
+                Log.d(TAG, "Resume intent has been received");
+                resume();
+                break;
+        }
+    }
+
+    private Notification buildNotification() {
+        // Intent for the notification
+        Intent intentMain = new Intent(this, MainActivity.class);
+        intentMain.setAction(ACTION_MAIN);
+        intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingMain = PendingIntent.getActivity(this, 0, intentMain, 0);
+
+        // Pending intent action to pause the game
+        Intent intentPause = new Intent(this, Engine.class);
+        intentPause.setAction(ACTION_PAUSE_GAME);
+        PendingIntent pendingPause = PendingIntent.getService(this, 0, intentPause, 0);
+
+        // Pending intent action to pause the game
+        Intent intentResume = new Intent(this, Engine.class);
+        intentResume.setAction(ACTION_RESUME_GAME);
+        PendingIntent pendingResume = PendingIntent.getService(this, 0, intentResume, 0);
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+
+        String contentText = mGame.minutesRemaining();
+        NotificationCompat.Action action = new NotificationCompat.Action(
+                R.drawable.ic_stat_av_pause, "Pause", pendingPause);
+        if (mGame.is(State.ACTIVE)) {
+            contentText = "Active with " + contentText;
+        } else if (mGame.is(State.PAUSED)) {
+            contentText = "Paused with " + contentText;
+            action = new NotificationCompat.Action(R.drawable.ic_stat_av_play_arrow,
+                    "Resume", pendingResume);
+        }
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentTitle(mGame.options().getTitle() + " - Round " + mGame.currentRound())
+                .setTicker(mGame.options().getTitle() + " - Round " + mGame.currentRound())
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.ic_stat_shot_glass_empty)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingMain)
+                .setOngoing(true)
+                .addAction(action).build();
+
+        if (mGame.is(State.ACTIVE) && !mGame.canPause()) {
+            notification.actions[0] = new Notification.Action(
+                    R.drawable.ic_stat_action_flip_to_front, "Open", pendingMain);
+        }
+        return notification;
+    }
+
+    private void updateNotification() {
+        Notification notification = buildNotification();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -92,7 +180,7 @@ public class Engine extends Service {
                 pause();
                 break;
             case RESUME:
-                resume(mGame.getMillisRemainingGame());
+                resume();
                 break;
             case STOP:
                 stop();
@@ -113,12 +201,13 @@ public class Engine extends Service {
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
             broadcast(Action.UPDATE);
+            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
         } else {
             Log.e(TAG, "Game already started, cannot start another.");
         }
     }
 
-    private void pause() {
+    private boolean pause() {
         if (mGame.is(State.ACTIVE)) {
             if (mGame.canPause()) {
                 Log.i(TAG, "Pausing game on round " + mGame.currentRound());
@@ -128,22 +217,30 @@ public class Engine extends Service {
                 mGame.incrementPauses();
                 mGame.setState(State.PAUSED);
                 broadcast(Action.UPDATE);
+                updateNotification();
+                return true;
             } else {
                 Log.i(TAG, "No pauses remaining");
             }
+        } else {
+            Log.e(TAG, "Trying to pause a game that is not active");
         }
+        return false;
     }
 
-    private void resume(long milliseconds) {
+    private boolean resume() {
         if (mGame.is(State.PAUSED)) {
             Log.i(TAG, "Resuming game on round " + mGame.currentRound());
             logTimeLeft();
-            createTimer(milliseconds);
+            createTimer(mGame.getMillisRemainingGame());
             mGame.setState(State.ACTIVE);
             broadcast(Action.UPDATE);
+            updateNotification();
+            return true;
         } else {
             Log.e(TAG, "Trying to resume an active game");
         }
+        return false;
     }
 
     private void stop() {
@@ -167,7 +264,8 @@ public class Engine extends Service {
                         action = Action.NEW_ROUND;
                         mGame.incrementRound();
                         mRoundCounter = 0;
-                        Log.d(TAG, "Starting round: " + mGame.currentRound());
+                        updateNotification();
+                        Log.d(TAG, "Starting round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
                     } else {
                         action = Action.UPDATE;
                     }
@@ -202,7 +300,9 @@ public class Engine extends Service {
         mState = State.NONE;
         mGame = null;
         initialized = false;
+        Log.i(TAG, "Cleaning up the engine");
         Log.d(TAG, "Goodnight friend, it was a pleasure");
+        stopForeground(true);
         stopSelf();
     }
 
@@ -227,10 +327,6 @@ public class Engine extends Service {
     private long roundsToMilliseconds(int rounds) {
         int seconds = rounds * Game.ROUND_DURATION_SECONDS;
         return TimeUnit.SECONDS.toMillis(seconds);
-    }
-
-    private long millisecondsToMinutes(long milliseconds) {
-        return TimeUnit.MILLISECONDS.toMinutes(milliseconds);
     }
 
     private void logTimeLeft() {

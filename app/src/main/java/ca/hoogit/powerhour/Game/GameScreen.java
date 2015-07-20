@@ -38,7 +38,7 @@ public class GameScreen extends Fragment {
 
     private static final String ARG_DETAILS = "details";
 
-    private final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
+    private final String PAUSES_REMAINING_TEXT = " pauses remaining";
     private final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
     private AppCompatActivity mActivity;
@@ -183,6 +183,10 @@ public class GameScreen extends Fragment {
                 stopGame();
             }
         });
+        if (!mGame.canPause() && mGame.is(State.ACTIVE)) {
+            updatePauses();
+            mControl.hideCenter();
+        }
     }
 
     private void stopGame() {
@@ -229,6 +233,7 @@ public class GameScreen extends Fragment {
             case PRODUCE:
                 if (event.game != null) {
                     mGame = event.game;
+                    Log.i(TAG, "Received game information from engine");
                 } else {
                     Log.i(TAG, "Produced a null game, using stale data");
                     if (getArguments() != null) {
@@ -245,10 +250,14 @@ public class GameScreen extends Fragment {
                 if (!canUpdate) break;
 
                 mGame = event.game;
+                mControl.setIcon(mGame.is(State.PAUSED));
                 mRoundsUpdater.update(calculateRounds(mGame.getMillisRemainingGame()));
                 mSecondsUpdater.update(calculateSeconds(mGame.getMillisRemainingRound()));
+
+                // Don't run this unneeded method 10 times a second.
                 if (mPauseCount < mGame.getPauses()) {
                     updatePauses();
+                    mPauseCount++;
                 }
                 break;
             case NEW_ROUND:
@@ -260,8 +269,8 @@ public class GameScreen extends Fragment {
                 break;
             case FINISH:
                 mGame = event.game;
-                mRoundsUpdater.update(calculateRounds(Game.ROUND_DURATION_MILLIS), 1000);
-                mSecondsUpdater.update(calculateSeconds(mGame.gameMillis()), 1000);
+                mRoundsUpdater.update(calculateRounds(Game.ROUND_DURATION_MILLIS), 500);
+                mSecondsUpdater.update(calculateSeconds(mGame.gameMillis()), 500);
                 mRoundsText.setText("finished");
                 mCountdownText.setText("zero");
                 mControl.hideCenter();
@@ -280,7 +289,6 @@ public class GameScreen extends Fragment {
             mPausesText.setText("zero pauses");
             Log.d(TAG, "All pause breaks have been used");
         }
-        mPauseCount++;
     }
 
     private float calculateSeconds(long milliseconds) {

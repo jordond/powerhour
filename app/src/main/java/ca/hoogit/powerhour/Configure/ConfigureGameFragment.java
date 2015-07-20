@@ -81,8 +81,11 @@ public class ConfigureGameFragment extends Fragment {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             mOptions = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
-            mPrimaryColor = mOptions.getBackgroundColor();
-            mAccentColor = mOptions.getAccentColor();
+
+            if (mOptions != null) {
+                mPrimaryColor = mOptions.getBackgroundColor();
+                mAccentColor = mOptions.getAccentColor();
+            }
         }
     }
 

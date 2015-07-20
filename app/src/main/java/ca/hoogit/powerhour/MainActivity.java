@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Engine.started()) {
             launchGameScreen(Engine.details(), false);
+            Log.i(TAG, "Game already exists, resuming game");
         }
         setupListeners();
     }
@@ -218,9 +219,10 @@ public class MainActivity extends AppCompatActivity {
     private void launchGame(GameOptions options, boolean animate) {
         Game game = new Game(options);
         if (!Engine.initialized) {
-            Intent gameEngine = new Intent(this, Engine.class);
-            gameEngine.putExtra("game", game);
-            startService(gameEngine);
+            Intent initEngine = new Intent(this, Engine.class);
+            initEngine.setAction(Engine.ACTION_INITIALIZE_GAME);
+            initEngine.putExtra("game", game);
+            startService(initEngine);
             Log.d(TAG, "Starting new game");
         }
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
@@ -235,7 +237,9 @@ public class MainActivity extends AppCompatActivity {
                 mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 reset();
                 break;
-            // TODO handle other events
+            case FINISH:
+                // Show the game over screen
+                break;
         }
     }
 
