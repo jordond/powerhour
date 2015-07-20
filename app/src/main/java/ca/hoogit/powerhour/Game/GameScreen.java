@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
+import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
 
@@ -37,9 +38,8 @@ import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
 public class GameScreen extends Fragment {
 
     private static final String TAG = GameScreen.class.getSimpleName();
-    private static final String ARG_OPTIONS = "options";
 
-    private static final long PROGRESS_WHEEL_ANIMATION_SPEED = 500;
+    private static final long PROGRESS_WHEEL_ANIMATION_SPEED = 300;
     private static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
     private static final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
@@ -64,15 +64,10 @@ public class GameScreen extends Fragment {
     @Bind(R.id.game_screen_circle_progress_rounds) HoloCircularProgressBar mProgressRounds;
 
     /**
-     * @param options Parameter 1.
      * @return A new instance of fragment GameScreen.
      */
-    public static GameScreen newInstance(GameOptions options) {
-        GameScreen fragment = new GameScreen();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_OPTIONS, options);
-        fragment.setArguments(args);
-        return fragment;
+    public static GameScreen newInstance() {
+        return new GameScreen();
     }
 
     public GameScreen() {
@@ -224,15 +219,10 @@ public class GameScreen extends Fragment {
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
             case PRODUCE:
-                if (event.game == null) {
-                    if (getArguments() != null) {
-                        GameOptions options = (GameOptions) getArguments().getSerializable(ARG_OPTIONS);
-                        mGame = new Game(options);
-                    }
-                } else {
+                if (event.game != null) {
                     mGame = event.game;
+                    setup();
                 }
-                setup();
                 break;
             case UPDATE:
                 if (!canUpdate) break;
@@ -253,52 +243,12 @@ public class GameScreen extends Fragment {
                 break;
             case FINISH:
                 mGame = event.game;
-                updateSecondsProgress(Game.ROUND_DURATION_MILLIS);
-                updateRoundsProgress(mGame.gameMillis());
+                updateSecondsProgress(Game.ROUND_DURATION_MILLIS, 1000);
+                updateRoundsProgress(mGame.gameMillis(), 1000);
                 mRoundsText.setText("finished");
                 mCountdownText.setText("zero");
                 mControl.hideCenter();
                 break;
-        }
-    }
-
-
-    /**
-     * UI Update methods
-     */
-
-    private void updateSecondsProgress(long milliseconds) {
-        updateSecondsProgress(milliseconds, true);
-    }
-
-    private void updateSecondsProgress(long milliseconds, boolean animate) {
-        float secondsLeft = milliseconds / 1000.0f;
-        float progress = (float) milliseconds / Game.ROUND_DURATION_MILLIS;
-
-        mCountdownText.setText(String.format("%.1f", secondsLeft));
-
-        if (animate) {
-            animateProgressWheel(mProgressSeconds, progress, PROGRESS_WHEEL_ANIMATION_SPEED);
-        } else {
-            mProgressSeconds.setProgress(progress);
-        }
-    }
-
-    private void updateRoundsProgress(long milliseconds) {
-        updateRoundsProgress(milliseconds, true);
-    }
-
-    private void updateRoundsProgress(long milliseconds, boolean animate) {
-        float elapsed = (float) mGame.gameMillis() - milliseconds;
-        elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
-        float progress = elapsed / mGame.gameMillis();
-
-        mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
-
-        if (animate) {
-            animateProgressWheel(mProgressRounds, progress, 100);
-        } else {
-            mProgressRounds.setProgress(progress);
         }
     }
 
@@ -316,14 +266,58 @@ public class GameScreen extends Fragment {
         mPauseCount++;
     }
 
+    //TODO move these out?
+
+    /**
+     * Seconds Progress Wheel methods
+     */
+    private void updateSecondsProgress(long milliseconds) {
+        updateSecondsProgress(milliseconds, true, PROGRESS_WHEEL_ANIMATION_SPEED);
+    }
+
+    private void updateSecondsProgress(long milliseconds, boolean animate) {
+        updateSecondsProgress(milliseconds, animate, PROGRESS_WHEEL_ANIMATION_SPEED);
+    }
+
+    private void updateSecondsProgress(long milliseconds, long duration) {
+        updateSecondsProgress(milliseconds, true, duration);
+    }
+
+    private void updateSecondsProgress(long milliseconds, boolean animate, long duration) {
+        float secondsLeft = milliseconds / 1000.0f;
+        float progress = (float) milliseconds / Game.ROUND_DURATION_MILLIS;
+
+        mProgressSeconds.updateProgress(animate, progress, duration);
+        mCountdownText.setText(String.format("%.1f", secondsLeft));
+    }
+
+    /**
+     * Rounds Progress Wheel methods
+     */
+    private void updateRoundsProgress(long milliseconds) {
+        updateRoundsProgress(milliseconds, true, PROGRESS_WHEEL_ANIMATION_SPEED);
+    }
+
+    private void updateRoundsProgress(long milliseconds, boolean animate) {
+        updateRoundsProgress(milliseconds, animate, PROGRESS_WHEEL_ANIMATION_SPEED);
+    }
+
+    private void updateRoundsProgress(long milliseconds, long duration) {
+        updateRoundsProgress(milliseconds, true, duration);
+    }
+
+    private void updateRoundsProgress(long milliseconds, boolean animate, long duration) {
+        float elapsed = (float) mGame.gameMillis() - milliseconds;
+        elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
+        float progress = elapsed / mGame.gameMillis();
+
+        mProgressRounds.updateProgress(animate, progress, duration);
+        mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
+    }
+
     /**
      * Helpers
      */
 
-    private void animateProgressWheel(HoloCircularProgressBar view, float progress, long duration) {
-        ObjectAnimator animation = ObjectAnimator.ofFloat(view, "progress", progress);
-        animation.setDuration(duration);
-        animation.setInterpolator(new LinearInterpolator());
-        animation.start();
-    }
+
 }

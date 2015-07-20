@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (Engine.started()) {
-            launchGameScreen(Engine.options(), false);
+            launchGameScreen(false);
         }
         setupListeners();
     }
@@ -199,24 +199,20 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Overloaded function, defaults to always animating the transition
-     *
-     * @param options options for the game
      */
-    private void launchGameScreen(GameOptions options) {
-        launchGameScreen(options, true);
+    private void launchGameScreen() {
+        launchGameScreen(true);
     }
 
     /**
      * Launch the game given the options
      *
-     * @param options options for the game
      * @param animate whether or not to animate the transition
      */
-    private void launchGameScreen(GameOptions options, boolean animate) {
-        Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
+    private void launchGameScreen(boolean animate) {
         Fragment gameScreen = mFragmentManager.findFragmentByTag("gameScreen");
         if (gameScreen == null) {
-            gameScreen = GameScreen.newInstance(options);
+            gameScreen = GameScreen.newInstance();
         }
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
@@ -233,7 +229,8 @@ public class MainActivity extends AppCompatActivity {
             startService(gameEngine);
             Log.d(TAG, "Starting new game");
         }
-        launchGameScreen(options);
+        Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
+        launchGameScreen();
     }
 
     @Subscribe

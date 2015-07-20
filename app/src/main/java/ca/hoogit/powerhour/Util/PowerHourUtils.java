@@ -17,7 +17,11 @@
  */
 package ca.hoogit.powerhour.Util;
 
+import android.animation.ObjectAnimator;
 import android.os.Build;
+import android.view.animation.LinearInterpolator;
+
+import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import java.util.Random;
 
@@ -37,4 +41,6 @@ public class PowerHourUtils {
     public static boolean isLollopopUp() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
+
+
 }
