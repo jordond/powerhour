@@ -1,6 +1,5 @@
 package ca.hoogit.powerhour.Game;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
@@ -26,7 +23,6 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
-import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.ProgressUpdater;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;

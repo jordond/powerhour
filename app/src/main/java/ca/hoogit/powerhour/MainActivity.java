@@ -1,10 +1,10 @@
 package ca.hoogit.powerhour;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.squareup.otto.Subscribe;
 
-import io.fabric.sdk.android.Fabric;
 import java.util.List;
 
 import butterknife.Bind;
@@ -29,6 +28,7 @@ import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.Game.GameScreen;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
+import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends AppCompatActivity {

@@ -21,7 +21,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ca.hoogit.powerhour.BusProvider;
-import ca.hoogit.powerhour.CloseFragmentEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
 import ca.hoogit.powerhour.MainActivity;
 import ca.hoogit.powerhour.R;
