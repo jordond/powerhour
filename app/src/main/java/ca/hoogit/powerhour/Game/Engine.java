@@ -62,16 +62,15 @@ public class Engine extends Service {
             mGame.setState(State.INITIALIZED);
             mState = State.INITIALIZED;
             initialized = true;
-            broadcast(Action.UPDATE);
         }
         if (mGame == null) {
-            throw new NullPointerException("No game object was passed to the service.");
+            stopSelf();
         } else {
             if (mGame.isAutoStart()) {
                 start();
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -168,7 +167,7 @@ public class Engine extends Service {
                         action = Action.NEW_ROUND;
                         mGame.incrementRound();
                         mRoundCounter = 0;
-                        Log.d(TAG, "A Round has been completed");
+                        Log.d(TAG, "Starting round: " + mGame.currentRound());
                     } else {
                         action = Action.UPDATE;
                     }
@@ -204,16 +203,21 @@ public class Engine extends Service {
         mGame = null;
         initialized = false;
         Log.d(TAG, "Goodnight friend, it was a pleasure");
-        mBus.unregister(this);
         stopSelf();
+    }
+
+    @Override
+    public void onDestroy() {
+        mBus.unregister(this);
+        super.onDestroy();
     }
 
     public static boolean started() {
         return mState != State.NONE;
     }
 
-    public static GameOptions options() {
-        return mGame.options();
+    public static Game details() {
+        return mGame;
     }
 
     /**

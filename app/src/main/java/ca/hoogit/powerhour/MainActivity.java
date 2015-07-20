@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (Engine.started()) {
-            launchGameScreen(false);
+            launchGameScreen(Engine.details(), false);
         }
         setupListeners();
     }
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
-                            launchGame(options);
+                            launchGame(options, true);
                         }
                         mChosen = true;
                     } else {
@@ -194,14 +194,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Subscribe
     public void onStartGame(GameOptions options) {
-        launchGame(options);
-    }
-
-    /**
-     * Overloaded function, defaults to always animating the transition
-     */
-    private void launchGameScreen() {
-        launchGameScreen(true);
+        launchGame(options, true);
     }
 
     /**
@@ -209,10 +202,10 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param animate whether or not to animate the transition
      */
-    private void launchGameScreen(boolean animate) {
+    private void launchGameScreen(Game game, boolean animate) {
         Fragment gameScreen = mFragmentManager.findFragmentByTag("gameScreen");
         if (gameScreen == null) {
-            gameScreen = GameScreen.newInstance();
+            gameScreen = GameScreen.newInstance(game);
         }
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
@@ -222,15 +215,16 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private void launchGame(GameOptions options) {
+    private void launchGame(GameOptions options, boolean animate) {
+        Game game = new Game(options);
         if (!Engine.initialized) {
             Intent gameEngine = new Intent(this, Engine.class);
-            gameEngine.putExtra("game", new Game(options));
+            gameEngine.putExtra("game", game);
             startService(gameEngine);
             Log.d(TAG, "Starting new game");
         }
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
-        launchGameScreen();
+        launchGameScreen(game, animate);
     }
 
     @Subscribe

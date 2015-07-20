@@ -36,8 +36,10 @@ public class GameScreen extends Fragment {
 
     private static final String TAG = GameScreen.class.getSimpleName();
 
-    private static final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
-    private static final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
+    private static final String ARG_DETAILS = "details";
+
+    private final String PAUSES_REMAINING_TEXT = " Pauses Remaining";
+    private final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
 
     private AppCompatActivity mActivity;
     private Game mGame;
@@ -65,8 +67,12 @@ public class GameScreen extends Fragment {
     /**
      * @return A new instance of fragment GameScreen.
      */
-    public static GameScreen newInstance() {
-        return new GameScreen();
+    public static GameScreen newInstance(Game game) {
+        GameScreen fragment = new GameScreen();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_DETAILS, game);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     public GameScreen() {
@@ -223,8 +229,17 @@ public class GameScreen extends Fragment {
             case PRODUCE:
                 if (event.game != null) {
                     mGame = event.game;
-                    setup();
+                } else {
+                    Log.i(TAG, "Produced a null game, using stale data");
+                    if (getArguments() != null) {
+                        mGame = (Game) getArguments().getSerializable(ARG_DETAILS);
+                    } else {
+                        Log.e(TAG, "No game details could be loaded, closing.");
+                        BusProvider.getInstance().post(new GameEvent(Action.STOP));
+                        break;
+                    }
                 }
+                setup();
                 break;
             case UPDATE:
                 if (!canUpdate) break;
