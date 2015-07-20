@@ -268,21 +268,17 @@ public class GameScreen extends Fragment {
         mPauseCount++;
     }
 
-    //TODO move these out?
-
     private float calculateSeconds(long milliseconds) {
         float secondsLeft = milliseconds / 1000.0f;
-        float progress = (float) milliseconds / Game.ROUND_DURATION_MILLIS;
         mCountdownText.setText(String.format("%.1f", secondsLeft));
-        return progress;
+        return (float) milliseconds / Game.ROUND_DURATION_MILLIS;
     }
 
     private float calculateRounds(long milliseconds) {
         float elapsed = (float) mGame.gameMillis() - milliseconds;
         elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
-        float progress = elapsed / mGame.gameMillis();
         mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
-        return progress;
+        return elapsed / mGame.gameMillis();
     }
 
 }

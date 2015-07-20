@@ -24,10 +24,9 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 /**
  * @author jordon
- *
- * Date    19/07/15
- * Description 
- *
+ *         <p/>
+ *         Date    19/07/15
+ *         Description
  */
 public class ProgressUpdater {
     private final long DEFAULT_DURATION = 300;

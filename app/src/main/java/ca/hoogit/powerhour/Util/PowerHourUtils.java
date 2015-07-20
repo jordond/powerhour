@@ -23,9 +23,9 @@ import java.util.Random;
 
 /**
  * @author jordon
- * Date 17/07/15
- * Description
- * Some Handy utils
+ *         Date 17/07/15
+ *         Description
+ *         Some Handy utils
  */
 public class PowerHourUtils {
 
