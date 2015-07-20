@@ -169,7 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void configureGame(GameOptions options) {
         Log.i(TAG, "Configuring  " + options.getType().name());
-        ConfigureGameFragment configure = ConfigureGameFragment.newInstance(options);
+        Fragment configure = mFragmentManager.findFragmentByTag("configure");
+        if (configure == null) {
+            configure = ConfigureGameFragment.newInstance(options);
+        }
         mFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .replace(R.id.container, configure)
@@ -211,7 +214,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void launchGameScreen(GameOptions options, boolean animate) {
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
-        GameScreen gameScreen = GameScreen.newInstance(options);
+        Fragment gameScreen = mFragmentManager.findFragmentByTag("gameScreen");
+        if (gameScreen == null) {
+            gameScreen = GameScreen.newInstance(options);
+        }
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
             ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);

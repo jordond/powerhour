@@ -111,7 +111,6 @@ public class GameScreen extends Fragment {
     }
 
     private void setup() {
-        // Change colors to those set in options;
         int mPrimaryColor = mGame.options().getBackgroundColor();
         int mAccentColor = mGame.options().getAccentColor();
 
@@ -138,7 +137,7 @@ public class GameScreen extends Fragment {
         }
         mPauseCount = mGame.getPauses();
 
-        updateRoundsProgress(mGame.currentRound(), false);
+        updateRoundsProgress(mGame.getMillisRemainingGame(), false);
         updateSecondsProgress(mGame.getMillisRemainingRound(), false);
 
         // Get status of game, if it hasn't started then initialize
@@ -147,6 +146,8 @@ public class GameScreen extends Fragment {
         }
 
         setupControlButtons();
+
+        Log.d(TAG, "Setup complete");
     }
 
     private void setupControlButtons() {
