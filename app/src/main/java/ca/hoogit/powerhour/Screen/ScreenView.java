@@ -36,7 +36,6 @@ import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ChangeStatusColor;
-import ca.hoogit.powerhour.Util.ProgressUpdater;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 
 /**
@@ -209,7 +208,9 @@ public class ScreenView {
         if (mGameState == State.FINISHED) {
             mRoundsText.setText("finished");
             mCountdownText.setText("zero");
+            mPausesText.setVisibility(View.INVISIBLE);
             mControl.hideCenter();
+
         } else if (state == State.ACTIVE) {
             if (!mCanPause) {
                 mControl.hideCenter();

@@ -1,7 +1,6 @@
 package ca.hoogit.powerhour.Screen;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,18 +11,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 import com.squareup.otto.Subscribe;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Util.ProgressUpdater;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
 
 /**
@@ -191,10 +186,10 @@ public class GameScreen extends Fragment {
                 break;
             case FINISH:
                 mGame = event.game;
-                mScreenView.setState(State.FINISHED, 0);
 
-                mRoundsUpdater.set(calculateRounds(Game.ROUND_DURATION_MILLIS), 500);
-                mSecondsUpdater.set(calculateSeconds(mGame.gameMillis()), 500);
+                mRoundsUpdater.set(calculateRounds(Game.ROUND_DURATION_MILLIS));
+                mSecondsUpdater.set(calculateSeconds(mGame.gameMillis()));
+                mScreenView.setState(State.FINISHED, 0);
                 break;
         }
     }
