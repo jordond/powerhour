@@ -25,7 +25,7 @@ import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameOptions;
-import ca.hoogit.powerhour.Game.GameScreen;
+import ca.hoogit.powerhour.Screen.GameScreen;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 import io.fabric.sdk.android.Fabric;

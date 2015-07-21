@@ -18,6 +18,7 @@
 package ca.hoogit.powerhour.Util;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.view.animation.LinearInterpolator;
 
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
@@ -36,19 +37,23 @@ public class ProgressUpdater {
         this.mWheel = wheel;
     }
 
-    public void update(float progress) {
-        update(progress, true, DEFAULT_DURATION);
+    public ProgressUpdater(Activity activity, int viewId) {
+        this.mWheel = (HoloCircularProgressBar) activity.findViewById(viewId);
     }
 
-    public void update(float progress, boolean animate) {
-        update(progress, animate, DEFAULT_DURATION);
+    public void set(float progress) {
+        set(progress, true, DEFAULT_DURATION);
     }
 
-    public void update(float progress, long duration) {
-        update(progress, true, duration);
+    public void set(float progress, boolean animate) {
+        set(progress, animate, DEFAULT_DURATION);
     }
 
-    public void update(float progress, boolean animate, long duration) {
+    public void set(float progress, long duration) {
+        set(progress, true, duration);
+    }
+
+    public void set(float progress, boolean animate, long duration) {
         if (animate) {
             animateProgressWheel(progress, duration);
         } else {

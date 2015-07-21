@@ -72,6 +72,10 @@ public class GameControlButtons extends LinearLayout {
 
     }
 
+    public void setColors() {
+
+    }
+
     private void registerListeners() {
         mSound.setOnClickListener(new OnClickListener() {
             @Override

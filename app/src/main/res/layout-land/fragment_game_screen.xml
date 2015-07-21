@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary"
     android:clickable="true"
-    tools:context="ca.hoogit.powerhour.Game.GameScreen">
+    tools:context="ca.hoogit.powerhour.Screen.GameScreen">
 
     <include
         android:id="@+id/appBar"
