@@ -33,5 +33,6 @@ public enum Action {
     STOP,
     FINISH,
     UPDATE,
+    TOGGLE,
     NEW_ROUND
 }

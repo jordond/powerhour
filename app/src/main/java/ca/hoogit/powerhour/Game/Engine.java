@@ -173,6 +173,19 @@ public class Engine extends Service {
     @Subscribe
     public void onGameEvent(GameEvent event) {
         switch (event.action) {
+            case TOGGLE:
+                switch (mGame.getState()) {
+                    case INITIALIZED:
+                        start();
+                        break;
+                    case ACTIVE:
+                        pause();
+                        break;
+                    case PAUSED:
+                        resume();
+                        break;
+                }
+                break;
             case START:
                 start();
                 break;
@@ -200,6 +213,7 @@ public class Engine extends Service {
             createTimer(milliseconds);
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
+            mState = State.STARTED;
             broadcast(Action.UPDATE);
             startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
         } else {

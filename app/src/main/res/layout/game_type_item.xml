@@ -7,16 +7,12 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.andexert.library.RippleView
-        android:id="@+id/option_click"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical">
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/option_click"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center_vertical">
 
             <ImageView
@@ -40,8 +36,6 @@
                 android:textStyle="italic" />
 
         </LinearLayout>
-
-    </com.andexert.library.RippleView>
 
     <at.markushi.ui.CircleButton
         android:id="@+id/option_configure"

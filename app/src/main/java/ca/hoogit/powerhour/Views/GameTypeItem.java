@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.andexert.library.RippleView;
-
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,7 +23,7 @@ import ca.hoogit.powerhour.Util.ColorUtil;
 public class GameTypeItem extends LinearLayout {
 
     @Bind(R.id.option_container) LinearLayout mLayout;
-    @Bind(R.id.option_click) RippleView mRippleView;
+    @Bind(R.id.option_click) LinearLayout mRippleView;
     @Bind(R.id.option_icon) ImageView mIcon;
     @Bind(R.id.option_title) TextView mTitle;
     @Bind(R.id.option_configure) CircleButton mConfigureButton;

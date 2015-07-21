@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,8 +46,8 @@ public class ConfigureGameFragment extends Fragment {
     @Bind(R.id.configure_pauses_value) TextView mPausesValue;
     @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
 
-    @Bind(R.id.configure_color_background) FButton mChangeBackground;
-    @Bind(R.id.configure_color_accent) FButton mChangeAccent;
+    @Bind(R.id.configure_color_background) Button mChangeBackground;
+    @Bind(R.id.configure_color_accent) Button mChangeAccent;
 
     @Bind(R.id.configure_keep_screen_on) Switch mKeepScreenOn;
 
@@ -152,11 +153,6 @@ public class ConfigureGameFragment extends Fragment {
         mRoundsSlider.setBackgroundColor(accent);
         mPausesSlider.setBackgroundColor(accent);
 
-        mChangeBackground.setButtonColor(accent);
-        mChangeBackground.setShadowColor(ColorUtil.darken(accent));
-        mChangeAccent.setButtonColor(accent);
-        mChangeAccent.setShadowColor(ColorUtil.darken(accent));
-
         mStartButton.setButtonColor(accent);
         mStartButton.setShadowColor(ColorUtil.darken(accent));
 
@@ -173,12 +169,12 @@ public class ConfigureGameFragment extends Fragment {
 
         // Setup the toolbar
         mActivity = (AppCompatActivity) getActivity();
-        mToolbar.setTitle("Configure");
         mActivity.setSupportActionBar(mToolbar);
 
         try {
             mActivity.getSupportActionBar().setHomeButtonEnabled(true);
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         } catch (NullPointerException ex) {
             Log.e(TAG, ex.getMessage());
         }
@@ -301,12 +297,17 @@ public class ConfigureGameFragment extends Fragment {
                     @Override
                     public void onColorSelected(int i) {
                         changeAccent(i);
-                        setRoundsValue(mRounds);
-                        setPausesValue(mPauses);
+                        refreshUI();
                     }
                 });
                 break;
         }
+    }
+
+    public void refreshUI() {
+        setRoundsValue(mRounds);
+        setPausesValue(mPauses);
+        mKeepScreenOn.setChecked(mKeepScreenOn.isCheck());
     }
 
     @OnClick(R.id.configure_start)

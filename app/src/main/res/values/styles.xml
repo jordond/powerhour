@@ -17,4 +17,9 @@
         <item name="android:textColor">#000</item>
     </style>
 
+    <style name="MrButton" parent="Widget.AppCompat.Button.Small">
+        <item name="colorButtonNormal">@color/accent</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

@@ -6,4 +6,6 @@
     <dimen name="circle_progress_rounds">300dp</dimen>
     <dimen name="game_control_button_margin">30dp</dimen>
     <dimen name="round_image_button_size">48dp</dimen>
+    <dimen name="configure_options_margin">20dp</dimen>
+    <dimen name="margin_spacing">20dp</dimen>
 </resources>

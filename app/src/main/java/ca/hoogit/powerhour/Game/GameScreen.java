@@ -1,6 +1,7 @@
 package ca.hoogit.powerhour.Game;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +47,6 @@ public class GameScreen extends Fragment {
 
     private AppCompatActivity mActivity;
     private Game mGame;
-    private boolean canUpdate = true;
 
     private int mPauseCount = 0;
 
@@ -176,19 +176,25 @@ public class GameScreen extends Fragment {
             public void screenLockPressed() {
                 boolean keepOn = mControl.toggleScreenLock(mGame.options().toggleScreenOn());
                 setKeepOnFlags(keepOn);
-                showScreenOnDialog(keepOn);
+                if (keepOn) {
+                    Snackbar
+                        .make(getView(), mActivity.getString(R.string.screen_on_warning),
+                                Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    setKeepOnFlags(false);
+                                    mControl.toggleScreenLock(mGame.options().toggleScreenOn());
+                                }
+                            })
+                        .show();
+                }
             }
 
             @Override
             public void controlPressed() {
-                if (mGame.is(State.INITIALIZED)) {
-                    broadcast(Action.START, null);
-                } else if (mGame.is(State.ACTIVE)) {
-                    if (mGame.canPause()) {
-                        broadcast(Action.PAUSE, null);
-                    }
-                } else if (mGame.is(State.PAUSED)) {
-                    broadcast(Action.RESUME, null);
+                broadcast(Action.TOGGLE, null);
+                if (mGame.is(State.ACTIVE)) {
                     if (!mGame.canPause()) {
                         mControl.hideCenter();
                     }
@@ -197,7 +203,6 @@ public class GameScreen extends Fragment {
 
             @Override
             public void stopPressed() {
-                canUpdate = false;
                 stopGame();
             }
         });
@@ -231,12 +236,6 @@ public class GameScreen extends Fragment {
                         Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         broadcast(Action.STOP, null);
                         BusProvider.getInstance().unregister(this);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-                        canUpdate = true;
                     }
                 }).show();
 
@@ -276,8 +275,6 @@ public class GameScreen extends Fragment {
                 setup();
                 break;
             case UPDATE:
-                if (!canUpdate) break;
-
                 mGame = event.game;
                 mControl.setIcon(mGame.is(State.PAUSED));
                 mRoundsUpdater.update(calculateRounds(mGame.getMillisRemainingGame()));
@@ -290,8 +287,6 @@ public class GameScreen extends Fragment {
                 }
                 break;
             case NEW_ROUND:
-                if (!canUpdate) break;
-                // TODO HANDLE NEW ROUND
                 mGame = event.game;
                 mRoundsUpdater.update(calculateRounds(mGame.getMillisRemainingGame()));
                 mSecondsUpdater.update(calculateSeconds(Game.ROUND_DURATION_MILLIS));
@@ -331,18 +326,6 @@ public class GameScreen extends Fragment {
         elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
         mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
         return elapsed / mGame.gameMillis();
-    }
-
-    public void showScreenOnDialog(boolean enabled) {
-        if (enabled) {
-            String title = "Notice";
-            String content = mActivity.getString(R.string.keep_screen_on_warning);
-
-            new MaterialDialog.Builder(getActivity())
-                    .title(title)
-                    .content(content)
-                    .positiveText("Ok").show();
-        }
     }
 
 }
