@@ -11,18 +11,27 @@
 
     <ImageButton
         android:id="@+id/sound_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/round_image_button_size"
+        android:layout_height="@dimen/round_image_button_size"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/game_control_sound_chooser_desc"
         android:src="@drawable/ic_action_bell" />
+
+    <ImageButton
+        android:id="@+id/screen_on"
+        android:layout_width="@dimen/round_image_button_size"
+        android:layout_height="@dimen/round_image_button_size"
+        android:layout_marginStart="@dimen/game_control_button_margin"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/game_control_keep_screen_on_desc"
+        android:src="@drawable/ic_screen_on_false" />
 
     <at.markushi.ui.CircleButton
         android:id="@+id/timer_control"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginEnd="@dimen/game_control_button_margin"
+        android:layout_marginStart="@dimen/game_control_button_margin"
         android:focusable="true"
         android:src="@drawable/ic_av_play_arrow"
         app:cb_color="#000"
@@ -30,8 +39,9 @@
 
     <ImageButton
         android:id="@+id/timer_stop"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/round_image_button_size"
+        android:layout_height="@dimen/round_image_button_size"
+        android:layout_marginStart="60dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/game_control_buttons_stop_desc"
         android:src="@drawable/ic_action_playback_stop" />

@@ -9,17 +9,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.squareup.otto.Subscribe;
-
 import at.markushi.ui.CircleButton;
-import ca.hoogit.powerhour.BusProvider;
-import ca.hoogit.powerhour.Game.Action;
-import ca.hoogit.powerhour.Game.GameEvent;
-import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
-
-import static ca.hoogit.powerhour.Game.Action.*;
-import static ca.hoogit.powerhour.Game.Action.RESUME;
 
 /**
  * Created by jordon on 16/07/15.
@@ -36,6 +27,7 @@ public class GameControlButtons extends LinearLayout {
     private GameControl mListener;
 
     private ImageButton mSound;
+    private ImageButton mScreenLock;
     private CircleButton mControl;
     private ImageButton mStop;
 
@@ -70,6 +62,7 @@ public class GameControlButtons extends LinearLayout {
 
         // Grab the views
         mSound = (ImageButton) findViewById(R.id.sound_button);
+        mScreenLock = (ImageButton) findViewById(R.id.screen_on);
         mControl = (CircleButton) findViewById(R.id.timer_control);
         mStop = (ImageButton) findViewById(R.id.timer_stop);
 
@@ -84,6 +77,20 @@ public class GameControlButtons extends LinearLayout {
             @Override
             public void onClick(View v) {
                 mListener.soundPressed();
+            }
+        });
+        mSound.setLongClickable(true);
+        mSound.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mListener.soundLongPressed();
+                return true;
+            }
+        });
+        mScreenLock.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.screenLockPressed();
             }
         });
         mControl.setOnClickListener(new OnClickListener() {
@@ -102,6 +109,7 @@ public class GameControlButtons extends LinearLayout {
 
     private void removeListeners() {
         mSound.setOnClickListener(null);
+        mScreenLock.setOnClickListener(null);
         mControl.setOnClickListener(null);
         mStop.setOnClickListener(null);
     }
@@ -132,6 +140,16 @@ public class GameControlButtons extends LinearLayout {
             mIcon = STATE_PAUSE_ICON;
         }
         mControl.setImageResource(mIcon);
+    }
+
+    public boolean toggleScreenLock(boolean state) {
+        if (state) {
+            mScreenLock.setImageResource(R.drawable.ic_screen_on_true);
+        } else {
+            mScreenLock.setImageResource(R.drawable.ic_screen_on_false);
+        }
+        Log.d(TAG, "ToggleScreenLock setting to " + state);
+        return state;
     }
 
     public void toggleCenterButton() {
@@ -170,6 +188,10 @@ public class GameControlButtons extends LinearLayout {
 
     public interface GameControl {
         void soundPressed();
+
+        void soundLongPressed();
+
+        void screenLockPressed();
 
         void controlPressed();
 

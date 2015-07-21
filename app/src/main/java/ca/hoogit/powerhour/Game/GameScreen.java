@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -26,6 +27,8 @@ import ca.hoogit.powerhour.Util.ChangeStatusColor;
 import ca.hoogit.powerhour.Util.ProgressUpdater;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
+
+import static android.view.WindowManager.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,6 +108,8 @@ public class GameScreen extends Fragment {
             Log.e(TAG, ex.getMessage());
         }
 
+        mActivity.getWindow().addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
         mRoundsUpdater = new ProgressUpdater(mProgressRounds);
         mSecondsUpdater = new ProgressUpdater(mProgressSeconds);
 
@@ -155,10 +160,23 @@ public class GameScreen extends Fragment {
 
     private void setupControlButtons() {
         mControl.setColor(mGame.options().getAccentColor());
+        setKeepOnFlags(mControl.toggleScreenLock(mGame.options().isKeepScreenOn()));
         mControl.setOnButtonPressed(new GameControl() {
             @Override
             public void soundPressed() {
                 Toast.makeText(getActivity(), "Sound button pressed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void soundLongPressed() {
+                Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void screenLockPressed() {
+                boolean keepOn = mControl.toggleScreenLock(mGame.options().toggleScreenOn());
+                setKeepOnFlags(keepOn);
+                showScreenOnDialog(keepOn);
             }
 
             @Override
@@ -186,6 +204,17 @@ public class GameScreen extends Fragment {
         if (!mGame.canPause() && mGame.is(State.ACTIVE)) {
             updatePauses();
             mControl.hideCenter();
+        }
+    }
+
+    public void setKeepOnFlags(boolean keepOn) {
+        if (keepOn) {
+            mActivity.getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+            mActivity.getWindow().clearFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            Log.d(TAG, "Adding flag 'KEEP_SCREEN_ON'");
+        } else {
+            mActivity.getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+            Log.d(TAG, "Removing flag 'KEEP_SCREEN_ON'");
         }
     }
 
@@ -302,6 +331,18 @@ public class GameScreen extends Fragment {
         elapsed = elapsed == mGame.gameMillis() ? 0 : elapsed;
         mRoundsText.setText(String.valueOf(mGame.currentRound()) + ROUND_OF_MAX_TEXT);
         return elapsed / mGame.gameMillis();
+    }
+
+    public void showScreenOnDialog(boolean enabled) {
+        if (enabled) {
+            String title = "Notice";
+            String content = mActivity.getString(R.string.keep_screen_on_warning);
+
+            new MaterialDialog.Builder(getActivity())
+                    .title(title)
+                    .content(content)
+                    .positiveText("Ok").show();
+        }
     }
 
 }

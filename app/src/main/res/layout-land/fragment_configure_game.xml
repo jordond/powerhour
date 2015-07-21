@@ -194,6 +194,28 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight=".8"
+                    android:fontFamily="sans-serif-light"
+                    android:text="keep the screen on" />
+
+                <com.gc.materialdesign.views.Switch
+                    android:id="@+id/configure_keep_screen_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/accent"
+                    app:check="true" />
+
+            </LinearLayout>
+
             <info.hoang8f.widget.FButton
                 android:id="@+id/configure_start"
                 android:layout_width="wrap_content"

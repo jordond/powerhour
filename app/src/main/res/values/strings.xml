@@ -26,4 +26,6 @@
     <string name="game_screen_rounds_remaining_placeholder">150 of 300</string>
     <string name="game_screen_seconds_remaining">seconds</string>
     <string name="game_screen_remaining_pauses_placeholder">3 Pauses Remaining</string>
+    <string name="game_control_keep_screen_on_desc">toggle keep screen on state</string>
+    <string name="keep_screen_on_warning">The screen will be kept on until you turn it off.  This may cause a lot of battery drain, which you might need later in the night ;).  If you disable the screen lock then the game will continue in the background.</string>
 </resources>

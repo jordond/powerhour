@@ -121,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="70dp"
             android:layout_marginStart="40dp"
             android:orientation="horizontal">
 
@@ -129,18 +129,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight=".8"
                 android:fontFamily="sans-serif-light"
-                android:text="background color" />
+                android:text="colors" />
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/configure_color_background"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginStart="20dp"
-                android:layout_weight=".5"
-                android:text="pick"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="background"
+                app:buttonColor="@color/accent"
+                app:cornerRadius="5dp"
+                app:shadowColor="@color/accentDark"
+                app:shadowEnabled="true"
+                app:shadowHeight="3dp" />
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/configure_color_accent"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="accent"
                 app:buttonColor="@color/accent"
                 app:cornerRadius="5dp"
                 app:shadowColor="@color/accentDark"
@@ -160,25 +171,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight=".8"
                 android:fontFamily="sans-serif-light"
-                android:text="accent color" />
+                android:text="keep the screen on" />
 
-            <info.hoang8f.widget.FButton
-                android:id="@+id/configure_color_accent"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginStart="20dp"
-                android:layout_weight=".5"
-                android:text="pick"
-                app:buttonColor="@color/accent"
-                app:cornerRadius="5dp"
-                app:shadowColor="@color/accentDark"
-                app:shadowEnabled="true"
-                app:shadowHeight="3dp" />
+            <com.gc.materialdesign.views.Switch
+                android:id="@+id/configure_keep_screen_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/accent" />
 
         </LinearLayout>
+
 
         <info.hoang8f.widget.FButton
             android:id="@+id/configure_start"

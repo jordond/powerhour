@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.Slider;
+import com.gc.materialdesign.views.Switch;
 import com.gc.materialdesign.widgets.ColorSelector;
 
 import butterknife.Bind;
@@ -46,6 +47,8 @@ public class ConfigureGameFragment extends Fragment {
 
     @Bind(R.id.configure_color_background) FButton mChangeBackground;
     @Bind(R.id.configure_color_accent) FButton mChangeAccent;
+
+    @Bind(R.id.configure_keep_screen_on) Switch mKeepScreenOn;
 
     @Bind(R.id.configure_start) FButton mStartButton;
 
@@ -156,6 +159,8 @@ public class ConfigureGameFragment extends Fragment {
 
         mStartButton.setButtonColor(accent);
         mStartButton.setShadowColor(ColorUtil.darken(accent));
+
+        mKeepScreenOn.setBackgroundColor(accent);
 
         mAccentColor = accent;
     }
@@ -320,6 +325,7 @@ public class ConfigureGameFragment extends Fragment {
         options.setMaxPauses(mPauses);
         options.setColors(mPrimaryColor, mAccentColor);
         options.setAutoStart(true);
+        options.setKeepScreenOn(mKeepScreenOn.isCheck());
 
         return options;
     }

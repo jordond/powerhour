@@ -24,6 +24,7 @@ public class GameOptions implements Serializable {
     private int backgroundColor;
     private int accentColor;
     private boolean autoStart;
+    private boolean keepScreenOn;
 
     public GameOptions() {
     }
@@ -154,5 +155,17 @@ public class GameOptions implements Serializable {
 
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
+    }
+
+    public boolean isKeepScreenOn() {
+        return keepScreenOn;
+    }
+
+    public void setKeepScreenOn(boolean keepScreenOn) {
+        this.keepScreenOn = keepScreenOn;
+    }
+
+    public boolean toggleScreenOn() {
+        return this.keepScreenOn = !this.keepScreenOn;
     }
 }

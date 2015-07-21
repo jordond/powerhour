@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="circle_progress_seconds">250dp</dimen>
     <dimen name="circle_progress_rounds">300dp</dimen>
+    <dimen name="game_control_button_margin">30dp</dimen>
+    <dimen name="round_image_button_size">48dp</dimen>
 </resources>
