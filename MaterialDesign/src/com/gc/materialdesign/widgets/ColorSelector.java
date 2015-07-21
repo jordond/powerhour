@@ -1,13 +1,18 @@
 package com.gc.materialdesign.widgets;
 
 import com.gc.materialdesign.R;
+import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.Slider;
 import com.gc.materialdesign.views.Slider.OnValueChangedListener;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -25,25 +30,22 @@ public class ColorSelector extends android.app.Dialog implements OnValueChangedL
 	Context context;
 	View colorView;
 	View view, backView;//background
-	
+
 	OnColorSelectedListener onColorSelectedListener;
 	Slider red, green, blue;
+
+	ButtonFlat ok, cancel;
+
+	android.app.Dialog that;
 	
 
 	public ColorSelector(Context context,Integer color, OnColorSelectedListener onColorSelectedListener) {
 		super(context, android.R.style.Theme_Translucent);
 		this.context = context;
 		this.onColorSelectedListener = onColorSelectedListener;
+		that = this;
 		if(color != null)
 			this.color = color;
-		setOnDismissListener(new OnDismissListener() {
-			
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				if(ColorSelector.this.onColorSelectedListener != null)
-					ColorSelector.this.onColorSelectedListener.onColorSelected(ColorSelector.this.color);
-			}
-		});
 	}
 	
 
@@ -68,20 +70,47 @@ public class ColorSelector extends android.app.Dialog implements OnValueChangedL
 			}
 		});
 
-	    colorView = findViewById(R.id.viewColor);
+		ok = (ButtonFlat) findViewById(R.id.ok);
+		cancel = (ButtonFlat) findViewById(R.id.cancel);
+
+		ok.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(ColorSelector.this.onColorSelectedListener != null) {
+					ColorSelector.this.onColorSelectedListener.onColorSelected(ColorSelector.this.color);
+					that.dismiss();
+				}
+			}
+		});
+
+		cancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				that.cancel();
+			}
+		});
+
+		colorView = findViewById(R.id.viewColor);
 	    colorView.setBackgroundColor(color);
-	    // Resize ColorView
-	    colorView.post(new Runnable() {
-			
+
+		// Resize ColorView
+		colorView.post(new Runnable() {
+
 			@Override
 			public void run() {
 				LinearLayout.LayoutParams params = (LayoutParams) colorView.getLayoutParams();
-				params.height = colorView.getWidth();
+				boolean isPortrait = getScreenOrientation() == Configuration.ORIENTATION_PORTRAIT;
+
+				if (isPortrait) {
+					params.height = colorView.getWidth();
+				} else {
+					params.width = colorView.getHeight();
+				}
 				colorView.setLayoutParams(params);
 			}
 		});
-	    
-	    
+
+
 	    // Configure Sliders
 	    red = (Slider) findViewById(R.id.red);
 	    green = (Slider) findViewById(R.id.green);
@@ -148,6 +177,19 @@ public class ColorSelector extends android.app.Dialog implements OnValueChangedL
 		
 		view.startAnimation(anim);
 		backView.startAnimation(backAnim);
+	}
+
+	public int getScreenOrientation()
+	{
+		int orientation = 0;
+		Log.i("View", "width: " + view.getWidth() + "   height: " + view.getHeight());
+		Log.i("Color", "width: " + colorView.getWidth() + "   height: " + colorView.getHeight());
+		if (colorView.getWidth() > colorView.getHeight()) {
+			orientation = Configuration.ORIENTATION_PORTRAIT;
+		} else {
+			orientation = Configuration.ORIENTATION_LANDSCAPE;
+		}
+		return orientation;
 	}
 
 }

@@ -10,22 +10,23 @@
     <LinearLayout
         android:id="@+id/contentSelector"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_centerInParent="true"
         android:background="@drawable/dialog_background"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
         <View
             android:id="@+id/viewColor"
-            android:layout_width="fill_parent"
-            android:layout_height="10dp" />
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" />
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
             android:orientation="vertical"
             android:background="#FFF"
-            android:padding="15dp" >
+            android:padding="16dp" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -47,14 +48,13 @@
                     android:layout_height="wrap_content"
                     android:background="#4D4D4D"
                     materialdesign:max="255"
-                    materialdesign:min="0"
-                    materialdesign:showNumberIndicator="true" />
+                    materialdesign:showNumberIndicator="true"
+                    materialdesign:min="0" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
@@ -72,14 +72,13 @@
                     android:layout_height="wrap_content"
                     android:background="#4D4D4D"
                     materialdesign:max="255"
-                    materialdesign:min="0"
-                    materialdesign:showNumberIndicator="true" />
+                    materialdesign:showNumberIndicator="true"
+                    materialdesign:min="0" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
@@ -97,15 +96,15 @@
                     android:layout_height="wrap_content"
                     android:background="#4D4D4D"
                     materialdesign:max="255"
-                    materialdesign:min="0"
-                    materialdesign:showNumberIndicator="true" />
+                    materialdesign:showNumberIndicator="true"
+                    materialdesign:min="0" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|right"
+
                 android:orientation="horizontal" >
 
                 <com.gc.materialdesign.views.ButtonFlat
@@ -121,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:text="OK"/>
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
