@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
-import ca.hoogit.powerhour.BusProvider;
+import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;

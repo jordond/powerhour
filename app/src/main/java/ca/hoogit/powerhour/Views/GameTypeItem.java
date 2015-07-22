@@ -13,7 +13,7 @@ import android.widget.TextView;
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ca.hoogit.powerhour.Game.GameOptions;
+import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.ColorUtil;
 

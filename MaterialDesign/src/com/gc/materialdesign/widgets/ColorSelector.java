@@ -182,8 +182,6 @@ public class ColorSelector extends android.app.Dialog implements OnValueChangedL
 	public int getScreenOrientation()
 	{
 		int orientation = 0;
-		Log.i("View", "width: " + view.getWidth() + "   height: " + view.getHeight());
-		Log.i("Color", "width: " + colorView.getWidth() + "   height: " + colorView.getHeight());
 		if (colorView.getWidth() > colorView.getHeight()) {
 			orientation = Configuration.ORIENTATION_PORTRAIT;
 		} else {

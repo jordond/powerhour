@@ -1,0 +1,68 @@
+<!--
+  ~ Copyright (C) 2015, Jordon de Hoog
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 2 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, write to the Free Software Foundation, Inc.,
+  ~ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  -->
+
+<notices>
+    <notice>
+        <name>Holo-CircleProgressBar</name>
+        <url>https://github.com/passsy/android-HoloCircularProgressBar</url>
+        <copyright>Copyright 2013 Pascal Welsch.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Material Design Library</name>
+        <url>https://github.com/navasmdc/MaterialDesignLibrary</url>
+        <copyright>Copyright 2013 Ivan Navas</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Flat Button</name>
+        <url>https://github.com/hoang8f/android-flat-button</url>
+        <copyright>Copyright 2014 Le Van Hoang</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>material-dialogs</name>
+        <url>https://github.com/afollestad/material-dialogs</url>
+        <copyright>Copyright (c) 2015 Aidan Michael Follestad</copyright>
+        <license>MIT License</license>
+    </notice>
+    <notice>
+        <name>LicensesDialog</name>
+        <url>http://psdev.de/LicensesDialog</url>
+        <copyright>Copyright 2013 Philip Schiffer</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>otto</name>
+        <url>https://github.com/square/otto</url>
+        <copyright>Copyright 2012 Square, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>ButterKnife</name>
+        <url>https://github.com/JakeWharton/butterknife</url>
+        <copyright>Copyright 2013 Jake Wharton</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>NineOldAndroids</name>
+        <url>https://github.com/JakeWharton/NineOldAndroids</url>
+        <copyright>Copyright 2012 Jake Wharton</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+</notices>

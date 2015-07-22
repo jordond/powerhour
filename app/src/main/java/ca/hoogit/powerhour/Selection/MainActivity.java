@@ -1,12 +1,10 @@
-package ca.hoogit.powerhour;
+package ca.hoogit.powerhour.Selection;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,27 +17,25 @@ import com.squareup.otto.Subscribe;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
+import ca.hoogit.powerhour.About.AboutActivity;
+import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
-import ca.hoogit.powerhour.Game.GameOptions;
+import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    @Bind(R.id.appBar)
-    Toolbar mToolbar;
-
-    @Bind(R.id.type_statistics)
-    GameTypeItem mStatistics;
+    @Bind(R.id.type_statistics) GameTypeItem mStatistics;
     @Bind({R.id.type_power_hour, R.id.type_century_club, R.id.type_spartan, R.id.type_custom})
     List<GameTypeItem> mGameTypes;
 
@@ -47,28 +43,39 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mChosen;
 
-    public enum FragmentEvents {
-        HOME_PRESSED, BACK_PRESSED, NOTHING
+    @Override
+    protected int getToolbarColor() {
+        return getResources().getColor(R.color.primary);
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected int getMenuResource() {
+        return R.menu.menu_main;
+    }
+
+    @Override
+    protected boolean getDisplayHomeAsUpEnabled() {
+        return false;
+    }
+
+    @Override
+    protected boolean getEventBusEnabled() {
+        return true;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        BusProvider.getInstance().register(this);
 
-        mToolbar.setTitle("Choose an Option");
-        setSupportActionBar(mToolbar);
+        getToolbar().setTitle("Choose an Option");
 
         mFragmentManager = getSupportFragmentManager();
-        if (savedInstanceState == null) {
-            savedInstanceState = new Bundle();
-            StatusBarUtil.getInstance().init(this);
-            savedInstanceState.putInt("original_bar_color",
-                    StatusBarUtil.getInstance().getOriginal());
-        }
 
         if (Engine.started()) {
             launchGameScreen(Engine.details(), false);
@@ -78,47 +85,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            case android.R.id.home:
+                reset();
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void onBackPressed() { // TODO check if game has been started
+    public void onBackPressed() {
         if (mFragmentManager.getBackStackEntryCount() != 0) {
             reset();
         } else {
             super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        BusProvider.getInstance().unregister(this);
-        super.onDestroy();
-    }
-
-    @Subscribe
-    public void onFragmentEvent(FragmentEvents event) {
-        switch (event) {
-            case HOME_PRESSED:
-            case BACK_PRESSED:
-                reset();
-                break;
-            case NOTHING:
-                break;
         }
     }
 

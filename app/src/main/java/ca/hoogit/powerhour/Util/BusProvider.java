@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour;
+package ca.hoogit.powerhour.Util;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;

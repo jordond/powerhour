@@ -31,11 +31,10 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ca.hoogit.powerhour.BusProvider;
 import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Util.ChangeStatusColor;
+import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameControlButtons;
 
 /**
@@ -137,7 +136,7 @@ public class ScreenView {
         mToolbar.setBackgroundColor(primary);
         mLayout.setBackgroundColor(primary);
 
-        BusProvider.getInstance().post(new ChangeStatusColor(mActivity, primary));
+        StatusBarUtil.getInstance().set(mActivity, primary);
 
         mProgressRounds.setProgressColor(secondary);
         mProgressSeconds.setThumbColor(secondary);

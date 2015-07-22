@@ -31,4 +31,11 @@
     <string name="screen_on_warning">Keeping the screen on, disable to save power</string>
     <string name="configure_game_color_background_text">Background</string>
     <string name="configure_game_color_accent_text">Accent</string>
+    <string name="title_activity_about">About</string>
+    <string name="action_about">About</string>
+    <string name="source_code">Source Code</string>
+    <string name="developer_name">Jordon de Hoog</string>
+    <string name="licenses">Open Source Licenses</string>
+    <string name="source_code_url">http://github.com/jordond/powerhour</string>
+    <string name="developer_url">http://github.com/jordond</string>
 </resources>

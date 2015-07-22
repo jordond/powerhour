@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.Configure;
 
 import android.util.Log;
 

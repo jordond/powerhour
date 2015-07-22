@@ -37,8 +37,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.concurrent.TimeUnit;
 
-import ca.hoogit.powerhour.BusProvider;
-import ca.hoogit.powerhour.MainActivity;
+import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.R;
 
 public class Engine extends Service {

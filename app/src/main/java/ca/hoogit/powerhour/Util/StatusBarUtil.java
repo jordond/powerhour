@@ -6,8 +6,6 @@ import android.os.Build;
 
 import com.squareup.otto.Subscribe;
 
-import ca.hoogit.powerhour.BusProvider;
-
 /**
  * Created by jordon on 09/07/15.
  * A Simple utility for changing the color of the status bar
@@ -21,7 +19,6 @@ public class StatusBarUtil {
     }
 
     private StatusBarUtil() {
-        BusProvider.getInstance().register(this);
     }
 
     public int getOriginal() {
@@ -46,11 +43,10 @@ public class StatusBarUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Subscribe
-    public void onChangeColor(ChangeStatusColor event) {
+    public void set(Activity activity, int color) {
         if (Build.VERSION.SDK_INT >= 21) {
-            int darker = ColorUtil.darken(event.getColor());
-            event.getActivity().getWindow().setStatusBarColor(darker);
+            int darker = ColorUtil.darken(color);
+            activity.getWindow().setStatusBarColor(darker);
         }
     }
 }

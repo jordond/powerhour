@@ -20,6 +20,8 @@ package ca.hoogit.powerhour.Game;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
+import ca.hoogit.powerhour.Configure.GameOptions;
+
 /**
  * @author jordon
  *         <p/>

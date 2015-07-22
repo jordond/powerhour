@@ -22,12 +22,11 @@ import com.gc.materialdesign.widgets.ColorSelector;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ca.hoogit.powerhour.BusProvider;
-import ca.hoogit.powerhour.Game.GameOptions;
-import ca.hoogit.powerhour.MainActivity;
+import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Util.ChangeStatusColor;
 import ca.hoogit.powerhour.Util.ColorUtil;
+import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.PlusMinusButtons;
 import info.hoang8f.widget.FButton;
 
@@ -35,26 +34,24 @@ import info.hoang8f.widget.FButton;
  */
 public class ConfigureGameFragment extends Fragment {
 
+    private final String TAG = ConfigureGameFragment.class.getSimpleName();
+
+    private static final String ARG_OPTIONS = "game_options";
+
     @Bind(R.id.appBar) Toolbar mToolbar;
+
     @Bind(R.id.configure_container) RelativeLayout mLayout;
     @Bind(R.id.configure_game_title) TextView mTitle;
-
     @Bind(R.id.configure_rounds_value) TextView mRoundsValue;
+
     @Bind(R.id.configure_rounds_slider) Slider mRoundsSlider;
     @Bind(R.id.configure_rounds_buttons) PlusMinusButtons mRoundsButtons;
 
     @Bind(R.id.configure_pauses_value) TextView mPausesValue;
     @Bind(R.id.configure_pauses_slider) Slider mPausesSlider;
 
-    @Bind(R.id.configure_color_background) Button mChangeBackground;
-    @Bind(R.id.configure_color_accent) Button mChangeAccent;
-
     @Bind(R.id.configure_keep_screen_on) Switch mKeepScreenOn;
-
     @Bind(R.id.configure_start) FButton mStartButton;
-
-    private static final String ARG_OPTIONS = "game_options";
-    private final String TAG = ConfigureGameFragment.class.getSimpleName();
 
     private AppCompatActivity mActivity;
 
@@ -119,9 +116,6 @@ public class ConfigureGameFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                BusProvider.getInstance().post(MainActivity.FragmentEvents.HOME_PRESSED);
-                return true;
             case R.id.action_reset:
                 reset();
                 return true;
@@ -142,7 +136,7 @@ public class ConfigureGameFragment extends Fragment {
     }
 
     private void changePrimary(int primary) {
-        BusProvider.getInstance().post(new ChangeStatusColor(mActivity, primary));
+        StatusBarUtil.getInstance().set(mActivity, primary);
         mToolbar.setBackgroundColor(primary);
         mLayout.setBackgroundColor(primary);
 
@@ -329,10 +323,5 @@ public class ConfigureGameFragment extends Fragment {
         options.setKeepScreenOn(mKeepScreenOn.isCheck());
 
         return options;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }
