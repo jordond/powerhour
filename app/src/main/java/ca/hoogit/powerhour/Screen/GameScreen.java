@@ -85,7 +85,6 @@ public class GameScreen extends Fragment {
         mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()), false);
         mSecondsUpdater.set(calculateSeconds(mGame.getMillisRemainingRound()), false);
 
-        mScreenView.toggleKeepOnFlags(mGame.options().isKeepScreenOn());
         mScreenView.setControlListener(new GameControl() {
             @Override
             public void soundPressed() {

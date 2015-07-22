@@ -28,7 +28,7 @@
             android:fontFamily="sans-serif-light"
             android:text="@string/configure_game_title"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="35sp" />
+            android:textSize="@dimen/configure_game_placeholder_text_size" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                 android:fontFamily="sans-serif-light"
                 android:text="@string/configure_rounds_value_placeholder"
                 android:textColor="@color/md_white_1000"
-                android:textSize="85sp" />
+                android:textSize="@dimen/configure_game_rounds_text_size" />
 
         </RelativeLayout>
 
@@ -85,7 +85,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/configure_options_margin"
+            android:layout_marginEnd="40dp"
             android:layout_marginStart="@dimen/configure_options_margin"
             android:orientation="horizontal">
 
@@ -108,10 +108,12 @@
 
             <TextView
                 android:id="@+id/configure_pauses_value"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:background="@drawable/border"
+                android:gravity="center"
                 android:layout_gravity="center_vertical"
-                android:layout_weight=".35"
                 android:fontFamily="sans-serif-light"
                 android:text="0" />
 
@@ -153,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_spacing"
+                android:layout_marginEnd="30dp"
                 android:fontFamily="sans-serif-light"
                 android:text="colors" />
 
@@ -169,7 +171,7 @@
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Background"
+                    android:text="@string/configure_game_color_background_text"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textSize="12sp"
                     android:theme="@style/Widget.AppCompat.Button.Small" />
@@ -179,7 +181,7 @@
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Accent"
+                    android:text="@string/configure_game_color_accent_text"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textSize="12sp"
                     android:theme="@style/Widget.AppCompat.Button.Small" />
@@ -206,4 +208,3 @@
         app:shadowHeight="5dp" />
 
 </RelativeLayout>
-

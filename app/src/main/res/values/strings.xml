@@ -29,4 +29,6 @@
     <string name="game_control_keep_screen_on_desc">toggle keep screen on state</string>
     <string name="keep_screen_on_warning">The screen will be kept on until you turn it off.  This may cause a lot of battery drain, which you might need later in the night ;).  If you disable the screen lock then the game will continue in the background.</string>
     <string name="screen_on_warning">Keeping the screen on, disable to save power</string>
+    <string name="configure_game_color_background_text">Background</string>
+    <string name="configure_game_color_accent_text">Accent</string>
 </resources>

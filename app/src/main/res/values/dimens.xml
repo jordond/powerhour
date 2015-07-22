@@ -8,4 +8,6 @@
     <dimen name="round_image_button_size">48dp</dimen>
     <dimen name="configure_options_margin">20dp</dimen>
     <dimen name="margin_spacing">20dp</dimen>
+    <dimen name="configure_game_placeholder_text_size">35sp</dimen>
+    <dimen name="configure_game_rounds_text_size">85sp</dimen>
 </resources>

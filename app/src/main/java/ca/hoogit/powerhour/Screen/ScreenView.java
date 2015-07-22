@@ -111,6 +111,9 @@ public class ScreenView {
         mMaxPause = game.getMaxPauses();
         mKeepOn = game.options().isKeepScreenOn();
 
+        mControl.toggleScreenLock(mKeepOn);
+        toggleKeepOnFlags(mKeepOn);
+
         if (game.getMaxPauses() == -1) {
             mPausesText.setText(PAUSES_UNLIMITED_TEXT);
         } else {
@@ -146,10 +149,14 @@ public class ScreenView {
 
     public void toggleKeepOnButton() {
         mKeepOn = !mKeepOn;
-        mControl.toggleScreenLock(mKeepOn);
-        toggleKeepOnFlags(mKeepOn);
+        toggleKeepOnButton(mKeepOn);
+    }
 
-        if (mKeepOn) {
+    public void toggleKeepOnButton(boolean keepOn) {
+        mControl.toggleScreenLock(keepOn);
+        toggleKeepOnFlags(keepOn);
+
+        if (keepOn) {
             Snackbar
                 .make(mView, mActivity.getString(R.string.screen_on_warning),
                         Snackbar.LENGTH_LONG)
