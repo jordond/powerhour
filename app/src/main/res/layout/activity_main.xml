@@ -62,16 +62,6 @@
             app:gti_title="Custom Mode"
             app:gti_type="CUSTOM" />
 
-        <ca.hoogit.powerhour.Views.GameTypeItem
-            android:id="@+id/type_statistics"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:gti_background="@color/statistics"
-            app:gti_hide_button="true"
-            app:gti_icon="@drawable/ic_stats"
-            app:gti_title="View Statistics" />
-
     </LinearLayout>
 
     <FrameLayout

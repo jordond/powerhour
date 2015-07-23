@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -21,7 +20,7 @@ import ca.hoogit.powerhour.About.AboutActivity;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
 import ca.hoogit.powerhour.Game.Engine;
-import ca.hoogit.powerhour.Game.Game;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.R;
@@ -35,7 +34,6 @@ public class MainActivity extends BaseActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    @Bind(R.id.type_statistics) GameTypeItem mStatistics;
     @Bind({R.id.type_power_hour, R.id.type_century_club, R.id.type_spartan, R.id.type_custom})
     List<GameTypeItem> mGameTypes;
 
@@ -79,7 +77,7 @@ public class MainActivity extends BaseActivity {
 
         if (Engine.started()) {
             launchGameScreen(Engine.details(), false);
-            Log.i(TAG, "Game already exists, resuming game");
+            Log.i(TAG, "GameModel already exists, resuming game");
         }
         setupListeners();
     }
@@ -144,14 +142,6 @@ public class MainActivity extends BaseActivity {
                 }
             });
         }
-        // TODO implement
-        mStatistics.setItemOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Stats was pressed");
-                Toast.makeText(getApplication(), "Not implemented yet", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void configureGame(GameOptions options) {
@@ -189,10 +179,10 @@ public class MainActivity extends BaseActivity {
      *
      * @param animate whether or not to animate the transition
      */
-    private void launchGameScreen(Game game, boolean animate) {
+    private void launchGameScreen(GameModel gameModel, boolean animate) {
         Fragment gameScreen = mFragmentManager.findFragmentByTag("gameScreen");
         if (gameScreen == null) {
-            gameScreen = GameScreen.newInstance(game);
+            gameScreen = GameScreen.newInstance(gameModel);
         }
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (animate) {
@@ -203,16 +193,16 @@ public class MainActivity extends BaseActivity {
     }
 
     private void launchGame(GameOptions options, boolean animate) {
-        Game game = new Game(options);
+        GameModel gameModel = new GameModel(options);
         if (!Engine.initialized) {
             Intent initEngine = new Intent(this, Engine.class);
             initEngine.setAction(Engine.ACTION_INITIALIZE_GAME);
-            initEngine.putExtra("game", game);
+            initEngine.putExtra("game", gameModel);
             startService(initEngine);
             Log.d(TAG, "Starting new game");
         }
         Log.i(TAG, "Launching game in " + options.getType().name() + " mode");
-        launchGameScreen(game, animate);
+        launchGameScreen(gameModel, animate);
     }
 
     @Subscribe

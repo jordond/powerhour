@@ -55,7 +55,7 @@ public class Engine extends Service {
     public static boolean initialized = false;
 
     private Bus mBus;
-    private static Game mGame;
+    private static GameModel mGame;
     private CountDownTimer mTimer;
 
     private long mRoundCounter = 0;
@@ -81,7 +81,7 @@ public class Engine extends Service {
     private void handleIntent(Intent intent) {
         switch (intent.getAction()) {
             case ACTION_INITIALIZE_GAME:
-                mGame = (Game) intent.getSerializableExtra("game");
+                mGame = (GameModel) intent.getSerializableExtra("game");
                 if (mGame != null) {
                     mGame.setState(State.INITIALIZED);
                     mState = State.INITIALIZED;
@@ -89,7 +89,7 @@ public class Engine extends Service {
                     if (mGame.isAutoStart()) {
                         start();
                     }
-                    Log.i(TAG, "Game has been initialized");
+                    Log.i(TAG, "GameModel has been initialized");
                 } else {
                     stopSelf();
                     Log.e(TAG, "No game was passed to engine");
@@ -217,7 +217,7 @@ public class Engine extends Service {
             broadcast(Action.UPDATE);
             startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
         } else {
-            Log.e(TAG, "Game already started, cannot start another.");
+            Log.e(TAG, "GameModel already started, cannot start another.");
         }
     }
 
@@ -274,7 +274,7 @@ public class Engine extends Service {
                 public void onTick(long millisUntilFinished) {
                     Action action;
                     mRoundCounter += 100;
-                    if (mRoundCounter == Game.ROUND_DURATION_MILLIS) {
+                    if (mRoundCounter == GameModel.ROUND_DURATION_MILLIS) {
                         action = Action.NEW_ROUND;
                         mGame.incrementRound();
                         mRoundCounter = 0;
@@ -296,7 +296,7 @@ public class Engine extends Service {
                     mGame.setRound(mGame.getTotalRounds());
                     mGame.setState(State.FINISHED);
                     broadcast(Action.FINISH);
-                    Log.d(TAG, "Game has completed");
+                    Log.d(TAG, "GameModel has completed");
                     finish();
                 }
             };
@@ -305,7 +305,7 @@ public class Engine extends Service {
     }
 
     private void updateGameMilliseconds(long millis) {
-        long roundMillis = Game.ROUND_DURATION_MILLIS - mRoundCounter;
+        long roundMillis = GameModel.ROUND_DURATION_MILLIS - mRoundCounter;
         mGame.setMillisRemainingGame(millis);
         mGame.setMillisRemainingRound(roundMillis);
     }
@@ -330,7 +330,7 @@ public class Engine extends Service {
         return mState != State.NONE;
     }
 
-    public static Game details() {
+    public static GameModel details() {
         return mGame;
     }
 
@@ -339,12 +339,12 @@ public class Engine extends Service {
      */
 
     private long roundsToMilliseconds(int rounds) {
-        int seconds = rounds * Game.ROUND_DURATION_SECONDS;
+        int seconds = rounds * GameModel.ROUND_DURATION_SECONDS;
         return TimeUnit.SECONDS.toMillis(seconds);
     }
 
     private void logTimeLeft() {
-        Log.d(TAG, "Game Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
+        Log.d(TAG, "GameModel Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
                 mGame.getMillisRemainingGame()));
         Log.d(TAG, "Round Seconds Left: " + TimeUnit.MILLISECONDS.toSeconds(
                 mGame.getMillisRemainingRound()));

@@ -28,7 +28,7 @@ import ca.hoogit.powerhour.Configure.GameOptions;
  *         Date    18/07/15
  *         Description
  */
-public class Game implements Serializable {
+public class GameModel implements Serializable {
 
     public static final int ROUND_DURATION_SECONDS = 5; // TODO change back to 60 (1 min)
     public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
@@ -50,10 +50,10 @@ public class Game implements Serializable {
      * Constructors
      */
 
-    public Game() {
+    public GameModel() {
     }
 
-    public Game(GameOptions options) {
+    public GameModel(GameOptions options) {
         this.totalRounds = options.getRounds();
         this.maxPauses = options.getMaxPauses();
         this.autoStart = options.isAutoStart();

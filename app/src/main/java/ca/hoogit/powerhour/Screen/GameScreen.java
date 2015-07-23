@@ -13,9 +13,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Game.Action;
-import ca.hoogit.powerhour.Game.Game;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
@@ -33,7 +33,7 @@ public class GameScreen extends Fragment {
     private static final String ARG_DETAILS = "details";
 
     private ScreenView mScreenView;
-    private Game mGame;
+    private GameModel mGame;
 
     private int mPauseCount = 0;
 
@@ -43,10 +43,10 @@ public class GameScreen extends Fragment {
     /**
      * @return A new instance of fragment GameScreen.
      */
-    public static GameScreen newInstance(Game game) {
+    public static GameScreen newInstance(GameModel gameModel) {
         GameScreen fragment = new GameScreen();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_DETAILS, game);
+        args.putSerializable(ARG_DETAILS, gameModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -124,7 +124,7 @@ public class GameScreen extends Fragment {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
-                        Toast.makeText(getActivity(), "Game was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
+                        Toast.makeText(getActivity(), "GameModel was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         broadcast(Action.STOP, null);
                         BusProvider.getInstance().unregister(this);
                     }
@@ -142,8 +142,8 @@ public class GameScreen extends Fragment {
      * Otto Event methods
      */
 
-    private void broadcast(Action action, Game game) {
-        BusProvider.getInstance().post(new GameEvent(action, game));
+    private void broadcast(Action action, GameModel gameModel) {
+        BusProvider.getInstance().post(new GameEvent(action, gameModel));
     }
 
     @Subscribe
@@ -156,7 +156,7 @@ public class GameScreen extends Fragment {
                 } else {
                     Log.i(TAG, "Produced a null game, using stale data");
                     if (getArguments() != null) {
-                        mGame = (Game) getArguments().getSerializable(ARG_DETAILS);
+                        mGame = (GameModel) getArguments().getSerializable(ARG_DETAILS);
                     } else {
                         Log.e(TAG, "No game details could be loaded, closing.");
                         BusProvider.getInstance().post(new GameEvent(Action.STOP));
@@ -181,12 +181,12 @@ public class GameScreen extends Fragment {
             case NEW_ROUND:
                 mGame = event.game;
                 mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()));
-                mSecondsUpdater.set(calculateSeconds(Game.ROUND_DURATION_MILLIS));
+                mSecondsUpdater.set(calculateSeconds(GameModel.ROUND_DURATION_MILLIS));
                 break;
             case FINISH:
                 mGame = event.game;
 
-                mRoundsUpdater.set(calculateRounds(Game.ROUND_DURATION_MILLIS));
+                mRoundsUpdater.set(calculateRounds(GameModel.ROUND_DURATION_MILLIS));
                 mSecondsUpdater.set(calculateSeconds(mGame.gameMillis()));
                 mScreenView.setState(State.FINISHED, 0);
                 break;
@@ -196,7 +196,7 @@ public class GameScreen extends Fragment {
     private float calculateSeconds(long milliseconds) {
         float secondsLeft = milliseconds / 1000.0f;
         mScreenView.setCountdownText(String.format("%.1f", secondsLeft));
-        return (float) milliseconds / Game.ROUND_DURATION_MILLIS;
+        return (float) milliseconds / GameModel.ROUND_DURATION_MILLIS;
     }
 
     private float calculateRounds(long milliseconds) {
