@@ -25,6 +25,7 @@ import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;
 import ca.hoogit.powerhour.Util.BusProvider;
@@ -201,7 +202,7 @@ public class MainActivity extends BaseActivity {
         GameModel gameModel = new GameModel(options);
         if (!Engine.initialized) {
             Intent initEngine = new Intent(this, Engine.class);
-            initEngine.setAction(Engine.ACTION_INITIALIZE_GAME);
+            initEngine.setAction(Constants.ACTION.INITIALIZE_GAME);
             initEngine.putExtra("game", gameModel);
             startService(initEngine);
             Log.d(TAG, "Starting new game");

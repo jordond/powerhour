@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.GameOver;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -17,6 +17,8 @@
  */
 package ca.hoogit.powerhour.Game;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -95,6 +97,32 @@ public class GameModel implements Serializable {
             return "Less than a minute remaining...";
         }
         return remaining + " minutes remaining.";
+    }
+
+    /**
+     * Engine Helpers
+     */
+
+    public void updateGameMilliseconds(long millis, long roundCount) {
+        long roundMillis = ROUND_DURATION_MILLIS - roundCount;
+        this.millisRemainingGame = millis;
+        this.millisRemainingRound = roundMillis;
+    }
+
+    public long totalRoundsLeftToMilliseconds() {
+        return roundsToMilliseconds(this.totalRounds);
+    }
+
+    public long roundsToMilliseconds(int rounds) {
+        int seconds = rounds * GameModel.ROUND_DURATION_SECONDS;
+        return TimeUnit.SECONDS.toMillis(seconds);
+    }
+
+    public void logTimeLeft(String TAG) {
+        Log.d(TAG, "GameModel Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
+                this.millisRemainingGame));
+        Log.d(TAG, "Round Seconds Left: " + TimeUnit.MILLISECONDS.toSeconds(
+                this.millisRemainingRound));
     }
 
     /**

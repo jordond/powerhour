@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context="ca.hoogit.powerhour.Game.GameOver">
+    tools:context="ca.hoogit.powerhour.GameOver.GameOver">
 
     <include
         android:id="@+id/appBar"
