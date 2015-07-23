@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -19,12 +20,14 @@ import butterknife.Bind;
 import ca.hoogit.powerhour.About.AboutActivity;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;
+import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 import io.fabric.sdk.android.Fabric;
@@ -101,6 +104,8 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         if (mFragmentManager.getBackStackEntryCount() != 0) {
             reset();
+        } else if (Engine.initialized && !Engine.started()) {
+            BusProvider.getInstance().post(new GameEvent(Action.STOP));
         } else {
             super.onBackPressed();
         }

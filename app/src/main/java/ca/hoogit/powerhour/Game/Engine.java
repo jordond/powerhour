@@ -53,6 +53,7 @@ public class Engine extends Service {
 
     public static State mState = State.NONE;
     public static boolean initialized = false;
+    public static boolean started = false;
 
     private Bus mBus;
     private static GameModel mGame;
@@ -214,6 +215,7 @@ public class Engine extends Service {
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
             mState = State.STARTED;
+            started = true;
             broadcast(Action.UPDATE);
             startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
         } else {
@@ -263,6 +265,7 @@ public class Engine extends Service {
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
             }
+            started = false;
         }
         finish();
     }
@@ -327,7 +330,7 @@ public class Engine extends Service {
     }
 
     public static boolean started() {
-        return mState != State.NONE;
+        return started;
     }
 
     public static GameModel details() {
