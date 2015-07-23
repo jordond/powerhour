@@ -123,7 +123,7 @@ public class Engine extends Service {
         intentResume.setAction(ACTION_RESUME_GAME);
         PendingIntent pendingResume = PendingIntent.getService(this, 0, intentResume, 0);
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
         String contentText = mGame.minutesRemaining();
         NotificationCompat.Action action = new NotificationCompat.Action(
@@ -140,7 +140,7 @@ public class Engine extends Service {
                 .setContentTitle(mGame.options().getTitle() + " - Round " + mGame.currentRound())
                 .setTicker(mGame.options().getTitle() + " - Round " + mGame.currentRound())
                 .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_stat_shot_glass_empty)
+                .setSmallIcon(R.drawable.ic_stat_beer)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingMain)
                 .setOngoing(true)
