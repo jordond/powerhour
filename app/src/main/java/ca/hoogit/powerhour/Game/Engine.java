@@ -19,9 +19,11 @@
 package ca.hoogit.powerhour.Game;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
@@ -36,13 +38,15 @@ public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
 
-    public static State mState = State.NONE;
+    private final int TICK_LENGTH = 100;
+
     public static boolean initialized = false;
     public static boolean started = false;
 
     private Bus mBus;
     private static GameModel mGame;
     private CountDownTimer mTimer;
+    private PowerManager.WakeLock mWakeLock;
 
     private long mRoundCounter = 0;
 
@@ -54,6 +58,8 @@ public class Engine extends Service {
         super.onCreate();
         mBus = BusProvider.getInstance();
         mBus.register(this);
+        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
     }
 
     @Override
@@ -70,7 +76,6 @@ public class Engine extends Service {
                 mGame = (GameModel) intent.getSerializableExtra("game");
                 if (mGame != null) {
                     mGame.setState(State.INITIALIZED);
-                    mState = State.INITIALIZED;
                     initialized = true;
                     if (mGame.isAutoStart()) {
                         start();
@@ -130,9 +135,10 @@ public class Engine extends Service {
             createTimer(milliseconds);
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
-            mState = State.STARTED;
             started = true;
             broadcast(Action.UPDATE);
+            mWakeLock.acquire(mGame.getMillisRemainingGame() - TICK_LENGTH);
+            Log.d(TAG, "Status of wakelock: " + mWakeLock.isHeld());
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_ID, Foreground.build(this, mGame));
         } else {
             Log.e(TAG, "Game already started, cannot start another.");
@@ -177,18 +183,18 @@ public class Engine extends Service {
 
     private void stop() {
         if (mGame.hasStarted()) {
-            Log.i(TAG, "Stopping game on round " + mGame.currentRound());
+            started = false;
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
             }
-            started = false;
+            Log.i(TAG, "Stopping game on round " + mGame.currentRound());
         }
         finish();
     }
 
     private void createTimer(long milliseconds) {
         if (!mGame.is(State.ACTIVE)) {
-            mTimer = new CountDownTimer(milliseconds, 100) {
+            mTimer = new CountDownTimer(milliseconds, TICK_LENGTH) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     Action action;
@@ -224,10 +230,13 @@ public class Engine extends Service {
     }
 
     private void finish() {
-        mState = State.NONE;
         mGame = null;
         initialized = false;
         Log.i(TAG, "Cleaning up the engine");
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+            Log.d(TAG, "Releasing wakelock");
+        }
         Log.d(TAG, "Goodnight friend, it was a pleasure");
         stopForeground(true);
         stopSelf();
