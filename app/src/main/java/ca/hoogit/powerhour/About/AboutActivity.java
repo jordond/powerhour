@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -58,7 +59,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected int getMenuResource() {
-        return 0;
+        return R.menu.menu_about;
     }
 
     @Override
@@ -91,6 +92,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
