@@ -19,6 +19,7 @@
 package ca.hoogit.powerhour.Game;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
@@ -31,6 +32,7 @@ import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import ca.hoogit.powerhour.Notifications.Foreground;
+import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Notifications.Constants;
 
@@ -114,6 +116,9 @@ public class Engine extends Service {
                     case INITIALIZED: start(); break;
                     case ACTIVE: pause(); break;
                     case PAUSED: resume(); break;
+                    case NEW_ROUND:
+                        Log.e(TAG, "Trying to pause while in NEW_ROUND mode.");
+                        break;
                 }
                 break;
             case START: start(); break;
@@ -167,9 +172,12 @@ public class Engine extends Service {
     }
 
     private boolean resume() {
-        if (mGame.is(State.PAUSED)) {
-            Log.i(TAG, "Resuming game on round " + mGame.currentRound());
+        if (mGame.is(State.PAUSED) || mGame.is(State.NEW_ROUND)) {
+            String message = String.valueOf(mGame.currentRound());
+            message += mGame.is(State.PAUSED) ? "Resuming game on round: " : "Starting new round: ";
+            Log.i(TAG, message);
             mGame.logTimeLeft(TAG);
+
             createTimer(mGame.getMillisRemainingGame());
             mGame.setState(State.ACTIVE);
             broadcast(Action.UPDATE);
@@ -197,21 +205,15 @@ public class Engine extends Service {
             mTimer = new CountDownTimer(milliseconds, TICK_LENGTH) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    Action action;
                     mRoundCounter += 100;
-                    if (mRoundCounter == GameModel.ROUND_DURATION_MILLIS) {
-                        action = Action.NEW_ROUND;
-                        mGame.incrementRound();
-                        mRoundCounter = 0;
-                        Foreground.update(getApplicationContext(), mGame);
-                        Log.d(TAG, "Starting round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
-                    } else {
-                        action = Action.UPDATE;
-                    }
                     mGame.updateGameMilliseconds(millisUntilFinished, mRoundCounter);
-                    mGame.setState(State.ACTIVE);
-                    broadcast(action);
-                    // TODO Pause the timer to allow for animations, maybe do so in fragment
+                    mGame.setMillisRemainingRound(GameModel.ROUND_DURATION_MILLIS);
+                    if (mRoundCounter != GameModel.ROUND_DURATION_MILLIS) {
+                        mGame.setState(State.ACTIVE);
+                    } else {
+                        onNewRound();
+                    }
+                    broadcast(Action.UPDATE);
                 }
 
                 @Override
@@ -221,12 +223,31 @@ public class Engine extends Service {
                     mGame.setRound(mGame.getTotalRounds());
                     mGame.setState(State.FINISHED);
                     broadcast(Action.FINISH);
-                    Log.d(TAG, "GameModel has completed");
+                    Log.d(TAG, "Game has completed");
                     finish();
                 }
             };
             mTimer.start();
         }
+    }
+
+    private void onNewRound() {
+        // Pause the game, set state as waiting
+        mTimer.cancel();
+        mGame.setState(State.NEW_ROUND);
+        mGame.incrementRound();
+        Foreground.update(this, mGame);
+        mRoundCounter = 0;
+        Log.i(TAG, "Pausing game for new round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
+
+        // Make sure app is open
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        i.setComponent(new ComponentName(getApplicationContext().getPackageName(),
+                MainActivity.class.getName()));
+        startActivity(i);
     }
 
     private void finish() {

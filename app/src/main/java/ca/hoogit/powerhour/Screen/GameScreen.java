@@ -26,7 +26,7 @@ import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
  * Use the {@link GameScreen#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GameScreen extends Fragment {
+public class GameScreen extends Fragment implements GameControl {
 
     private static final String TAG = GameScreen.class.getSimpleName();
 
@@ -39,6 +39,8 @@ public class GameScreen extends Fragment {
 
     private ProgressUpdater mSecondsUpdater;
     private ProgressUpdater mRoundsUpdater;
+
+    private boolean mIsAnimating;
 
     /**
      * @return A new instance of fragment GameScreen.
@@ -63,7 +65,6 @@ public class GameScreen extends Fragment {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game_screen, container, false);
 
@@ -85,33 +86,11 @@ public class GameScreen extends Fragment {
         mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()), false);
         mSecondsUpdater.set(calculateSeconds(mGame.getMillisRemainingRound()), false);
 
-        mScreenView.setControlListener(new GameControl() {
-            @Override
-            public void soundPressed() {
-                Toast.makeText(getActivity(), "Sound button pressed", Toast.LENGTH_SHORT).show();
-            }
+        mScreenView.setControlListener(this);
 
-            @Override
-            public void soundLongPressed() {
-                Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void screenLockPressed() {
-                mScreenView.toggleKeepOnButton();
-            }
-
-            @Override
-            public void controlPressed() {
-                broadcast(Action.TOGGLE, null);
-            }
-
-            @Override
-            public void stopPressed() {
-                stopGame();
-            }
-        });
-
+        if (mGame.is(State.NEW_ROUND)) {
+            handleNewRound();
+        }
     }
 
     private void stopGame() {
@@ -124,12 +103,10 @@ public class GameScreen extends Fragment {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
-                        Toast.makeText(getActivity(), "GameModel was stopped...", Toast.LENGTH_SHORT).show(); //TODO remove
                         broadcast(Action.STOP, null);
                         BusProvider.getInstance().unregister(this);
                     }
                 }).show();
-
     }
 
     @Override
@@ -159,7 +136,7 @@ public class GameScreen extends Fragment {
                         mGame = (GameModel) getArguments().getSerializable(ARG_DETAILS);
                     } else {
                         Log.e(TAG, "No game details could be loaded, closing.");
-                        BusProvider.getInstance().post(new GameEvent(Action.STOP));
+                        broadcast(Action.STOP, null);
                         break;
                     }
                 }
@@ -167,10 +144,14 @@ public class GameScreen extends Fragment {
                 break;
             case UPDATE:
                 mGame = event.game;
-                mScreenView.setState(mGame.getState(), mGame.getPauses());
+                mScreenView.setState(mGame.getState());
 
                 mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()));
                 mSecondsUpdater.set(calculateSeconds(mGame.getMillisRemainingRound()));
+
+                if (mGame.is(State.NEW_ROUND)) {
+                    handleNewRound();
+                }
 
                 // Don't run this unneeded method 10 times a second.
                 if (mPauseCount <= mGame.getPauses()) {
@@ -178,17 +159,11 @@ public class GameScreen extends Fragment {
                     mPauseCount++;
                 }
                 break;
-            case NEW_ROUND:
-                mGame = event.game;
-                mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()));
-                mSecondsUpdater.set(calculateSeconds(GameModel.ROUND_DURATION_MILLIS));
-                break;
             case FINISH:
                 mGame = event.game;
 
                 mRoundsUpdater.set(calculateRounds(GameModel.ROUND_DURATION_MILLIS));
                 mSecondsUpdater.set(calculateSeconds(mGame.gameMillis()));
-                mScreenView.setState(State.FINISHED, 0);
                 break;
         }
     }
@@ -206,4 +181,52 @@ public class GameScreen extends Fragment {
         return elapsed / mGame.gameMillis();
     }
 
+    private void handleNewRound() {
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity(), "SHOT SHOT SHOT SHOT", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Simulating the handling of the new round!!! LOOK AT ME");
+                        broadcast(Action.RESUME, null);
+                    }
+                },
+                3000);
+    }
+
+    private void animateViews() {
+        mIsAnimating = true;
+
+        // TODO do stuff
+
+        mIsAnimating = false;
+    }
+
+    @Override
+    public void soundPressed() {
+        Toast.makeText(getActivity(), "Sound button pressed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void soundLongPressed() {
+        Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void screenLockPressed() {
+        mScreenView.toggleKeepOnButton();
+    }
+
+    @Override
+    public void controlPressed() {
+        if (!mIsAnimating) {
+            broadcast(Action.TOGGLE, null);
+        }
+    }
+
+    @Override
+    public void stopPressed() {
+        if (!mIsAnimating) {
+            stopGame();
+        }
+    }
 }

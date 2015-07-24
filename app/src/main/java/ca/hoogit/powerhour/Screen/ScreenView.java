@@ -187,22 +187,24 @@ public class ScreenView {
         mControl.setOnButtonPressed(listener);
     }
 
-    public void setState(State state, int pauses) {
+    public void setState(State state) {
         this.mGameState = state;
 
         // Handle new State
-        mControl.setIcon(state == State.PAUSED);
+        mControl.setIcon(state == State.PAUSED || state == State.NEW_ROUND);
 
-        if (mGameState == State.FINISHED) {
-            mRoundsText.setText("finished");
-            mCountdownText.setText("zero");
-            mPausesText.setVisibility(View.INVISIBLE);
-            mControl.hideCenter();
-
-        } else if (state == State.ACTIVE) {
-            if (!mCanPause) {
+        switch (mGameState) {
+            case FINISHED:
+                mRoundsText.setText("finished");
+                mCountdownText.setText("zero");
+                mPausesText.setVisibility(View.INVISIBLE);
                 mControl.hideCenter();
-            }
+                break;
+            case ACTIVE:
+                if (!mCanPause) {
+                    mControl.hideCenter();
+                }
+                break;
         }
     }
 
