@@ -23,6 +23,8 @@ public class GameOptions implements Serializable {
     private int maxPauses;
     private int backgroundColor;
     private int accentColor;
+    private int shotSound;
+    private boolean isMuted;
     private boolean autoStart;
     private boolean keepScreenOn;
 
@@ -36,6 +38,8 @@ public class GameOptions implements Serializable {
         this.maxPauses = maxPauses;
         this.backgroundColor = R.color.primary;
         this.accentColor = R.color.accent;
+        this.shotSound = R.raw.alarm;
+        this.isMuted = false;
     }
 
     // Helpers
@@ -167,5 +171,21 @@ public class GameOptions implements Serializable {
 
     public boolean toggleScreenOn() {
         return this.keepScreenOn = !this.keepScreenOn;
+    }
+
+    public int getShotSound() {
+        return shotSound;
+    }
+
+    public void setShotSound(int shotSound) {
+        this.shotSound = shotSound;
+    }
+
+    public boolean isMuted() {
+        return isMuted;
+    }
+
+    public void setIsMuted(boolean isMuted) {
+        this.isMuted = isMuted;
     }
 }

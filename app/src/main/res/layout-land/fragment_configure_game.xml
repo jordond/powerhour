@@ -17,7 +17,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
+        android:layout_above="@+id/configure_start"
+        android:layout_gravity="center|top"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -71,11 +72,10 @@
 
         <!--Right side-->
         <LinearLayout
+            android:id="@+id/right_side"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
@@ -163,7 +163,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -214,23 +213,81 @@
 
             </LinearLayout>
 
-            <info.hoang8f.widget.FButton
-                android:id="@+id/configure_start"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:text="START"
-                app:buttonColor="@color/accent"
-                app:cornerRadius="5dp"
-                app:shadowColor="@color/accentDark"
-                app:shadowEnabled="true"
-                app:shadowHeight="5dp" />
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/margin_spacing"
+                    android:fontFamily="sans-serif-light"
+                    android:text="drinking sound" />
+
+                <ImageButton
+                    android:id="@+id/configure_mute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/game_control_sound_chooser_desc"
+                    android:src="@drawable/ic_av_volume_up" />
+
+                <LinearLayout
+                    android:id="@+id/configure_sound_container"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/configure_sound_chooser"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/game_control_sound_chooser_desc"
+                        android:src="@drawable/ic_action_bell" />
+
+                    <TextView
+                        android:id="@+id/configure_sound_value"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/margin_spacing"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/border"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="alarm" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
         <!--End Right side-->
 
     </LinearLayout>
     <!--End Container-->
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/configure_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:text="START"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:buttonColor="@color/accent"
+        app:cornerRadius="5dp"
+        app:shadowColor="@color/accentDark"
+        app:shadowEnabled="true"
+        app:shadowHeight="5dp" />
 
 </RelativeLayout>
 

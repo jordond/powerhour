@@ -16,6 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/configure_start"
         android:layout_gravity="center_vertical|top"
         android:gravity="center_vertical"
         android:orientation="vertical">
@@ -110,11 +111,11 @@
                 android:id="@+id/configure_pauses_value"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:padding="5dp"
-                android:background="@drawable/border"
-                android:gravity="center"
                 android:layout_gravity="center_vertical"
+                android:background="@drawable/border"
                 android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="0" />
 
         </LinearLayout>
@@ -199,6 +200,62 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/configure_options_margin"
+            android:layout_marginStart="@dimen/configure_options_margin"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/margin_spacing"
+                android:fontFamily="sans-serif-light"
+                android:text="drinking sound" />
+
+            <ImageButton
+                android:id="@+id/configure_mute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/game_control_sound_chooser_desc"
+                android:src="@drawable/ic_av_volume_up" />
+
+            <LinearLayout
+                android:id="@+id/configure_sound_container"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/configure_sound_chooser"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/game_control_sound_chooser_desc"
+                    android:src="@drawable/ic_action_bell" />
+
+                <TextView
+                    android:id="@+id/configure_sound_value"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/margin_spacing"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="alarm" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <info.hoang8f.widget.FButton
@@ -207,7 +264,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_spacing"
+        android:layout_marginBottom="5dp"
         android:text="START"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         app:buttonColor="@color/accent"
