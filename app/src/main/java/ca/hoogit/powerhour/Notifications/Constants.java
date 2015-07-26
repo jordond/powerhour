@@ -15,22 +15,25 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.Notifications;
 
 /**
  * @author jordon
- *         <p/>
- *         Date    18/07/15
- *         Description
+ *
+ * Date    23/07/15
+ * Description
+ * Holds all constants used for the notifcation
+ *
  */
-public enum State {
-    NONE,
-    INITIALIZED,
-    STARTED,
-    ACTIVE,
-    NEW_ROUND,
-    PAUSED,
-    STOPPED,
-    FINISHED
+public class Constants {
+    public interface ACTION {
+        String MAIN = "ca.hoogit.powerhour.game.engine.main";
+        String INITIALIZE_GAME = "ca.hoogit.powerhour.game.engine.init";
+        String PAUSE_GAME = "ca.hoogit.powerhour.game.engine.pause";
+        String RESUME_GAME = "ca.hoogit.powerhour.game.engine.resume";
+    }
+
+    public interface NOTIFICATION_ID {
+        int FOREGROUND_ID = 5673;
+    }
 }

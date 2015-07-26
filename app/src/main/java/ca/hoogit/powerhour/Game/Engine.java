@@ -18,45 +18,37 @@
 
 package ca.hoogit.powerhour.Game;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
-import java.util.concurrent.TimeUnit;
-
-import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhour.Notifications.Foreground;
 import ca.hoogit.powerhour.Selection.MainActivity;
-import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhour.Notifications.Constants;
 
 public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
 
-    public static final String ACTION_MAIN = "ca.hoogit.powerhour.game.engine.main";
-    public static final String ACTION_INITIALIZE_GAME = "ca.hoogit.powerhour.game.engine.init";
-    public static final String ACTION_PAUSE_GAME = "ca.hoogit.powerhour.game.engine.pause";
-    public static final String ACTION_RESUME_GAME = "ca.hoogit.powerhour.game.engine.resume";
-    public static final int FOREGROUND_NOTIFICATION_ID = 5673;
+    private final int TICK_LENGTH = 100;
 
-    public static State mState = State.NONE;
     public static boolean initialized = false;
+    public static boolean started = false;
 
     private Bus mBus;
-    private static Game mGame;
+    private GameModel mGame;
     private CountDownTimer mTimer;
+    private PowerManager.WakeLock mWakeLock;
 
     private long mRoundCounter = 0;
 
@@ -68,6 +60,8 @@ public class Engine extends Service {
         super.onCreate();
         mBus = BusProvider.getInstance();
         mBus.register(this);
+        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
     }
 
     @Override
@@ -80,11 +74,10 @@ public class Engine extends Service {
 
     private void handleIntent(Intent intent) {
         switch (intent.getAction()) {
-            case ACTION_INITIALIZE_GAME:
-                mGame = (Game) intent.getSerializableExtra("game");
+            case Constants.ACTION.INITIALIZE_GAME:
+                mGame = (GameModel) intent.getSerializableExtra("game");
                 if (mGame != null) {
                     mGame.setState(State.INITIALIZED);
-                    mState = State.INITIALIZED;
                     initialized = true;
                     if (mGame.isAutoStart()) {
                         start();
@@ -95,70 +88,15 @@ public class Engine extends Service {
                     Log.e(TAG, "No game was passed to engine");
                 }
                 break;
-            case ACTION_PAUSE_GAME:
+            case Constants.ACTION.PAUSE_GAME:
                 Log.d(TAG, "Pause intent has been received");
                 pause();
                 break;
-            case ACTION_RESUME_GAME:
+            case Constants.ACTION.RESUME_GAME:
                 Log.d(TAG, "Resume intent has been received");
                 resume();
                 break;
         }
-    }
-
-    private Notification buildNotification() {
-        // Intent for the notification
-        Intent intentMain = new Intent(this, MainActivity.class);
-        intentMain.setAction(ACTION_MAIN);
-        intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingMain = PendingIntent.getActivity(this, 0, intentMain, 0);
-
-        // Pending intent action to pause the game
-        Intent intentPause = new Intent(this, Engine.class);
-        intentPause.setAction(ACTION_PAUSE_GAME);
-        PendingIntent pendingPause = PendingIntent.getService(this, 0, intentPause, 0);
-
-        // Pending intent action to pause the game
-        Intent intentResume = new Intent(this, Engine.class);
-        intentResume.setAction(ACTION_RESUME_GAME);
-        PendingIntent pendingResume = PendingIntent.getService(this, 0, intentResume, 0);
-
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-
-        String contentText = mGame.minutesRemaining();
-        NotificationCompat.Action action = new NotificationCompat.Action(
-                R.drawable.ic_stat_av_pause, "Pause", pendingPause);
-        if (mGame.is(State.ACTIVE)) {
-            contentText = "Active with " + contentText;
-        } else if (mGame.is(State.PAUSED)) {
-            contentText = "Paused with " + contentText;
-            action = new NotificationCompat.Action(R.drawable.ic_stat_av_play_arrow,
-                    "Resume", pendingResume);
-        }
-
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(mGame.options().getTitle() + " - Round " + mGame.currentRound())
-                .setTicker(mGame.options().getTitle() + " - Round " + mGame.currentRound())
-                .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_stat_shot_glass_empty)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingMain)
-                .setOngoing(true)
-                .addAction(action).build();
-
-        if (mGame.is(State.ACTIVE) && !mGame.canPause()) {
-            notification.actions[0] = new Notification.Action(
-                    R.drawable.ic_stat_action_flip_to_front, "Open", pendingMain);
-        }
-        return notification;
-    }
-
-    private void updateNotification() {
-        Notification notification = buildNotification();
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -175,29 +113,18 @@ public class Engine extends Service {
         switch (event.action) {
             case TOGGLE:
                 switch (mGame.getState()) {
-                    case INITIALIZED:
-                        start();
-                        break;
-                    case ACTIVE:
-                        pause();
-                        break;
-                    case PAUSED:
-                        resume();
+                    case INITIALIZED: start(); break;
+                    case ACTIVE: pause(); break;
+                    case PAUSED: resume(); break;
+                    case NEW_ROUND:
+                        Log.e(TAG, "Trying to pause while in NEW_ROUND mode.");
                         break;
                 }
                 break;
-            case START:
-                start();
-                break;
-            case PAUSE:
-                pause();
-                break;
-            case RESUME:
-                resume();
-                break;
-            case STOP:
-                stop();
-                break;
+            case START: start(); break;
+            case PAUSE: pause(); break;
+            case RESUME: resume(); break;
+            case STOP: stop(); break;
         }
     }
 
@@ -208,14 +135,16 @@ public class Engine extends Service {
 
     private void start() {
         if (!mGame.hasStarted()) {
-            long milliseconds = roundsToMilliseconds(mGame.getTotalRounds());
+            long milliseconds = mGame.totalRoundsLeftToMilliseconds();
             Log.i(TAG, "Starting the game with " + mGame.getTotalRounds() + " rounds");
             createTimer(milliseconds);
             mGame.setStarted(true);
             mGame.setState(State.ACTIVE);
-            mState = State.STARTED;
+            started = true;
             broadcast(Action.UPDATE);
-            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
+            mWakeLock.acquire(mGame.getMillisRemainingGame() - TICK_LENGTH);
+            Log.d(TAG, "Status of wakelock: " + mWakeLock.isHeld());
+            startForeground(Constants.NOTIFICATION_ID.FOREGROUND_ID, Foreground.build(this, mGame));
         } else {
             Log.e(TAG, "Game already started, cannot start another.");
         }
@@ -226,12 +155,12 @@ public class Engine extends Service {
             if (mGame.canPause()) {
                 Log.i(TAG, "Pausing game on round " + mGame.currentRound());
                 Log.i(TAG, "Remaining pauses: " + mGame.remainingPauses());
-                logTimeLeft();
+                mGame.logTimeLeft(TAG);
                 mTimer.cancel();
                 mGame.incrementPauses();
                 mGame.setState(State.PAUSED);
                 broadcast(Action.UPDATE);
-                updateNotification();
+                Foreground.update(this, mGame);
                 return true;
             } else {
                 Log.i(TAG, "No pauses remaining");
@@ -243,13 +172,17 @@ public class Engine extends Service {
     }
 
     private boolean resume() {
-        if (mGame.is(State.PAUSED)) {
-            Log.i(TAG, "Resuming game on round " + mGame.currentRound());
-            logTimeLeft();
+        if (mGame.is(State.PAUSED) || mGame.is(State.NEW_ROUND)) {
+            String message = String.valueOf(mGame.currentRound());
+            message = mGame.is(State.PAUSED) ? "Resuming game on round: " + message
+                    : "Starting new round: " + message;
+            Log.i(TAG, message);
+            mGame.logTimeLeft(TAG);
+
             createTimer(mGame.getMillisRemainingGame());
             mGame.setState(State.ACTIVE);
             broadcast(Action.UPDATE);
-            updateNotification();
+            Foreground.update(this, mGame);
             return true;
         } else {
             Log.e(TAG, "Trying to resume an active game");
@@ -259,34 +192,28 @@ public class Engine extends Service {
 
     private void stop() {
         if (mGame.hasStarted()) {
-            Log.i(TAG, "Stopping game on round " + mGame.currentRound());
+            started = false;
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
             }
+            Log.i(TAG, "Stopping game on round " + mGame.currentRound());
         }
         finish();
     }
 
     private void createTimer(long milliseconds) {
         if (!mGame.is(State.ACTIVE)) {
-            mTimer = new CountDownTimer(milliseconds, 100) {
+            mTimer = new CountDownTimer(milliseconds, TICK_LENGTH) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    Action action;
-                    mRoundCounter += 100;
-                    if (mRoundCounter == Game.ROUND_DURATION_MILLIS) {
-                        action = Action.NEW_ROUND;
-                        mGame.incrementRound();
-                        mRoundCounter = 0;
-                        updateNotification();
-                        Log.d(TAG, "Starting round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
+                    mRoundCounter += TICK_LENGTH;
+                    mGame.updateGameMilliseconds(millisUntilFinished, mRoundCounter);
+                    if (mRoundCounter != GameModel.ROUND_DURATION_MILLIS) {
+                        mGame.setState(State.ACTIVE);
                     } else {
-                        action = Action.UPDATE;
+                        onNewRound();
                     }
-                    updateGameMilliseconds(millisUntilFinished);
-                    mGame.setState(State.ACTIVE);
-                    broadcast(action);
-                    // TODO Pause the timer to allow for animations, maybe do so in fragment
+                    broadcast(Action.UPDATE);
                 }
 
                 @Override
@@ -304,17 +231,33 @@ public class Engine extends Service {
         }
     }
 
-    private void updateGameMilliseconds(long millis) {
-        long roundMillis = Game.ROUND_DURATION_MILLIS - mRoundCounter;
-        mGame.setMillisRemainingGame(millis);
-        mGame.setMillisRemainingRound(roundMillis);
+    private void onNewRound() {
+        // Pause the game, set state as waiting
+        mTimer.cancel();
+        mGame.setState(State.NEW_ROUND);
+        mGame.incrementRound();
+        Foreground.update(this, mGame);
+        mRoundCounter = 0;
+        Log.i(TAG, "Pausing game for new round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
+
+        // Make sure app is open
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        i.setComponent(new ComponentName(getApplicationContext().getPackageName(),
+                MainActivity.class.getName()));
+        startActivity(i);
     }
 
     private void finish() {
-        mState = State.NONE;
         mGame = null;
         initialized = false;
         Log.i(TAG, "Cleaning up the engine");
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+            Log.d(TAG, "Releasing wakelock");
+        }
         Log.d(TAG, "Goodnight friend, it was a pleasure");
         stopForeground(true);
         stopSelf();
@@ -327,26 +270,7 @@ public class Engine extends Service {
     }
 
     public static boolean started() {
-        return mState != State.NONE;
+        return started;
     }
 
-    public static Game details() {
-        return mGame;
-    }
-
-    /**
-     * Helpers
-     */
-
-    private long roundsToMilliseconds(int rounds) {
-        int seconds = rounds * Game.ROUND_DURATION_SECONDS;
-        return TimeUnit.SECONDS.toMillis(seconds);
-    }
-
-    private void logTimeLeft() {
-        Log.d(TAG, "Game Minutes Left : " + TimeUnit.MILLISECONDS.toMinutes(
-                mGame.getMillisRemainingGame()));
-        Log.d(TAG, "Round Seconds Left: " + TimeUnit.MILLISECONDS.toSeconds(
-                mGame.getMillisRemainingRound()));
-    }
 }

@@ -25,12 +25,12 @@ package ca.hoogit.powerhour.Game;
 public class GameEvent {
 
     public Action action;
-    public Game game;
+    public GameModel game;
 
     public GameEvent() {
     }
 
-    public GameEvent(Game game) {
+    public GameEvent(GameModel game) {
         this.action = Action.UPDATE;
         this.game = game;
     }
@@ -39,7 +39,7 @@ public class GameEvent {
         this.action = action;
     }
 
-    public GameEvent(Action action, Game game) {
+    public GameEvent(Action action, GameModel game) {
         this.action = action;
         this.game = game;
     }

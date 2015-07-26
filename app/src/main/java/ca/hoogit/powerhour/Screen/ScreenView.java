@@ -31,7 +31,7 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ca.hoogit.powerhour.Game.Game;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
@@ -60,7 +60,6 @@ public class ScreenView {
 
     private String ROUND_OF_MAX_TEXT;
 
-    @Bind(R.id.appBar) Toolbar mToolbar;
     @Bind(R.id.game_screen_layout) RelativeLayout mLayout;
     @Bind(R.id.game_screen_control) GameControlButtons mControl;
 
@@ -76,64 +75,47 @@ public class ScreenView {
         this.mActivity = (AppCompatActivity) activity;
         this.mView = view;
         ButterKnife.bind(this, view);
-        setupToolbar();
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public void setupToolbar() {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_icon);
-        mActivity.setSupportActionBar(mToolbar);
-
-        try {
-            mActivity.getSupportActionBar().setHomeButtonEnabled(true);
-            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        } catch (NullPointerException ex) {
-            Log.e(TAG, ex.getMessage());
-        }
-
         mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
     }
 
-    public void setup(Game game) {
-        int primary = game.options().getBackgroundColor();
-        int secondary = game.options().getAccentColor();
+    public void setup(GameModel gameModel) {
+        int primary = gameModel.options().getBackgroundColor();
+        int secondary = gameModel.options().getAccentColor();
 
         changeColors(primary, secondary);
 
-        mTitle.setText(game.options().getTitle());
+        mTitle.setText(gameModel.options().getTitle());
 
         // Setup text views
-        ROUND_OF_MAX_TEXT = " of " + game.options().getRounds();
-        mRoundsText.setText(game.currentRound() + ROUND_OF_MAX_TEXT);
+        ROUND_OF_MAX_TEXT = " of " + gameModel.options().getRounds();
+        mRoundsText.setText(gameModel.currentRound() + ROUND_OF_MAX_TEXT);
 
-        mMaxPause = game.getMaxPauses();
-        mKeepOn = game.options().isKeepScreenOn();
+        mMaxPause = gameModel.getMaxPauses();
+        mKeepOn = gameModel.options().isKeepScreenOn();
 
         mControl.toggleScreenLock(mKeepOn);
         toggleKeepOnFlags(mKeepOn);
 
-        if (game.getMaxPauses() == -1) {
+        if (gameModel.getMaxPauses() == -1) {
             mPausesText.setText(PAUSES_UNLIMITED_TEXT);
         } else {
-            mPausesText.setText(game.remainingPauses() + PAUSES_REMAINING_TEXT);
+            mPausesText.setText(gameModel.remainingPauses() + PAUSES_REMAINING_TEXT);
         }
 
         // Setup control button
-        if (game.is(State.ACTIVE)) {
+        if (gameModel.is(State.ACTIVE)) {
             mControl.toggleCenterButton();
-            if (!game.canPause()) {
+            if (!gameModel.canPause()) {
                 mControl.hideCenter();
             }
-            setPauseText(game.getPauses());
+            setPauseText(gameModel.getPauses());
         }
 
-        mGameState = game.getState();
+        mGameState = gameModel.getState();
         Log.d(TAG, "Setup complete");
     }
 
     public void changeColors(int primary, int secondary) {
-        mToolbar.setBackgroundColor(primary);
         mLayout.setBackgroundColor(primary);
 
         StatusBarUtil.getInstance().set(mActivity, primary);
@@ -205,22 +187,24 @@ public class ScreenView {
         mControl.setOnButtonPressed(listener);
     }
 
-    public void setState(State state, int pauses) {
+    public void setState(State state) {
         this.mGameState = state;
 
         // Handle new State
-        mControl.setIcon(state == State.PAUSED);
+        mControl.setIcon(state == State.PAUSED || state == State.NEW_ROUND);
 
-        if (mGameState == State.FINISHED) {
-            mRoundsText.setText("finished");
-            mCountdownText.setText("zero");
-            mPausesText.setVisibility(View.INVISIBLE);
-            mControl.hideCenter();
-
-        } else if (state == State.ACTIVE) {
-            if (!mCanPause) {
+        switch (mGameState) {
+            case FINISHED:
+                mRoundsText.setText("finished");
+                mCountdownText.setText("zero");
+                mPausesText.setVisibility(View.INVISIBLE);
                 mControl.hideCenter();
-            }
+                break;
+            case ACTIVE:
+                if (!mCanPause) {
+                    mControl.hideCenter();
+                }
+                break;
         }
     }
 

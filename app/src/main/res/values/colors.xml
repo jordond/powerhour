@@ -2,17 +2,17 @@
 <resources>
 
     <!--Main app-->
-    <color name="primary">@color/md_indigo_600</color>
-    <color name="primaryDark">@color/md_indigo_800</color>
+    <color name="primary">@color/md_light_blue_700</color>
+    <color name="primaryDark">@color/md_light_blue_900</color>
     <color name="accent">@color/md_pink_A400</color>
     <color name="accentDark">@color/md_pink_A700</color>
 
-    <!--Game Mode Colors-->
-    <color name="powerHour">@color/md_teal_500</color>
-    <color name="powerHourAccent">@color/md_pink_A400</color>
+    <!--GameModel Mode Colors-->
+    <color name="centuryClub">@color/md_teal_500</color>
+    <color name="centuryClubAccent">@color/md_pink_A400</color>
 
-    <color name="centuryClub">@color/md_light_blue_700</color>
-    <color name="centuryClubAccent">@color/md_orange_A400</color>
+    <color name="powerHour">@color/md_light_blue_700</color>
+    <color name="powerHourAccent">@color/md_orange_A400</color>
 
     <color name="spartan">@color/md_deep_purple_400</color>
     <color name="spartanAccent">@color/md_teal_A700</color>
@@ -24,6 +24,5 @@
     <color name="statisticsAccent">#7D6A55</color>
 
     <color name="transparent">#80000000</color>
-
 
 </resources>

@@ -8,15 +8,13 @@
     android:clickable="true"
     tools:context="ca.hoogit.powerhour.Screen.GameScreen">
 
-    <include
-        android:id="@+id/appBar"
-        layout="@layout/app_bar" />
-
     <!--Main container-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/game_screen_control"
         android:layout_centerVertical="true"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -111,23 +109,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-thin"
             android:text="@string/game_screen_remaining_pauses_placeholder"
             android:textSize="24sp" />
 
-        <ca.hoogit.powerhour.Views.GameControlButtons
-            android:id="@+id/game_screen_control"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            app:gcb_color="@color/accent" />
-
     </LinearLayout>
     <!--End main container-->
 
+    <ca.hoogit.powerhour.Views.GameControlButtons
+        android:id="@+id/game_screen_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        app:gcb_color="@color/accent" />
 
 
 </RelativeLayout>
