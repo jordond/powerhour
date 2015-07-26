@@ -170,12 +170,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_spacing"
                     android:fontFamily="sans-serif-light"
                     android:text="colors" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
@@ -197,6 +196,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/configure_game_color_accent_text"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textSize="12sp"
+                        android:theme="@style/Widget.AppCompat.Button.Small" />
+
+                    <Button
+                        android:id="@+id/configure_color_reset"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/configure_game_color_reset_text"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textSize="12sp"
                         android:theme="@style/Widget.AppCompat.Button.Small" />

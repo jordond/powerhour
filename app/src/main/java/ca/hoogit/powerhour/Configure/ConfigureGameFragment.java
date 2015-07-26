@@ -273,7 +273,7 @@ public class ConfigureGameFragment extends Fragment {
         colorSelector.show();
     }
 
-    @OnClick({R.id.configure_color_background, R.id.configure_color_accent})
+    @OnClick({R.id.configure_color_background, R.id.configure_color_accent, R.id.configure_color_reset})
     public void chooseColor(View v) {
         switch (v.getId()) {
             case R.id.configure_color_background:
@@ -292,6 +292,10 @@ public class ConfigureGameFragment extends Fragment {
                         refreshUI();
                     }
                 });
+                break;
+            case R.id.configure_color_reset:
+                changeColors(mOptions.getBackgroundColor(), mOptions.getAccentColor());
+                refreshUI();
                 break;
         }
     }

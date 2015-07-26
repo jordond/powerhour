@@ -39,4 +39,5 @@
     <string name="source_code_url">http://github.com/jordond/powerhour</string>
     <string name="developer_url">http://github.com/jordond</string>
     <string name="title_activity_game_over">GameOver</string>
+    <string name="configure_game_color_reset_text">Reset</string>
 </resources>
