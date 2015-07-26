@@ -8,10 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -20,11 +18,11 @@ import butterknife.Bind;
 import ca.hoogit.powerhour.About.AboutActivity;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
+import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
-import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.GameEvent;
-import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;

@@ -23,10 +23,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,13 +38,13 @@ import de.psdev.licensesdialog.LicensesDialog;
 
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
 
+    private static final String TAG = AboutActivity.class.getSimpleName();
+
     @Bind(R.id.version) TextView mVersion;
     @Bind(R.id.me) LinearLayout mMe;
     @Bind(R.id.source_code) LinearLayout mSource;
     @Bind(R.id.rate) LinearLayout mRate;
     @Bind(R.id.licenses) LinearLayout mLicenses;
-
-    private String mPackageName;
 
     @Override
     protected int getToolbarColor() {
@@ -83,10 +82,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String versionName = pInfo.versionName;
-            mPackageName = pInfo.packageName;
             mVersion.setText(versionName);
         } catch (PackageManager.NameNotFoundException e) {
-            mPackageName = getApplication().getPackageName();
+            Log.e(TAG, "Could not get PackageInfo");
         }
     }
 

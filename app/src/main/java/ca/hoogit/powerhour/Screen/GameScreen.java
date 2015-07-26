@@ -13,12 +13,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
-import ca.hoogit.powerhour.Game.GameModel;
-import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.GameEvent;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
 
 /**
@@ -214,7 +214,7 @@ public class GameScreen extends Fragment implements GameControl {
     @Override
     public void screenLockPressed() {
         mScreenView.toggleKeepOnButton();
-    }
+    } //TODO resume countdown on button press when in new round
 
     @Override
     public void controlPressed() {

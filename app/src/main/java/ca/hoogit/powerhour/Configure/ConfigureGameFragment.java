@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,9 +21,8 @@ import com.gc.materialdesign.widgets.ColorSelector;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ca.hoogit.powerhour.Util.BusProvider;
-import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Util.ColorUtil;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.PlusMinusButtons;

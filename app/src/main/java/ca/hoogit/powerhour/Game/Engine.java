@@ -31,10 +31,10 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
+import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.Notifications.Foreground;
 import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.Util.BusProvider;
-import ca.hoogit.powerhour.Notifications.Constants;
 
 public class Engine extends Service {
 

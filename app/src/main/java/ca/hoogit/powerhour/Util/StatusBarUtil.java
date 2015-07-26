@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 
-import com.squareup.otto.Subscribe;
-
 /**
  * Created by jordon on 09/07/15.
  * A Simple utility for changing the color of the status bar
