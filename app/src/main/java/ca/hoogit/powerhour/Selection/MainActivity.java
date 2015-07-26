@@ -72,17 +72,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        mFragmentManager = getSupportFragmentManager();
         Fabric.with(this, new Crashlytics());
 
-        getToolbar().setTitle("Choose an Option");
+        super.onCreate(savedInstanceState);
 
-        mFragmentManager = getSupportFragmentManager();
-
-        if (Engine.started()) {
-            launchGameScreen(Engine.details(), false);
-            Log.i(TAG, "GameModel already exists, resuming game");
-        }
         setupListeners();
     }
 
@@ -109,6 +103,27 @@ public class MainActivity extends BaseActivity {
             BusProvider.getInstance().post(new GameEvent(Action.STOP));
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Subscribe
+    public void onGameEvent(GameEvent event) {
+        switch (event.action) {
+            case PRODUCE:
+                if (findFragment("gameScreen") == null && !mChosen) {
+                    launchGameScreen(event.game, false);
+                    Log.i(TAG, "Game already exists, resuming game");
+                }
+                Log.d(TAG, "No game to resume, user must choose");
+                break;
+            case STOP:
+                Fragment fragment = findFragment("gameScreen");
+                mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+                reset();
+                break;
+            case FINISH:
+                // Show the game over screen
+                break;
         }
     }
 
@@ -152,7 +167,7 @@ public class MainActivity extends BaseActivity {
 
     private void configureGame(GameOptions options) {
         Log.i(TAG, "Configuring  " + options.getType().name());
-        Fragment configure = mFragmentManager.findFragmentByTag("configure");
+        Fragment configure = findFragment("configure");
         if (configure == null) {
             configure = ConfigureGameFragment.newInstance(options);
         }
@@ -180,24 +195,6 @@ public class MainActivity extends BaseActivity {
         launchGame(options, true);
     }
 
-    /**
-     * Launch the game given the options
-     *
-     * @param animate whether or not to animate the transition
-     */
-    private void launchGameScreen(GameModel gameModel, boolean animate) {
-        Fragment gameScreen = mFragmentManager.findFragmentByTag("gameScreen");
-        if (gameScreen == null) {
-            gameScreen = GameScreen.newInstance(gameModel);
-        }
-        FragmentTransaction ft = mFragmentManager.beginTransaction();
-        if (animate) {
-            ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
-        }
-        ft.replace(R.id.container, gameScreen, "gameScreen");
-        ft.commit();
-    }
-
     private void launchGame(GameOptions options, boolean animate) {
         GameModel gameModel = new GameModel(options);
         if (!Engine.initialized) {
@@ -211,18 +208,29 @@ public class MainActivity extends BaseActivity {
         launchGameScreen(gameModel, animate);
     }
 
-    @Subscribe
-    public void onGameEvent(GameEvent event) {
-        switch (event.action) {
-            case STOP:
-                Fragment fragment = mFragmentManager.findFragmentByTag("gameScreen");
-                mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-                reset();
-                break;
-            case FINISH:
-                // Show the game over screen
-                break;
+    /**
+     * Launch the game given the options
+     *
+     * @param animate whether or not to animate the transition
+     */
+    private void launchGameScreen(GameModel gameModel, boolean animate) {
+        Fragment gameScreen = findFragment("gameScreen");
+        if (gameScreen == null) {
+            gameScreen = GameScreen.newInstance(gameModel);
         }
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        if (animate) {
+            ft.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right);
+        }
+        ft.replace(R.id.container, gameScreen, "gameScreen");
+        ft.commit();
+    }
+
+    public Fragment findFragment(String name) {
+        if (mFragmentManager == null) {
+            mFragmentManager = getSupportFragmentManager();
+        }
+        return mFragmentManager.findFragmentByTag(name);
     }
 
 }

@@ -46,7 +46,7 @@ public class Engine extends Service {
     public static boolean started = false;
 
     private Bus mBus;
-    private static GameModel mGame;
+    private GameModel mGame;
     private CountDownTimer mTimer;
     private PowerManager.WakeLock mWakeLock;
 
@@ -174,7 +174,8 @@ public class Engine extends Service {
     private boolean resume() {
         if (mGame.is(State.PAUSED) || mGame.is(State.NEW_ROUND)) {
             String message = String.valueOf(mGame.currentRound());
-            message += mGame.is(State.PAUSED) ? "Resuming game on round: " : "Starting new round: ";
+            message = mGame.is(State.PAUSED) ? "Resuming game on round: " + message
+                    : "Starting new round: " + message;
             Log.i(TAG, message);
             mGame.logTimeLeft(TAG);
 
@@ -205,9 +206,8 @@ public class Engine extends Service {
             mTimer = new CountDownTimer(milliseconds, TICK_LENGTH) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    mRoundCounter += 100;
+                    mRoundCounter += TICK_LENGTH;
                     mGame.updateGameMilliseconds(millisUntilFinished, mRoundCounter);
-                    mGame.setMillisRemainingRound(GameModel.ROUND_DURATION_MILLIS);
                     if (mRoundCounter != GameModel.ROUND_DURATION_MILLIS) {
                         mGame.setState(State.ACTIVE);
                     } else {
@@ -271,10 +271,6 @@ public class Engine extends Service {
 
     public static boolean started() {
         return started;
-    }
-
-    public static GameModel details() {
-        return mGame;
     }
 
 }

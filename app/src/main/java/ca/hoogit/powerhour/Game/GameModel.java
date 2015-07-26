@@ -106,7 +106,8 @@ public class GameModel implements Serializable {
     public void updateGameMilliseconds(long millis, long roundCount) {
         long roundMillis = ROUND_DURATION_MILLIS - roundCount;
         this.millisRemainingGame = millis;
-        this.millisRemainingRound = roundMillis;
+        this.millisRemainingRound = roundCount == this.totalRounds
+                ? ROUND_DURATION_MILLIS : roundMillis;
     }
 
     public long totalRoundsLeftToMilliseconds() {
