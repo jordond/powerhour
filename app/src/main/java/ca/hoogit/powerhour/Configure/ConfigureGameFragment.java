@@ -2,6 +2,7 @@ package ca.hoogit.powerhour.Configure;
 
 import android.content.DialogInterface;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -22,11 +23,14 @@ import com.gc.materialdesign.views.Slider;
 import com.gc.materialdesign.views.Switch;
 import com.gc.materialdesign.widgets.ColorSelector;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ca.hoogit.powerhour.Audio.AudioPlayer;
+import ca.hoogit.powerhour.Audio.SoundRecorder;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Util.ColorUtil;
@@ -36,6 +40,7 @@ import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.PlusMinusButtons;
 import ca.hoogit.soundchooser.SoundChooserDialog;
 import info.hoang8f.widget.FButton;
+import mbanje.kurt.fabbutton.FabButton;
 
 /**
  */
@@ -44,6 +49,8 @@ public class ConfigureGameFragment extends Fragment {
     private final String TAG = ConfigureGameFragment.class.getSimpleName();
 
     private static final String ARG_OPTIONS = "game_options";
+
+    private final int DEFAULT_SOUND = R.raw.argon;
 
     @Bind(R.id.appBar) Toolbar mToolbar;
 
@@ -60,8 +67,9 @@ public class ConfigureGameFragment extends Fragment {
     @Bind(R.id.configure_keep_screen_on) Switch mKeepScreenOn;
 
     @Bind(R.id.configure_sound_container) LinearLayout mSoundContainer;
+    @Bind(R.id.configure_play) FabButton mPlayShotSound;
     @Bind(R.id.configure_sound_chooser) ImageButton mSoundChooser;
-    @Bind(R.id.configure_sound_value) TextView mChosenSoundText;
+    @Bind(R.id.configure_record) FabButton mRecordSound;
 
     @Bind(R.id.configure_start) FButton mStartButton;
 
@@ -76,7 +84,10 @@ public class ConfigureGameFragment extends Fragment {
 
     private boolean mIsMuted;
     private ArrayList<SoundFile> mSoundFiles;
-    private int mShotSound;
+    private int mShotSound = DEFAULT_SOUND;
+    private String mCustomFileName = "";
+    private ProgressButton mPlay;
+    private SoundRecorder mRecorder;
 
     private boolean mGameStarting;
 
@@ -155,6 +166,8 @@ public class ConfigureGameFragment extends Fragment {
         StatusBarUtil.getInstance().set(mActivity, primary);
         mToolbar.setBackgroundColor(primary);
         mLayout.setBackgroundColor(primary);
+        mPlayShotSound.setColor(primary);
+        mRecordSound.setColor(primary);
 
         mPrimaryColor = primary;
     }
@@ -167,6 +180,9 @@ public class ConfigureGameFragment extends Fragment {
         mStartButton.setShadowColor(ColorUtil.darken(accent));
 
         mKeepScreenOn.setBackgroundColor(accent);
+
+        mPlayShotSound.setProgressColor(accent);
+        mRecordSound.setProgressColor(accent);
 
         mAccentColor = accent;
     }
@@ -229,10 +245,17 @@ public class ConfigureGameFragment extends Fragment {
             }
         });
 
+        // Shot sound buttons
         mSoundChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!mIsMuted) {
+                    if (mRecorder.isActive()) {
+                        mRecorder.toggle(false);
+                    }
+                    if (mPlay.isActive()) {
+                        mPlay.reset();
+                    }
                     openSoundChooser();
                 }
             }
@@ -240,9 +263,53 @@ public class ConfigureGameFragment extends Fragment {
 
         mSoundFiles = PowerHourUtils.getSounds();
 
+        AudioPlayer mAudioPlayer = new AudioPlayer(getActivity());
+        mPlay = new ProgressButton(mPlayShotSound, mAudioPlayer);
+        mPlayShotSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mRecorder.isActive()) {
+                    mRecorder.toggle(false);
+                } else if (!mPlay.isActive()) {
+                    if (mShotSound == SoundRecorder.CUSTOM_RECORDED_SOUND) {
+                        mPlay.start(Uri.parse(mCustomFileName));
+                    } else {
+                        mPlay.start(mShotSound);
+                    }
+                } else {
+                    mPlay.reset();
+                }
+            }
+        });
+
+        mRecorder = new SoundRecorder(getActivity(), mRecordSound, new SoundRecorder.OnRecordFinished() {
+            @Override
+            public void recordingFinished(String filename) {
+                File file = new File(filename);
+                if (file.exists()) {
+                    mShotSound = SoundRecorder.CUSTOM_RECORDED_SOUND;
+                    mCustomFileName = filename;
+                }
+            }
+        });
+
+        mRecordSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlay.isActive()) {
+                    mPlay.reset();
+                }
+                mRecorder.toggle(!mRecorder.isActive());
+            }
+        });
+
         mGameStarting = false;
 
         return view;
+    }
+
+    private void stopAll() {
+
     }
 
     @Override
@@ -331,6 +398,10 @@ public class ConfigureGameFragment extends Fragment {
                 if (mIsMuted) {
                     ((ImageButton) v).setImageResource(R.drawable.ic_av_volume_off);
                     mSoundContainer.setVisibility(View.INVISIBLE);
+                    if (mPlay.isActive()) {
+                        mPlay.reset();
+                    }
+                    mRecorder.toggle(false);
                 } else {
                     ((ImageButton) v).setImageResource(R.drawable.ic_av_volume_up);
                     mSoundContainer.setVisibility(View.VISIBLE);
@@ -351,7 +422,6 @@ public class ConfigureGameFragment extends Fragment {
         dialog.setOnOptionChosen(new SoundChooserDialog.OnOptionChosen() {
             @Override
             public void onSoundSelected(int i) {
-                mChosenSoundText.setText(PowerHourUtils.soundIdToName(mSoundFiles, i));
             }
 
             @Override
@@ -361,8 +431,7 @@ public class ConfigureGameFragment extends Fragment {
 
             @Override
             public void onNegative(DialogInterface dialogInterface) {
-                mShotSound = R.raw.alarm;
-                mChosenSoundText.setText("alarm");
+                mShotSound = DEFAULT_SOUND;
             }
         });
         dialog.show(getFragmentManager(), "soundChooser");
@@ -396,4 +465,5 @@ public class ConfigureGameFragment extends Fragment {
 
         return options;
     }
+
 }

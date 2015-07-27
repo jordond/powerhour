@@ -181,6 +181,7 @@ public class GameScreen extends Fragment implements GameControl {
         return elapsed / mGame.gameMillis();
     }
 
+    // TODO null reference, if exited while paused
     private void handleNewRound() {
         new android.os.Handler().postDelayed(
                 new Runnable() {
