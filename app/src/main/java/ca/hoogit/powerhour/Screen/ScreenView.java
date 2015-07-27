@@ -22,6 +22,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,7 +75,10 @@ public class ScreenView {
         this.mActivity = (AppCompatActivity) activity;
         this.mView = view;
         ButterKnife.bind(this, view);
-        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        final Window win = mActivity.getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
     }
 
     public void setup(GameModel gameModel) {
@@ -154,7 +158,6 @@ public class ScreenView {
     public void toggleKeepOnFlags(boolean keepOn) {
         if (keepOn) {
             mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
             Log.d(TAG, "Adding flag 'KEEP_SCREEN_ON'");
         } else {
             mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

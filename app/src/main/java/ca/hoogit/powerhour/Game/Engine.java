@@ -48,6 +48,7 @@ public class Engine extends Service {
     private Bus mBus;
     private GameModel mGame;
     private CountDownTimer mTimer;
+    private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
 
     private long mRoundCounter = 0;
@@ -60,8 +61,20 @@ public class Engine extends Service {
         super.onCreate();
         mBus = BusProvider.getInstance();
         mBus.register(this);
-        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        mPowerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        getWakelock(false);
+    }
+
+    private void getWakelock(boolean wakeScreen) {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
+        if (!wakeScreen) {
+            mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        } else {
+            mWakeLock = mPowerManager.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+        }
     }
 
     @Override
@@ -241,13 +254,13 @@ public class Engine extends Service {
         Log.i(TAG, "Pausing game for new round: " + mGame.currentRound() + " of " + mGame.getTotalRounds());
 
         // Make sure app is open
-        Intent i = new Intent();
+        Intent i = new Intent(this.getApplicationContext(), MainActivity.class);
         i.setAction(Intent.ACTION_MAIN);
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-        i.setComponent(new ComponentName(getApplicationContext().getPackageName(),
-                MainActivity.class.getName()));
+        i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
+
+        getWakelock(true);
+        mWakeLock.acquire(mGame.getMillisRemainingGame());
     }
 
     private void finish() {
