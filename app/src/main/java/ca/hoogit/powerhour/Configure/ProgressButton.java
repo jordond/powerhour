@@ -108,6 +108,12 @@ public class ProgressButton implements AudioPlayer.OnPlayback {
         }
     }
 
+    public void destroy() {
+        if (mAudioPlayer != null) {
+            mAudioPlayer.destroy();
+        }
+    }
+
     public void setImageEndId(int imageEndId) {
         this.mImageEndId = imageEndId;
     }

@@ -223,7 +223,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_spacing"
+                    android:layout_marginEnd="10dp"
                     android:fontFamily="sans-serif-light"
                     android:text="drinking sound" />
 
@@ -232,7 +232,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/game_control_sound_chooser_desc"
+                    android:contentDescription="Mute game sounds"
                     android:src="@drawable/ic_av_volume_up" />
 
                 <LinearLayout
@@ -241,28 +241,53 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <mbanje.kurt.fabbutton.FabButton
+                        android:id="@+id/configure_play"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:color="@color/primary"
+                        android:indeterminate="false"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:max="100"
+                        android:src="@drawable/ic_av_play_arrow"
+                        android:visibility="visible"
+                        app:fbb_autoStart="false"
+                        app:fbb_endBitmap="@drawable/ic_swatch_selected"
+                        app:fbb_hideProgressOnComplete="true"
+                        app:fbb_progressWidthRatio="0.1"
+                        app:fbb_showEndBitmap="false"
+                        app:fbb_showShadow="false" />
+
                     <ImageButton
                         android:id="@+id/configure_sound_chooser"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/game_control_sound_chooser_desc"
                         android:src="@drawable/ic_action_bell" />
 
-                    <TextView
-                        android:id="@+id/configure_sound_value"
-                        android:layout_width="0dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/margin_spacing"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="15dp"
-                        android:background="@drawable/border"
-                        android:fontFamily="sans-serif-light"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="alarm" />
+                    <mbanje.kurt.fabbutton.FabButton
+                        android:id="@+id/configure_record"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_gravity="bottom"
+                        android:clickable="true"
+                        android:color="@color/primary"
+                        android:indeterminate="false"
+                        android:layout_marginStart="5dp"
+                        android:max="100"
+                        android:src="@drawable/ic_av_mic"
+                        android:visibility="visible"
+                        app:fbb_autoStart="false"
+                        app:fbb_endBitmap="@drawable/ic_swatch_selected"
+                        app:fbb_hideProgressOnComplete="true"
+                        app:fbb_progressWidthRatio="0.2"
+                        app:fbb_showEndBitmap="true"
+                        app:fbb_showShadow="false" />
 
                 </LinearLayout>
 

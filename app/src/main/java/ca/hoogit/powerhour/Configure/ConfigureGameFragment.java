@@ -127,6 +127,12 @@ public class ConfigureGameFragment extends Fragment {
     public void onPause() {
         super.onPause();
         BusProvider.getInstance().unregister(this);
+        if (mPlay != null) {
+            mPlay.destroy();
+        }
+        if (mRecorder.isActive()) {
+            mRecorder.toggle(false);
+        }
     }
 
     @Override
