@@ -92,6 +92,7 @@ public class ScreenView {
         mMaxPause = gameModel.getMaxPauses();
         mKeepOn = gameModel.options().isKeepScreenOn();
 
+        mControl.setMuteIcon(gameModel.options().isMuted());
         mControl.toggleScreenLock(mKeepOn);
         toggleKeepOnFlags(mKeepOn);
 

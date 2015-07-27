@@ -204,7 +204,9 @@ public class GameScreen extends Fragment implements GameControl {
 
     @Override
     public void soundPressed() {
-        Toast.makeText(getActivity(), "Sound button pressed", Toast.LENGTH_SHORT).show();
+        boolean muted = mGame.options().isMuted();
+        mScreenView.getControl().setMuteIcon(!muted);
+        mGame.options().setIsMuted(!muted);
     }
 
     @Override

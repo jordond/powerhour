@@ -146,6 +146,14 @@ public class GameControlButtons extends LinearLayout {
         mControl.setImageResource(mIcon);
     }
 
+    public void setMuteIcon(boolean isMuted) {
+        if (isMuted) {
+            mSound.setImageResource(R.drawable.ic_av_volume_off);
+        } else {
+            mSound.setImageResource(R.drawable.ic_av_volume_up);
+        }
+    }
+
     public boolean toggleScreenLock(boolean state) {
         if (state) {
             mScreenLock.setImageResource(R.drawable.ic_screen_on_true);
