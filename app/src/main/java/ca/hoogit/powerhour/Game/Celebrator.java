@@ -21,6 +21,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -38,6 +39,8 @@ import ca.hoogit.powerhour.Util.BusProvider;
  *
  */
 public class Celebrator implements AudioPlayer.OnPlayback {
+
+    private static final String TAG = Celebrator.class.getSimpleName();
 
     private static final int STREAM_TYPE = AudioManager.STREAM_ALARM;
     private static final long DEFAULT_DELAY = 1000;
@@ -80,7 +83,9 @@ public class Celebrator implements AudioPlayer.OnPlayback {
 
     public void finish() {
         if (mAudioPlayer != null) {
-            mAudioPlayer.stop();
+            if (mAudioPlayer.isPlaying()) {
+                mAudioPlayer.stop();
+            }
             mAudioPlayer.destroy();
             mAudioPlayer = null;
             mBus.unregister(this);
@@ -133,9 +138,9 @@ public class Celebrator implements AudioPlayer.OnPlayback {
 
     @Override
     public void onFinishPlayback() {
+        isActive = false;
         mBus.post(new CelebrationEvent(CelebrationEvent.ACTION_FINISH));
         mBus.post(new GameEvent(Action.RESUME));
-        isActive = false;
     }
 
     public void delayResume(long duration) {

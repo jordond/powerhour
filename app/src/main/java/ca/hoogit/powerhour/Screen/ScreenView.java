@@ -27,6 +27,8 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
@@ -49,6 +51,7 @@ public class ScreenView {
 
     public final String PAUSES_REMAINING_TEXT = " pauses remaining";
     public final String PAUSES_UNLIMITED_TEXT = "∞ pauses";
+    private final int ANIMATION_DURATION = 3000;
 
     private AppCompatActivity mActivity;
     private View mView;
@@ -163,6 +166,13 @@ public class ScreenView {
             mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(TAG, "Removing flag 'KEEP_SCREEN_ON'");
         }
+    }
+
+    public void shotAmate() {
+        mCountdownText.setText("SHOT");
+        YoYo.with(Techniques.Flash)
+                .duration(ANIMATION_DURATION)
+                .playOn(mCountdownText);
     }
 
     /**

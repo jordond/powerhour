@@ -1,6 +1,7 @@
 package ca.hoogit.powerhour.Screen;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -169,10 +170,10 @@ public class GameScreen extends Fragment implements GameControl {
     public void onCelebrateEvent(Celebrator.CelebrationEvent event) {
         switch (event.action) {
             case Celebrator.CelebrationEvent.ACTION_START:
-                Log.d(TAG, "Round complete celebrate...");
+                mScreenView.shotAmate();
                 break;
             case Celebrator.CelebrationEvent.ACTION_TICK:
-                mRoundsUpdater.set(event.progress);
+                mRoundsUpdater.set(event.progress / 100.0f);
                 break;
             case Celebrator.CelebrationEvent.ACTION_FINISH:
                 mRoundsUpdater.set(calculateRounds(mGame.gameMillis()));
@@ -207,11 +208,22 @@ public class GameScreen extends Fragment implements GameControl {
         mScreenView.getControl().setMuteIcon(!muted);
         mGame.options().setIsMuted(!muted);
         broadcast(Action.UPDATE_SETTINGS, mGame);
+
+        if (!muted) {
+            Snackbar
+                .make(getView(), getActivity().getString(R.string.muted_game),
+                        Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        soundPressed();
+                    }
+                }).show();
+        }
     }
 
     @Override
     public void soundLongPressed() {
-        Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
     }
 
     @Override

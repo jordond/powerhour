@@ -73,6 +73,9 @@ public class AudioPlayer implements MediaPlayer.OnCompletionListener {
         if(this.create(soundUri)) {
             this.mMediaPlayer.setOnCompletionListener(this);
             this.mMediaPlayer.start();
+            if(mListener != null) {
+                mListener.onPlaybackStart();
+            }
             this.createTimer((long)this.mMediaPlayer.getDuration());
             return this.mMediaPlayer.isPlaying();
         } else {
@@ -107,13 +110,9 @@ public class AudioPlayer implements MediaPlayer.OnCompletionListener {
                 if(mListener != null) {
                     mListener.onPlaybackTick(progress);
                 }
-
             }
 
             public void onFinish() {
-                if(mListener != null) {
-                    mListener.onFinishPlayback();
-                }
                 mTimer = null;
             }
         };
