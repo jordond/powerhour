@@ -38,9 +38,9 @@ import mbanje.kurt.fabbutton.FabButton;
 public class SoundRecorder {
 
     private static final String TAG = SoundRecorder.class.getSimpleName();
-    private static final String FILE_NAME = "recorded_sound.3gp";
     private static final int TICK_LENGTH = 100;
     private static final long RECORD_LENGTH_MILLIS = 10 * 1000L; // 10 seconds
+    public static final String FILE_NAME = "recorded_sound.3gp";
     public static final int CUSTOM_RECORDED_SOUND = -1;
 
     private Context mContext;

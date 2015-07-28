@@ -38,7 +38,7 @@ public class GameOptions implements Serializable {
         this.maxPauses = maxPauses;
         this.backgroundColor = R.color.primary;
         this.accentColor = R.color.accent;
-        this.shotSound = R.raw.alarm;
+        this.shotSound = R.raw.argon;
         this.isMuted = false;
     }
 

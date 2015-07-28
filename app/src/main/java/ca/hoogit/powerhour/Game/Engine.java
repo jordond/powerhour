@@ -48,6 +48,8 @@ public class Engine extends Service {
     private Bus mBus;
     private GameModel mGame;
     private CountDownTimer mTimer;
+    private Celebrator mCelebrator;
+
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
 
@@ -130,7 +132,8 @@ public class Engine extends Service {
                     case ACTIVE: pause(); break;
                     case PAUSED: resume(); break;
                     case NEW_ROUND:
-                        Log.e(TAG, "Trying to pause while in NEW_ROUND mode.");
+                        Log.i(TAG, "Resuming game early after new round.");
+                        resume();
                         break;
                 }
                 break;
@@ -138,6 +141,11 @@ public class Engine extends Service {
             case PAUSE: pause(); break;
             case RESUME: resume(); break;
             case STOP: stop(); break;
+            case UPDATE_SETTINGS:
+                if (event.game != null) {
+                    mGame.setOptions(event.game.options());
+                }
+                break;
         }
     }
 
@@ -155,6 +163,7 @@ public class Engine extends Service {
             mGame.setState(State.ACTIVE);
             started = true;
             broadcast(Action.UPDATE);
+            mCelebrator = new Celebrator(getApplicationContext(), mGame.options());
             mWakeLock.acquire(mGame.getMillisRemainingGame() - TICK_LENGTH);
             Log.d(TAG, "Status of wakelock: " + mWakeLock.isHeld());
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_ID, Foreground.build(this, mGame));

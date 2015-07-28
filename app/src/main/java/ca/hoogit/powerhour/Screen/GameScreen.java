@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import ca.hoogit.powerhour.Game.Action;
+import ca.hoogit.powerhour.Game.Celebrator;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.Game.State;
@@ -89,7 +90,7 @@ public class GameScreen extends Fragment implements GameControl {
         mScreenView.setControlListener(this);
 
         if (mGame.is(State.NEW_ROUND)) {
-            handleNewRound();
+            //handleNewRound();
         }
     }
 
@@ -149,10 +150,6 @@ public class GameScreen extends Fragment implements GameControl {
                 mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()));
                 mSecondsUpdater.set(calculateSeconds(mGame.getMillisRemainingRound()));
 
-                if (mGame.is(State.NEW_ROUND)) {
-                    handleNewRound();
-                }
-
                 // Don't run this unneeded method 10 times a second.
                 if (mPauseCount <= mGame.getPauses()) {
                     mScreenView.setPauseText(mGame.getPauses());
@@ -162,8 +159,23 @@ public class GameScreen extends Fragment implements GameControl {
             case FINISH:
                 mGame = event.game;
 
-                mRoundsUpdater.set(calculateRounds(GameModel.ROUND_DURATION_MILLIS));
-                mSecondsUpdater.set(calculateSeconds(mGame.gameMillis()));
+                mRoundsUpdater.set(calculateRounds(mGame.gameMillis()));
+                mSecondsUpdater.set(calculateSeconds(GameModel.ROUND_DURATION_MILLIS));
+                break;
+        }
+    }
+
+    @Subscribe
+    public void onCelebrateEvent(Celebrator.CelebrationEvent event) {
+        switch (event.action) {
+            case Celebrator.CelebrationEvent.ACTION_START:
+                Log.d(TAG, "Round complete celebrate...");
+                break;
+            case Celebrator.CelebrationEvent.ACTION_TICK:
+                mRoundsUpdater.set(event.progress);
+                break;
+            case Celebrator.CelebrationEvent.ACTION_FINISH:
+                mRoundsUpdater.set(calculateRounds(mGame.gameMillis()));
                 break;
         }
     }
@@ -181,19 +193,6 @@ public class GameScreen extends Fragment implements GameControl {
         return elapsed / mGame.gameMillis();
     }
 
-    // TODO null reference, if exited while paused
-    private void handleNewRound() {
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        Toast.makeText(getActivity(), "SHOT SHOT SHOT SHOT", Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "Simulating the handling of the new round!!! LOOK AT ME");
-                        broadcast(Action.RESUME, null);
-                    }
-                },
-                3000);
-    }
-
     private void animateViews() {
         mIsAnimating = true;
 
@@ -207,6 +206,7 @@ public class GameScreen extends Fragment implements GameControl {
         boolean muted = mGame.options().isMuted();
         mScreenView.getControl().setMuteIcon(!muted);
         mGame.options().setIsMuted(!muted);
+        broadcast(Action.UPDATE_SETTINGS, mGame);
     }
 
     @Override

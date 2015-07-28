@@ -2,6 +2,7 @@ package ca.hoogit.powerhour.Selection;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -111,8 +112,9 @@ public class MainActivity extends BaseActivity {
                 if (findFragment("gameScreen") == null && !mChosen) {
                     launchGameScreen(event.game, false);
                     Log.i(TAG, "Game already exists, resuming game");
+                } else {
+                    Log.d(TAG, "Game already active");
                 }
-                Log.d(TAG, "No game to resume, user must choose");
                 break;
             case STOP:
                 Fragment fragment = findFragment("gameScreen");
@@ -231,4 +233,15 @@ public class MainActivity extends BaseActivity {
         return mFragmentManager.findFragmentByTag(name);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("chosen", mChosen);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mChosen = savedInstanceState.getBoolean("chosen");
+    }
 }
