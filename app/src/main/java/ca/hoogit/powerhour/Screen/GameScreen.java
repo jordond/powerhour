@@ -42,8 +42,6 @@ public class GameScreen extends Fragment implements GameControl {
     private ProgressUpdater mSecondsUpdater;
     private ProgressUpdater mRoundsUpdater;
 
-    private boolean mIsAnimating;
-
     /**
      * @return A new instance of fragment GameScreen.
      */
@@ -194,14 +192,6 @@ public class GameScreen extends Fragment implements GameControl {
         return elapsed / mGame.gameMillis();
     }
 
-    private void animateViews() {
-        mIsAnimating = true;
-
-        // TODO do stuff
-
-        mIsAnimating = false;
-    }
-
     @Override
     public void soundPressed() {
         boolean muted = mGame.options().isMuted();
@@ -229,19 +219,15 @@ public class GameScreen extends Fragment implements GameControl {
     @Override
     public void screenLockPressed() {
         mScreenView.toggleKeepOnButton();
-    } //TODO resume countdown on button press when in new round
+    }
 
     @Override
     public void controlPressed() {
-        if (!mIsAnimating) {
-            broadcast(Action.TOGGLE, null);
-        }
+        broadcast(Action.TOGGLE, null);
     }
 
     @Override
     public void stopPressed() {
-        if (!mIsAnimating) {
-            stopGame();
-        }
+        stopGame();
     }
 }
