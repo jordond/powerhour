@@ -146,6 +146,7 @@ public class GameScreen extends Fragment implements GameControl {
                 mGame = event.game;
                 mScreenView.setState(mGame.getState());
 
+                mScreenView.setRemainingMinutes(mGame.getMillisRemainingGame());
                 mRoundsUpdater.set(calculateRounds(mGame.getMillisRemainingGame()));
                 mSecondsUpdater.set(calculateSeconds(mGame.getMillisRemainingRound()));
 
@@ -203,11 +204,11 @@ public class GameScreen extends Fragment implements GameControl {
             Snackbar
                 .make(getView(), getActivity().getString(R.string.muted_game),
                         Snackbar.LENGTH_LONG)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        soundPressed();
-                    }
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            soundPressed();
+                        }
                 }).show();
         }
     }

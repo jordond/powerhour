@@ -26,7 +26,7 @@
     <string name="game_screen_remaining_pauses_placeholder">3 Pauses Remaining</string>
     <string name="game_control_keep_screen_on_desc">toggle keep screen on state</string>
     <string name="keep_screen_on_warning">The screen will be kept on until you turn it off.  This may cause a lot of battery drain, which you might need later in the night ;).  If you disable the screen lock then the game will continue in the background.</string>
-    <string name="screen_on_warning">Screen will stay on</string>
+    <string name="screen_on_warning">Screen will not be kept on</string>
     <string name="configure_game_color_background_text">Background</string>
     <string name="configure_game_color_accent_text">Accent</string>
     <string name="title_activity_about">About</string>
@@ -39,4 +39,5 @@
     <string name="title_activity_game_over">GameOver</string>
     <string name="configure_game_color_reset_text">Reset</string>
     <string name="muted_game">Game is now muted</string>
+    <string name="minutes_remaining">minutes remaining</string>
 </resources>

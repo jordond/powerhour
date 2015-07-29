@@ -40,6 +40,7 @@ public class GameOptions implements Serializable {
         this.accentColor = R.color.accent;
         this.shotSound = R.raw.argon;
         this.isMuted = false;
+        this.keepScreenOn = true;
     }
 
     // Helpers

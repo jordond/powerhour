@@ -23,10 +23,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif-light"
-            android:paddingBottom="15dp"
             android:text="@string/configure_game_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/game_screen_remaining_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/minutes_remaining"
+            android:textSize="16sp" />
 
         <!--Progress container-->
         <RelativeLayout
@@ -112,7 +120,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-thin"
             android:text="@string/game_screen_remaining_pauses_placeholder"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
     <!--End main container-->

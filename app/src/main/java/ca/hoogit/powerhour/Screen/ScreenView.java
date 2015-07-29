@@ -31,6 +31,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Game.GameModel;
@@ -67,6 +69,7 @@ public class ScreenView {
     @Bind(R.id.game_screen_control) GameControlButtons mControl;
 
     @Bind(R.id.game_screen_title) TextView mTitle;
+    @Bind(R.id.game_screen_remaining_minutes) TextView mRemainingMinutes;
     @Bind(R.id.game_screen_countdown_text) TextView mCountdownText;
     @Bind(R.id.game_screen_remaining_pauses) TextView mPausesText;
     @Bind(R.id.game_screen_rounds_remaining) TextView mRoundsText;
@@ -84,41 +87,42 @@ public class ScreenView {
         win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
     }
 
-    public void setup(GameModel gameModel) {
-        int primary = gameModel.options().getBackgroundColor();
-        int secondary = gameModel.options().getAccentColor();
+    public void setup(GameModel game) {
+        int primary = game.options().getBackgroundColor();
+        int secondary = game.options().getAccentColor();
 
         changeColors(primary, secondary);
 
-        mTitle.setText(gameModel.options().getTitle());
+        mTitle.setText(game.options().getTitle());
 
         // Setup text views
-        ROUND_OF_MAX_TEXT = " of " + gameModel.options().getRounds();
-        mRoundsText.setText(gameModel.currentRound() + ROUND_OF_MAX_TEXT);
+        ROUND_OF_MAX_TEXT = " of " + game.options().getRounds();
+        mRoundsText.setText(game.currentRound() + ROUND_OF_MAX_TEXT);
+        setRemainingMinutes(game.getMillisRemainingGame());
 
-        mMaxPause = gameModel.getMaxPauses();
-        mKeepOn = gameModel.options().isKeepScreenOn();
+        mMaxPause = game.getMaxPauses();
+        mKeepOn = game.options().isKeepScreenOn();
 
-        mControl.setMuteIcon(gameModel.options().isMuted());
+        mControl.setMuteIcon(game.options().isMuted());
         mControl.toggleScreenLock(mKeepOn);
         toggleKeepOnFlags(mKeepOn);
 
-        if (gameModel.getMaxPauses() == -1) {
+        if (game.getMaxPauses() == -1) {
             mPausesText.setText(PAUSES_UNLIMITED_TEXT);
         } else {
-            mPausesText.setText(gameModel.remainingPauses() + PAUSES_REMAINING_TEXT);
+            mPausesText.setText(game.remainingPauses() + PAUSES_REMAINING_TEXT);
         }
 
         // Setup control button
-        if (gameModel.is(State.ACTIVE)) {
+        if (game.is(State.ACTIVE)) {
             mControl.toggleCenterButton();
-            if (!gameModel.canPause()) {
+            if (!game.canPause()) {
                 mControl.hideCenter();
             }
-            setPauseText(gameModel.getPauses());
+            setPauseText(game.getPauses());
         }
 
-        mGameState = gameModel.getState();
+        mGameState = game.getState();
         Log.d(TAG, "Setup complete");
     }
 
@@ -140,19 +144,19 @@ public class ScreenView {
         toggleKeepOnButton(mKeepOn);
     }
 
-    public void toggleKeepOnButton(boolean keepOn) {
+    public void toggleKeepOnButton(final boolean keepOn) {
         mControl.toggleScreenLock(keepOn);
         toggleKeepOnFlags(keepOn);
 
-        if (keepOn) {
+        if (!keepOn) {
             Snackbar
                 .make(mView, mActivity.getString(R.string.screen_on_warning),
                         Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        toggleKeepOnFlags(false);
-                        mControl.toggleScreenLock(false);
+                        toggleKeepOnFlags(!keepOn);
+                        mControl.toggleScreenLock(!keepOn);
                     }
                 }).show();
         }
@@ -235,6 +239,19 @@ public class ScreenView {
             mCanPause = false;
             Log.d(TAG, "All pause breaks have been used");
         }
+    }
+
+    public void setRemainingMinutes(long minutesInMillis) {
+        int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(minutesInMillis);
+        String text;
+        if (minutes == 0) {
+            text = "less than a minute";
+        } else if (minutes == 1) {
+            text = "one minute remaining";
+        } else {
+            text = minutes + " minutes remaining";
+        }
+        mRemainingMinutes.setText(text);
     }
 
     public void setCountdownText(String text) {
