@@ -44,7 +44,7 @@ import ca.hoogit.powerhour.Util.StatusBarUtil;
 
 public class GameOver extends BaseActivity implements View.OnClickListener {
 
-    private static final int BEER_DIVISOR = 12;
+    private static final double BEER_DIVISOR = 12.0;
 
     @Bind(R.id.container) RelativeLayout mContainer;
 
@@ -156,7 +156,7 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
     }
 
     private void setBeerCount(int rounds) {
-        double beers = rounds / BEER_DIVISOR;
+        double beers = (double) rounds / BEER_DIVISOR;
         if (beers < 1) {
             mBeerCount.setText("you barely even drank one beer");
         } else {
