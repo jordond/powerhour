@@ -17,13 +17,20 @@
  */
 package ca.hoogit.powerhour.Util;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import ca.hoogit.powerhour.Game.Action;
+import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -101,6 +108,33 @@ public class PowerHourUtils {
             this.name = name;
             this.id = id;
         }
+    }
+
+    public static void rateApp(Context context) {
+        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" +
+                            context.getPackageName())));
+        }
+    }
+
+    public static void delay(long duration, final OnDelay listener) {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                listener.run();
+            }
+        }, duration);
+    }
+
+    public interface OnDelay {
+        void run();
     }
 
 }

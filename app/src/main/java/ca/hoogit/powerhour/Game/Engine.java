@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
@@ -39,6 +40,7 @@ import ca.hoogit.powerhour.Util.BusProvider;
 public class Engine extends Service {
 
     private static final String TAG = Engine.class.getSimpleName();
+    private static final long[] VIBRATE_PATTERN = {200, 400, 200, 500, 200, 300};
 
     private final int TICK_LENGTH = 100;
 
@@ -50,6 +52,7 @@ public class Engine extends Service {
     private CountDownTimer mTimer;
     private Celebrator mCelebrator;
 
+    private Vibrator mVibrator;
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
 
@@ -64,6 +67,7 @@ public class Engine extends Service {
         mBus = BusProvider.getInstance();
         mBus.register(this);
         mPowerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        mVibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         getWakelock(false);
     }
 
@@ -201,6 +205,7 @@ public class Engine extends Service {
             Log.i(TAG, message);
             mGame.logTimeLeft(TAG);
 
+            mVibrator.cancel();
             createTimer(mGame.getMillisRemainingGame());
             mGame.setState(State.ACTIVE);
             broadcast(Action.UPDATE);
@@ -244,6 +249,7 @@ public class Engine extends Service {
                     mGame.setMillisRemainingRound(0);
                     mGame.setRound(mGame.getTotalRounds());
                     mGame.setState(State.FINISHED);
+                    mCelebrator.celebrate();
                     broadcast(Action.FINISH);
                     Log.d(TAG, "Game has completed");
                     finish();
@@ -270,6 +276,9 @@ public class Engine extends Service {
 
         getWakelock(true);
         mWakeLock.acquire(mGame.getMillisRemainingGame());
+        if (!mGame.options().isMuted()) {
+            mVibrator.vibrate(VIBRATE_PATTERN, 1);
+        }
     }
 
     private void finish() {

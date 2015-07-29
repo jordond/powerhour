@@ -119,8 +119,8 @@ public class Celebrator implements AudioPlayer.OnPlayback {
                 }
                 break;
             case STOP:
-            case FINISH:
                 finish();
+            case FINISH:
                 break;
         }
     }

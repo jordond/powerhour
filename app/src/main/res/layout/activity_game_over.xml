@@ -17,6 +17,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -31,9 +32,147 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/appBar"
+        android:gravity="center"
+        android:layout_above="@+id/game_over_okay"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/configure_game_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="38sp" />
+
+        <!--Progress container-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/round_progress"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="45dp"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/you_finished"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/rounds_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/round_progress"
+                android:layout_alignEnd="@+id/round_progress"
+                android:layout_alignStart="@+id/round_progress"
+                android:layout_alignTop="@+id/round_progress"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="160"
+                android:textAlignment="center"
+                android:textColor="@color/md_white_1000"
+                android:textSize="80sp" />
+
+            <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
+                android:id="@+id/round_progress"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:cpb_countdown="false"
+                app:cpb_progress="0"
+                app:cpb_progress_background_color="@color/md_white_1000"
+                app:cpb_progress_color="@color/accent"
+                app:cpb_stroke_width="8dp" />
+
+            <TextView
+                android:id="@+id/total_rounds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/rounds_complete"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="50dp"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="of 200 rounds"
+                android:textSize="16sp" />
+        </RelativeLayout>
+        <!--End Progress container-->
+
+        <TextView
+            android:id="@+id/pause_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="you paused 3 times"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/beer_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="about 12 beers were consumed"
+            android:textSize="18sp" />
+
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/game_over_okay"
+        android:layout_alignParentStart="true"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_heart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_the_app"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/game_over_okay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/accent">
+
+        <Button
+            android:id="@+id/okay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:text="Okay"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

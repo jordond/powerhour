@@ -18,40 +18,165 @@
 
 package ca.hoogit.powerhour.GameOver;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
+
+import butterknife.Bind;
+import ca.hoogit.powerhour.About.AboutActivity;
+import ca.hoogit.powerhour.BaseActivity;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Screen.ProgressUpdater;
+import ca.hoogit.powerhour.Selection.MainActivity;
+import ca.hoogit.powerhour.Util.PowerHourUtils;
+import ca.hoogit.powerhour.Util.StatusBarUtil;
 
-public class GameOver extends AppCompatActivity {
+public class GameOver extends BaseActivity implements View.OnClickListener {
+
+    private static final int BEER_DIVISOR = 12;
+
+    @Bind(R.id.container) RelativeLayout mContainer;
+
+    @Bind(R.id.title) TextView mTitle;
+    @Bind(R.id.round_progress) HoloCircularProgressBar mProgress;
+    @Bind(R.id.rounds_complete) TextView mRoundsComplete;
+    @Bind(R.id.total_rounds) TextView mTotalRounds;
+    @Bind(R.id.beer_count) TextView mBeerCount;
+    @Bind(R.id.pause_count) TextView mPauseCount;
+
+    @Bind(R.id.rate) LinearLayout mRateApp;
+    @Bind(R.id.game_over_okay) LinearLayout mOkayLayout;
+    @Bind(R.id.okay) Button mOkay;
+
+    private GameModel mGame;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_over);
+    protected int getToolbarColor() {
+        return mGame.options().getBackgroundColor();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_game_over, menu);
+    protected int getLayoutResource() {
+        return R.layout.activity_game_over;
+    }
+
+    @Override
+    protected int getMenuResource() {
+        return R.menu.menu_game_over;
+    }
+
+    @Override
+    protected boolean getDisplayHomeAsUpEnabled() {
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    protected boolean getEventBusEnabled() {
+        return false;
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    protected void onCreate(Bundle savedInstanceState) {
+        mGame = (GameModel) getIntent().getSerializableExtra("game");
+        if (mGame == null) {
+            finish();
         }
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        changeColor();
 
+        mRateApp.setOnClickListener(this);
+        mOkay.setOnClickListener(this);
+
+        mTitle.setText(mGame.options().getTitle());
+        mRoundsComplete.setText(String.valueOf(mGame.currentRound()));
+        mTotalRounds.setText("of " + mGame.getTotalRounds() + " rounds");
+
+        setPauseCount(mGame.getPauses());
+        setBeerCount(mGame.currentRound());
+
+        mProgress.setProgress(0);
+        PowerHourUtils.delay(2000, new PowerHourUtils.OnDelay() {
+            @Override
+            public void run() {
+                ProgressUpdater p = new ProgressUpdater(mProgress);
+                float progress = (float) mGame.currentRound() / mGame.getTotalRounds();
+                p.set(progress, 2500);
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            case android.R.id.home:
+                launchHome();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        launchHome();
+    }
+
+    private void changeColor() {
+        StatusBarUtil.getInstance().set(this, mGame.options().getBackgroundColor());
+        mContainer.setBackgroundColor(mGame.options().getBackgroundColor());
+
+        mProgress.setProgressColor(mGame.options().getAccentColor());
+        mOkayLayout.setBackgroundColor(mGame.options().getAccentColor());
+        // todo change other colors
+    }
+
+    private void setPauseCount(int count) {
+        if (count == 0) {
+            mPauseCount.setText("you finished without pausing and");
+        } else if (count == 1) {
+            mPauseCount.setText("you paused once and");
+        } else {
+            mPauseCount.setText("you paused " + count + " times and");
+        }
+    }
+
+    private void setBeerCount(int rounds) {
+        double beers = rounds / BEER_DIVISOR;
+        if (beers < 1) {
+            mBeerCount.setText("you barely even drank one beer");
+        } else {
+            mBeerCount.setText("you drank about " + String.format("%.2f", beers) + " beers");
+        }
+    }
+
+    private void launchHome() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rate:
+                PowerHourUtils.rateApp(getApplication());
+            case R.id.okay:
+                launchHome();
+                break;
+        }
     }
 }

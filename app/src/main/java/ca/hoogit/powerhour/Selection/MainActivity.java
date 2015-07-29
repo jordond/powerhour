@@ -24,10 +24,12 @@ import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameModel;
+import ca.hoogit.powerhour.GameOver.GameOver;
 import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;
 import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 import io.fabric.sdk.android.Fabric;
@@ -106,7 +108,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Subscribe
-    public void onGameEvent(GameEvent event) {
+    public void onGameEvent(final GameEvent event) {
         switch (event.action) {
             case PRODUCE:
                 if (findFragment("gameScreen") == null && !mChosen) {
@@ -117,12 +119,30 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
             case STOP:
-                Fragment fragment = findFragment("gameScreen");
-                mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-                reset();
+                if (event.game.hasStarted()) {
+                    Intent gameOver = new Intent(getApplication(), GameOver.class);
+                    gameOver.putExtra("game", event.game);
+                    startActivity(gameOver);
+                    finish();
+                } else {
+                    Fragment fragment = findFragment("gameScreen");
+                    mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+                    reset();
+                }
+                Log.i(TAG, "Game was stopped early");
                 break;
             case FINISH:
-                // Show the game over screen
+                PowerHourUtils.delay(500, new PowerHourUtils.OnDelay() {
+                    @Override
+                    public void run() {
+                        Intent gameOver = new Intent(getApplication(), GameOver.class);
+                        gameOver.putExtra("game", event.game);
+                        reset();
+                        startActivity(gameOver);
+                        finish();
+                    }
+                });
+                Log.i(TAG, "Game has been completed");
                 break;
         }
     }

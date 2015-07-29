@@ -34,6 +34,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Util.PowerHourUtils;
 import de.psdev.licensesdialog.LicensesDialog;
 
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
@@ -110,15 +111,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                         Uri.parse(getString(R.string.source_code_url))));
                 break;
             case R.id.rate:
-                Uri uri = Uri.parse("market://details?id=" + getApplication().getPackageName());
-                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                try {
-                    startActivity(goToMarket);
-                } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" +
-                                    getApplication().getPackageName())));
-                }
+                PowerHourUtils.rateApp(getApplication());
                 break;
             case R.id.licenses:
                 new LicensesDialog.Builder(this)

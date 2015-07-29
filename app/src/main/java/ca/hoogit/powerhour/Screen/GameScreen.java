@@ -103,7 +103,7 @@ public class GameScreen extends Fragment implements GameControl {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
-                        broadcast(Action.STOP, null);
+                        broadcast(Action.STOP, mGame);
                         BusProvider.getInstance().unregister(this);
                     }
                 }).show();
@@ -199,6 +199,7 @@ public class GameScreen extends Fragment implements GameControl {
         mScreenView.getControl().setMuteIcon(!muted);
         mGame.options().setIsMuted(!muted);
         broadcast(Action.UPDATE_SETTINGS, mGame);
+        Log.i(TAG, "Mute button was pressed, status: " + muted);
 
         if (!muted) {
             Snackbar

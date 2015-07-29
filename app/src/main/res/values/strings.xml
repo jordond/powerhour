@@ -40,4 +40,6 @@
     <string name="configure_game_color_reset_text">Reset</string>
     <string name="muted_game">Game is now muted</string>
     <string name="minutes_remaining">minutes remaining</string>
+    <string name="rate_the_app">Rate the app</string>
+    <string name="you_finished">you finished</string>
 </resources>

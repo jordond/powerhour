@@ -96,7 +96,12 @@ public class ScreenView {
         mTitle.setText(game.options().getTitle());
 
         // Setup text views
-        ROUND_OF_MAX_TEXT = " of " + game.options().getRounds();
+        int max = game.options().getRounds();
+        if (max != 301) {
+            ROUND_OF_MAX_TEXT = " of " + max;
+        } else {
+            ROUND_OF_MAX_TEXT = " of ∞";
+        }
         mRoundsText.setText(game.currentRound() + ROUND_OF_MAX_TEXT);
         setRemainingMinutes(game.getMillisRemainingGame());
 
