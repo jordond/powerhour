@@ -21,7 +21,7 @@ Version 1.1
 - FREE & AD FREE
 
 ##Get It
-![https://play.google.com/store/apps/details?id=ca.hoogit.powerhour](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)
+[![PlayStore](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=ca.hoogit.powerhour)
 
 Or grab the apk [here](raw/powerhour.apk), or better yet download and build yourself.
 
