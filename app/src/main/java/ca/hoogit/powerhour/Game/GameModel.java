@@ -32,7 +32,7 @@ import ca.hoogit.powerhour.Configure.GameOptions;
  */
 public class GameModel implements Serializable {
 
-    public static final int ROUND_DURATION_SECONDS = 5; // TODO change back to 60 (1 min)
+    public static final int ROUND_DURATION_SECONDS = 60; // TODO change back to 60 (1 min)
     public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
 
     private boolean started = false;

@@ -16,13 +16,5 @@
   ~ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.hoogit.powerhour.GameOver.GameOver">
-    <item
-        android:id="@+id/action_about"
-        android:orderInCategory="100"
-        android:title="@string/action_about"
-        app:showAsAction="never" />
-</menu>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ca.hoogit.powerhour.GameOver.GameOver"></menu>

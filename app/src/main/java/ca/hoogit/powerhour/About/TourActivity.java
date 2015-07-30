@@ -37,25 +37,46 @@ import ca.hoogit.powerhour.Selection.MainActivity;
  *  First time user tour of application
  *
  */
-public class TourActivity extends AppIntro {
+public class TourActivity extends AppIntro2 {
     @Override
     public void init(Bundle bundle) {
         int primary = getResources().getColor(R.color.primary);
 
-        addSlide(AppIntroFragment.newInstance("Welcome to Power Hour",
-                "This is a quick tour of the app and the game, you can skip it if you want",
-                R.drawable.ic_logo, primary));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_1_title),
+                getString(R.string.tour_slide_1_desc),
+                R.drawable.tour_start, primary));
 
-        setBarColor(primary);
-        setSeparatorColor(primary);
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_2_title),
+                getString(R.string.tour_slide_2_desc),
+                R.drawable.tour_configure, getResources().getColor(R.color.md_teal_500)));
+
+
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_3_title),
+                getString(R.string.tour_slide_3_desc),
+                R.drawable.tour_progress, getResources().getColor(R.color.md_red_500)));
+
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_4_title),
+                getString(R.string.tour_slide_4_desc),
+                R.drawable.tour_drink, getResources().getColor(R.color.md_amber_500)));
+
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_5_title),
+                getString(R.string.tour_slide_5_desc),
+                R.drawable.tour_game_over, getResources().getColor(R.color.md_deep_purple_500)));
+
+        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_6_title),
+                getString(R.string.tour_slide_6_desc),
+                R.drawable.tour_start, primary));
+
+//        setBarColor(primary);
+//        setSeparatorColor(primary);
     }
 
     private void launchMainActivity() {
         Intent main = new Intent(this, MainActivity.class);
         startActivity(main);
+        finish();
     }
 
-    @Override
     public void onSkipPressed() {
         launchMainActivity();
     }

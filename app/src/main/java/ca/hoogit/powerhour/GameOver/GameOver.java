@@ -142,7 +142,6 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
 
         mProgress.setProgressColor(mGame.options().getAccentColor());
         mOkayLayout.setBackgroundColor(mGame.options().getAccentColor());
-        // todo change other colors
     }
 
     private void setPauseCount(int count) {

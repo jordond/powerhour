@@ -44,4 +44,16 @@
     <string name="you_finished">you finished</string>
     <string name="tour_activity_title">Tour</string>
     <string name="action_help">Help</string>
+    <string name="tour_slide_1_title">Welcome to Power Hour</string>
+    <string name="tour_slide_1_desc">Here\'s a simple tour to get you ready to drink up!  To start off choose a preset game mode.</string>
+    <string name="tour_slide_2_title">Configuring a custom game</string>
+    <string name="tour_slide_2_desc">Instead of a preset you can configure your game as you see fit, from the drinking sound to the display color, as well as recording your own alarm sound!</string>
+    <string name="tour_slide_3_title">Playing the game</string>
+    <string name="tour_slide_3_desc">Once the game has begun, a countdown timer will start.  When the timer reaches zero you drink!  Simple as that.</string>
+    <string name="tour_slide_4_title">Shot Time!</string>
+    <string name="tour_slide_4_desc">An alarm will sound, and a little animation will notify you that it is time to take a shot.</string>
+    <string name="tour_slide_5_title">Finished Game</string>
+    <string name="tour_slide_5_desc">After the last round of drinking you will be shown some statistics about your game, although you might be too gone to read ;)</string>
+    <string name="tour_slide_6_title">That\'s It!</string>
+    <string name="tour_slide_6_desc">Now choose a game mode and get drinking!</string>
 </resources>
