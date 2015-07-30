@@ -42,4 +42,6 @@
     <string name="minutes_remaining">minutes remaining</string>
     <string name="rate_the_app">Rate the app</string>
     <string name="you_finished">you finished</string>
+    <string name="tour_activity_title">Tour</string>
+    <string name="action_help">Help</string>
 </resources>

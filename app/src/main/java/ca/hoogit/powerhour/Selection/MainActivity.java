@@ -17,6 +17,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import ca.hoogit.powerhour.About.AboutActivity;
+import ca.hoogit.powerhour.About.TourActivity;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Configure.ConfigureGameFragment;
 import ca.hoogit.powerhour.Configure.GameOptions;
@@ -30,6 +31,7 @@ import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.GameScreen;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Util.PowerHourUtils;
+import ca.hoogit.powerhour.Util.SharedPrefs;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
 import io.fabric.sdk.android.Fabric;
@@ -78,19 +80,28 @@ public class MainActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
+        SharedPrefs prefs = SharedPrefs.get(this);
+
+        if (prefs.isFirstRun()) {
+            prefs.setFirstRun(false);
+            startActivity(new Intent(this, TourActivity.class));
+        }
+
         setupListeners();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_help:
+                startActivity(new Intent(this, TourActivity.class));
                 return true;
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
             case android.R.id.home:
                 reset();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -119,7 +130,7 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
             case STOP:
-                if (event.game.hasStarted()) {
+                if (event.game != null && event.game.hasStarted()) {
                     Intent gameOver = new Intent(getApplication(), GameOver.class);
                     gameOver.putExtra("game", event.game);
                     startActivity(gameOver);

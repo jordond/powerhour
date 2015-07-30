@@ -31,6 +31,24 @@
                 android:value="ca.hoogit.powerhour.Selection.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".GameOver.GameOver"
+            android:label="@string/title_activity_game_over"
+            android:parentActivityName=".Selection.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".About.TourActivity"
+            android:label="@string/tour_activity_title"
+            android:parentActivityName=".Selection.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
+        </activity>
+
         <service
             android:name=".Game.Engine"
             android:enabled="true"
@@ -40,14 +58,6 @@
             android:name="io.fabric.ApiKey"
             android:value="894d182b0e0c98734be894889a1e2b0bf7e4a957" />
 
-        <activity
-            android:name=".GameOver.GameOver"
-            android:label="@string/title_activity_game_over"
-            android:parentActivityName=".Selection.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
