@@ -1,5 +1,7 @@
 ![PowerHour](raw/banner.png)
+Master [![Build Status](https://ci.hoogit.ca/job/production.PowerHour/badge/icon)](https://ci.hoogit.ca/job/production.PowerHour/)
 
+Develop [![Build Status](https://ci.hoogit.ca/job/staging.PowerHour/badge/icon)](https://ci.hoogit.ca/job/staging.PowerHour/)
 
 An application to aid in the playing of a classic drinking game called Power Hour, or Century club.
 With the goal being consume a shot of beer every minute for an hour, or one hundred minutes.
@@ -23,7 +25,7 @@ Version 1.1
 ##Get It
 [![PlayStore](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=ca.hoogit.powerhour)
 
-Or grab the apk [here](raw/powerhour.apk), or better yet download and build yourself.
+Or grab the apk [here](https://ci.hoogit.ca/job/production.PowerHour/), or better yet download and build yourself.
 
 ##Permissions Breakdown
 - Record Audio - For recording your own sound to be played at the end of each round
