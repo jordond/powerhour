@@ -1,4 +1,5 @@
 ![PowerHour](raw/banner.png)
+
 Master [![Build Status](https://ci.hoogit.ca/job/production.PowerHour/badge/icon)](https://ci.hoogit.ca/job/production.PowerHour/)
 
 Develop [![Build Status](https://ci.hoogit.ca/job/staging.PowerHour/badge/icon)](https://ci.hoogit.ca/job/staging.PowerHour/)
