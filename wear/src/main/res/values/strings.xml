@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">PowerHour-wear</string>
     <string name="hello_world">Hello World!</string>
+    <string name="seconds">seconds</string>
+    <string name="placeholder_seconds_remaining">44.5</string>
+    <string name="placeholder_rounds_remaining">3 of 60</string>
+    <string name="round">round</string>
 </resources>
