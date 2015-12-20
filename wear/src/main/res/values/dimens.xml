@@ -6,4 +6,7 @@
 
     <dimen name="round_top_margin">34dp</dimen>
     <dimen name="round_left_margin">34dp</dimen>
+
+    <dimen name="dots_spacing">15dp</dimen>
+
 </resources>

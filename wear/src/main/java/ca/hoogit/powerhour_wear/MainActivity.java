@@ -1,46 +1,36 @@
 package ca.hoogit.powerhour_wear;
 
+import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.wearable.activity.WearableActivity;
-import android.support.wearable.view.BoxInsetLayout;
+import android.support.wearable.view.DotsPageIndicator;
+import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.util.Log;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import ca.hoogit.powerhour_wear.Fragments.ControlsFragment;
+import ca.hoogit.powerhour_wear.Fragments.GameScreenFragment;
 
 public class MainActivity extends WearableActivity {
 
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * Containing layout
      */
-    private LinearLayout mGameScreen;
+    private RelativeLayout mContainer;
+    private GridViewPager mPager;
 
     /**
-     * Active layout components
+     * Fragments
      */
-    private RelativeLayout mActiveLayout;
-    private TextView mRemainingRounds;
-    private TextView mRemainingSeconds;
-    private HoloCircularProgressBar mProgress;
-
-    /**
-     * Ambient layout components
-     */
-    private LinearLayout mAmbientLayout;
-    private TextView mRoundsText;
-    private TextView mAmbientRemaningRounds;
+    private GameScreenFragment mGameScreen;
+    private ControlsFragment mControls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +42,21 @@ public class MainActivity extends WearableActivity {
         viewStub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mGameScreen = (LinearLayout) stub.findViewById(R.id.game_screen);
+                mContainer = (RelativeLayout) stub.findViewById(R.id.game_screen);
+                mPager = (GridViewPager) stub.findViewById(R.id.pager);
+                mPager.setOffscreenPageCount(1);
+                DotsPageIndicator indicator = (DotsPageIndicator) stub.findViewById(R.id.page_indicator);
+                indicator.setDotSpacing((int) getResources().getDimension(R.dimen.dots_spacing));
+                indicator.setPager(mPager);
 
-                mActiveLayout = (RelativeLayout) stub.findViewById(R.id.active);
-                mRemainingRounds = (TextView) stub.findViewById(R.id.rounds_remaining);
-                mRemainingSeconds = (TextView) stub.findViewById(R.id.progress_seconds_text);
-                mProgress = (HoloCircularProgressBar) stub.findViewById(R.id.progress_seconds_circle);
+                List<Fragment> pages = new ArrayList<>();
+                mGameScreen = new GameScreenFragment();
+                mControls = new ControlsFragment();
+                pages.add(mGameScreen);
+                pages.add(mControls);
 
-                mAmbientLayout = (LinearLayout) stub.findViewById(R.id.ambient);
-                mRoundsText = (TextView) stub.findViewById(R.id.rounds_text);
-                mAmbientRemaningRounds = (TextView) stub.findViewById(R.id.ambient_rounds_remaining);
-                updateDisplay();
+                final GamePagerAdapter adapter = new GamePagerAdapter(getFragmentManager(), pages);
+                mPager.setAdapter(adapter);
             }
         });
     }
@@ -86,16 +80,10 @@ public class MainActivity extends WearableActivity {
     }
 
     private void updateDisplay() {
-        if (isAmbient()) {
-            mGameScreen.setBackgroundColor(getResources().getColor(android.R.color.black));
-            mActiveLayout.setVisibility(View.GONE);
-            mAmbientLayout.setVisibility(View.VISIBLE);
-            mRoundsText.getPaint().setAntiAlias(false);
-            mAmbientRemaningRounds.getPaint().setAntiAlias(false);
-        } else {
-            mGameScreen.setBackgroundColor(getResources().getColor(R.color.primary));
-            mActiveLayout.setVisibility(View.VISIBLE);
-            mAmbientLayout.setVisibility(View.GONE);
-        }
+        Log.d(TAG, "updateDisplay: Ambient mode " + isAmbient());
+        int colorId = isAmbient() ? android.R.color.black : R.color.primary;
+        mPager.setCurrentItem(0, 0 , false);
+        mContainer.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), colorId));
+        mGameScreen.updateScreen(isAmbient());
     }
 }
