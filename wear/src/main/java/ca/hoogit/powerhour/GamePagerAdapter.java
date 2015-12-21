@@ -15,15 +15,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package ca.hoogit.powerhour_wear;
+package ca.hoogit.powerhour;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.wearable.view.FragmentGridPagerAdapter;
-import android.support.wearable.view.GridPagerAdapter;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour_wear;
+package ca.hoogit.powerhour;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.hoogit.powerhour_wear.Fragments.ControlsFragment;
-import ca.hoogit.powerhour_wear.Fragments.GameScreenFragment;
+import ca.hoogit.powerhour.Fragments.ControlsFragment;
+import ca.hoogit.powerhour.Fragments.GameScreenFragment;
 
 public class MainActivity extends WearableActivity {
 
@@ -49,9 +49,13 @@ public class MainActivity extends WearableActivity {
                 indicator.setDotSpacing((int) getResources().getDimension(R.dimen.dots_spacing));
                 indicator.setPager(mPager);
 
+                // TODO get colors from phone app
+                int primary = ContextCompat.getColor(getApplicationContext(), R.color.primary);
+                int accent = ContextCompat.getColor(getApplicationContext(), R.color.accent);
+                mGameScreen = GameScreenFragment.newInstance(primary, accent);
+                mControls = ControlsFragment.newInstance(primary, accent);
+
                 List<Fragment> pages = new ArrayList<>();
-                mGameScreen = new GameScreenFragment();
-                mControls = new ControlsFragment();
                 pages.add(mGameScreen);
                 pages.add(mControls);
 
@@ -81,9 +85,15 @@ public class MainActivity extends WearableActivity {
 
     private void updateDisplay() {
         Log.d(TAG, "updateDisplay: Ambient mode " + isAmbient());
-        int colorId = isAmbient() ? android.R.color.black : R.color.primary;
+        int colorId = isAmbient() ? android.R.color.black : R.color.primary; // TODO get color from phone app
         mPager.setCurrentItem(0, 0 , false);
         mContainer.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), colorId));
         mGameScreen.updateScreen(isAmbient());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TODO implement a notification so the user can easily reopen the app
     }
 }

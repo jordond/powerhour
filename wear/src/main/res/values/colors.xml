@@ -9,4 +9,6 @@
     <color name="md_light_blue_900">#01579B</color>
     <color name="md_pink_A400">#F50057</color>
     <color name="md_pink_A700">#C51162</color>
+
+    <color name="transparent">#80000000</color>
 </resources>

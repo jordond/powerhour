@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour_wear.Fragments;
+package ca.hoogit.powerhour.Fragments;
 
 
 import android.os.Bundle;
@@ -12,9 +12,13 @@ import android.widget.TextView;
 
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
-import ca.hoogit.powerhour_wear.R;
+import ca.hoogit.powerhour.R;
 
 public class GameScreenFragment extends Fragment {
+
+    private static final String TAG = GameScreenFragment.class.getSimpleName();
+    private static final String ARG_COLOR_PRIMARY = "color_primary";
+    private static final String ARG_COLOR_ACCENT = "color_accent";
 
     /**
      * Active layout components
@@ -31,8 +35,28 @@ public class GameScreenFragment extends Fragment {
     private TextView mRoundsText;
     private TextView mAmbientRemainingRounds;
 
+    private int mPrimaryColor;
+    private int mAccentColor;
+
+    public static GameScreenFragment newInstance(int primaryColor, int accentColor) {
+        GameScreenFragment fragment = new GameScreenFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_COLOR_PRIMARY, primaryColor);
+        args.putInt(ARG_COLOR_ACCENT, accentColor);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public GameScreenFragment() { }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mPrimaryColor = getArguments().getInt(ARG_COLOR_PRIMARY);
+            mAccentColor = getArguments().getInt(ARG_COLOR_ACCENT);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +86,9 @@ public class GameScreenFragment extends Fragment {
         } else {
             mActiveLayout.setVisibility(View.VISIBLE);
             mAmbientLayout.setVisibility(View.GONE);
+            mProgress.setThumbColor(mPrimaryColor);
+            mProgress.setProgressColor(mAccentColor);
+            mProgress.setProgressBackgroundColor(mPrimaryColor);
         }
     }
 
