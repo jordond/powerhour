@@ -130,5 +130,6 @@
     <orderEntry type="library" exported="" name="answers-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="soundchooser-1.1.0" level="project" />
+    <orderEntry type="module" module-name="common" exported="" />
   </component>
 </module>

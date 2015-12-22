@@ -94,5 +94,6 @@
     <orderEntry type="library" exported="" name="play-services-basement-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="circularprogressbar-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="wearable-1.0.0" level="project" />
+    <orderEntry type="module" module-name="common" exported="" />
   </component>
 </module>
