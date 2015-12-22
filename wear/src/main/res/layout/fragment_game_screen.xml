@@ -26,7 +26,7 @@
             android:fontFamily="sans-serif-thin"
             android:gravity="center"
             android:text="@string/placeholder_rounds_remaining"
-            android:textColor="#fff"
+            android:textColor="@color/text"
             android:textSize="18sp" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:text="@string/placeholder_seconds_remaining"
             android:textAlignment="center"
-            android:textColor="#fff"
+            android:textColor="@color/text"
             android:textSize="60sp" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:fontFamily="sans-serif-thin"
             android:gravity="center"
             android:text="@string/seconds"
-            android:textColor="#fff"
+            android:textColor="@color/text"
             android:textSize="18sp" />
 
         <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar

@@ -16,9 +16,9 @@ import java.util.List;
 import ca.hoogit.powerhour.Fragments.ControlsFragment;
 import ca.hoogit.powerhour.Fragments.GameScreenFragment;
 
-public class MainActivity extends WearableActivity {
+public class GameActivity extends WearableActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = GameActivity.class.getSimpleName();
 
     /**
      * Containing layout
@@ -35,7 +35,7 @@ public class MainActivity extends WearableActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
         setAmbientEnabled();
 
         final WatchViewStub viewStub = (WatchViewStub) findViewById(R.id.watch_view_stub);

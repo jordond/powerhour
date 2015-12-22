@@ -4,6 +4,7 @@
     <color name="primaryDark">@color/md_light_blue_900</color>
     <color name="accent">@color/md_pink_A400</color>
     <color name="accentDark">@color/md_pink_A700</color>
+    <color name="text">#fff</color>
 
     <color name="md_light_blue_700">#0288D1</color>
     <color name="md_light_blue_900">#01579B</color>
