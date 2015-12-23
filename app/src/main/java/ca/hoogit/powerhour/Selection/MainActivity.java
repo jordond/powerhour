@@ -165,8 +165,8 @@ public class MainActivity extends BaseActivity  {
                 }
                 break;
             case UPDATE:
-                count++;
-                if (count >= 10) {
+                count += 100;
+                if (count >= Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS) {
                     mWearData.sendGameInformation(event.game);
                     count = 0;
                 }

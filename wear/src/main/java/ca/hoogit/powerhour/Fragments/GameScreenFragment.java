@@ -2,7 +2,6 @@ package ca.hoogit.powerhour.Fragments;
 
 
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -19,7 +18,6 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
@@ -122,12 +120,12 @@ public class GameScreenFragment extends Fragment {
     }
 
     public void updateProgress() {
-        int seconds = (int) (mRemainingMillis / 1000.0);
+        int seconds = (int) (mRemainingMillis / 1000.0) - 1;
         mRemainingSeconds.setText(String.valueOf(seconds));
         Log.d(TAG, "updateProgress: remaining: " + mRemainingMillis);
         ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress",
                 (float) mRemainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS);
-        anim.setDuration(1000);
+        anim.setDuration(Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS);
         anim.setInterpolator(new LinearInterpolator());
         anim.start();
     }
@@ -145,6 +143,7 @@ public class GameScreenFragment extends Fragment {
                 mActiveLayout.setVisibility(View.GONE);
                 mAmbientLayout.setVisibility(View.VISIBLE);
                 mRoundsText.getPaint().setAntiAlias(false);
+                mAmbientRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
                 mAmbientRemainingRounds.getPaint().setAntiAlias(false);
             }
         } else {

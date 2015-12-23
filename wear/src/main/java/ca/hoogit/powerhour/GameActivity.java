@@ -118,6 +118,7 @@ public class GameActivity extends WearableActivity implements
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: disconnecting and removing listeners");
+        // TODO need to investigate how to handle the listener removal properly
         //Wearable.DataApi.removeListener(mGoogleApiClient, this);
         //Wearable.MessageApi.removeListener(mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
@@ -174,8 +175,6 @@ public class GameActivity extends WearableActivity implements
                         mGameScreen.updateInfo(info);
                         mControls.updateColors();
                         updateDisplay();
-                        break;
-                    case Consts.Paths.UPDATE_PROGRESS:
                         break;
                 }
             }
