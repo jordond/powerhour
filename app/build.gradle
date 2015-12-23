@@ -22,7 +22,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "ca.hoogit.powerhour"
@@ -44,6 +44,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':common')
+    wearApp project(':wear')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'de.psdev.licensesdialog:licensesdialog:1.7.0'
@@ -67,4 +68,5 @@ dependencies {
     compile 'ca.hoogit:soundchooser:1.1.0'
     compile 'com.nineoldandroids:library:2.4.0'
     // material design dep
+    compile 'com.google.android.gms:play-services-wearable:8.4.0'
 }

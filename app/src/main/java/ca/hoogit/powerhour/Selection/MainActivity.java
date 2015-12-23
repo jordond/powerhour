@@ -1,6 +1,8 @@
 package ca.hoogit.powerhour.Selection;
 
 import android.content.Intent;
+import android.content.IntentSender;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,8 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.Bind;
@@ -25,6 +40,7 @@ import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameModel;
+import ca.hoogit.powerhour.Game.WearData;
 import ca.hoogit.powerhour.GameOver.GameOver;
 import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.R;
@@ -34,11 +50,12 @@ import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.SharedPrefs;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
+import ca.powerhour.common.DataLayer.Consts;
 import io.fabric.sdk.android.Fabric;
 
+public class MainActivity extends BaseActivity  {
 
-public class MainActivity extends BaseActivity {
-
+    private static final int REQUEST_RESOLVE_ERROR = 1000;
     private final String TAG = MainActivity.class.getSimpleName();
 
     @Bind({R.id.type_power_hour, R.id.type_century_club, R.id.type_spartan, R.id.type_custom})
@@ -46,6 +63,9 @@ public class MainActivity extends BaseActivity {
 
     private FragmentManager mFragmentManager;
 
+    private WearData mWearData;
+    private boolean mResolvingError = false;
+    
     private boolean mChosen;
 
     @Override
@@ -87,7 +107,21 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, TourActivity.class));
         }
 
+        mWearData = new WearData(this);
+
         setupListeners();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mWearData.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mWearData.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -140,6 +174,7 @@ public class MainActivity extends BaseActivity {
                     mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                     reset();
                 }
+                mWearData.sendMessage(Consts.Paths.GAME_STOP, "stopped");
                 Log.i(TAG, "Game was stopped early");
                 break;
             case FINISH:
@@ -255,6 +290,7 @@ public class MainActivity extends BaseActivity {
         }
         ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
+        mWearData.sendGameInformation(gameModel);
     }
 
     public Fragment findFragment(String name) {

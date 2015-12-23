@@ -19,10 +19,13 @@ package ca.hoogit.powerhour.Game;
 
 import android.util.Log;
 
+import com.google.android.gms.wearable.PutDataMapRequest;
+
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.powerhour.common.DataLayer.Consts;
 
 /**
  * @author jordon
@@ -61,6 +64,18 @@ public class GameModel implements Serializable {
         this.autoStart = options.isAutoStart();
         this.options = options;
         this.millisRemainingGame = this.totalRounds * ROUND_DURATION_MILLIS;
+    }
+
+    public PutDataMapRequest toDataMap() {
+        PutDataMapRequest data = PutDataMapRequest.create(Consts.Paths.GAME_INFORMATION);
+
+        data.getDataMap().putInt(Consts.Keys.COLOR_PRIMARY, this.options.getBackgroundColor());
+        data.getDataMap().putInt(Consts.Keys.COLOR_ACCENT, this.options.getAccentColor());
+        data.getDataMap().putInt(Consts.Keys.MAX_ROUNDS, this.totalRounds);
+        data.getDataMap().putInt(Consts.Keys.MAX_PAUSES, this.maxPauses);
+        data.getDataMap().putBoolean(Consts.Keys.MUTED, this.muted);
+        data.getDataMap().putBoolean(Consts.Keys.STARTED, this.started);
+        return data;
     }
 
     public void incrementRound() {
