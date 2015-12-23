@@ -30,6 +30,7 @@ import ca.hoogit.powerhour.DataLayer.GoogleApiManager;
 import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Fragments.ControlsFragment;
 import ca.hoogit.powerhour.Fragments.GameScreenFragment;
+import ca.hoogit.powerhour.Utils.Colors;
 import ca.powerhour.common.DataLayer.Consts;
 
 public class GameActivity extends WearableActivity implements
@@ -51,7 +52,7 @@ public class GameActivity extends WearableActivity implements
     private ControlsFragment mControls;
 
     private GoogleApiClient mGoogleApiClient;
-    private int mPrimary;
+    private Colors mColors = Colors.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +70,10 @@ public class GameActivity extends WearableActivity implements
                 indicator.setDotSpacing((int) getResources().getDimension(R.dimen.dots_spacing));
                 indicator.setPager(mPager);
 
-                // TODO get colors from phone app
-                mPrimary = ContextCompat.getColor(getApplicationContext(), R.color.primary);
-                int accent = ContextCompat.getColor(getApplicationContext(), R.color.accent);
-                mGameScreen = GameScreenFragment.newInstance(mPrimary, accent);
-                mControls = ControlsFragment.newInstance(mPrimary, accent);
+                mColors.setPrimary(ContextCompat.getColor(getApplicationContext(), R.color.primary));
+                mColors.setAccent(ContextCompat.getColor(getApplicationContext(), R.color.accent));
+                mGameScreen = GameScreenFragment.newInstance();
+                mControls = ControlsFragment.newInstance();
 
                 List<Fragment> pages = new ArrayList<>();
                 pages.add(mGameScreen);
@@ -143,8 +143,8 @@ public class GameActivity extends WearableActivity implements
 
     private void updateDisplay() {
         Log.d(TAG, "updateDisplay: Ambient mode " + isAmbient());
-        int color = isAmbient() ?
-                ContextCompat.getColor(getApplicationContext(), android.R.color.black) : mPrimary;
+        int color = isAmbient() ? ContextCompat.getColor(getApplicationContext(),
+                android.R.color.black) : mColors.getPrimary();
         mPager.setCurrentItem(0, 0, false);
         mContainer.setBackgroundColor(color);
         mGameScreen.updateScreen(isAmbient());
@@ -168,8 +168,10 @@ public class GameActivity extends WearableActivity implements
                     case Consts.Paths.GAME_INFORMATION:
                         DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
                         GameInformation info = GameInformation.fromDataMap(item.getDataMap());
-                        mPrimary = info.getColorPrimary();
+                        mColors.setPrimary(info.getColorPrimary());
+                        mColors.setAccent(info.getColorAccent());
                         mGameScreen.updateInfo(info);
+                        mControls.updateColors();
                         updateDisplay();
                         Log.d(TAG, "onDataChanged: stuff: " + info.getRounds());
                         break;

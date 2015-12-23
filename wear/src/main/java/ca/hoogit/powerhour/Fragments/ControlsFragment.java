@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Utils.Colors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,36 +19,19 @@ import ca.hoogit.powerhour.R;
 public class ControlsFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = ControlsFragment.class.getSimpleName();
-    private static final String ARG_COLOR_PRIMARY = "color_primary";
-    private static final String ARG_COLOR_ACCENT = "color_accent";
 
     private RelativeLayout mContainer;
     private CircularButton mMute;
     private CircularButton mPlayPause;
     private CircularButton mStop;
 
-    private int mPrimaryColor;
-    private int mAccentColor;
+    private Colors mColors = Colors.getInstance();
 
-    public static ControlsFragment newInstance(int primaryColor, int accentColor) {
-        ControlsFragment fragment = new ControlsFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLOR_PRIMARY, primaryColor);
-        args.putInt(ARG_COLOR_ACCENT, accentColor);
-        fragment.setArguments(args);
-        return fragment;
+    public static ControlsFragment newInstance() {
+        return new ControlsFragment();
     }
 
     public ControlsFragment() { }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mPrimaryColor = getArguments().getInt(ARG_COLOR_PRIMARY);
-            mAccentColor = getArguments().getInt(ARG_COLOR_ACCENT);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,12 +47,15 @@ public class ControlsFragment extends Fragment implements View.OnClickListener {
         mPlayPause.setOnClickListener(this);
         mStop.setOnClickListener(this);
 
-        mContainer.setBackgroundColor(mPrimaryColor);
-        mMute.setBackgroundColor(mPrimaryColor);
-        mPlayPause.setBackgroundColor(mAccentColor);
-        mStop.setBackgroundColor(mPrimaryColor);
+        updateColors();
 
         return view;
+    }
+
+    public void updateColors() {
+        mMute.setColor(mColors.getPrimary());
+        mPlayPause.setColor(mColors.getAccent());
+        mStop.setColor(mColors.getPrimary());
     }
 
     @Override

@@ -1,8 +1,10 @@
 package ca.hoogit.powerhour.Fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import java.util.Locale;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.Utils.Colors;
 
 public class GameScreenFragment extends Fragment {
 
@@ -54,30 +57,17 @@ public class GameScreenFragment extends Fragment {
     private TextView mAmbientRemainingRounds;
 
     private boolean mReceivedGameInfo;
-    private int mPrimaryColor;
-    private int mAccentColor;
     private int mTotalRounds;
+    private int mCurrentRound = 0;
     private int mTotalPauses;
 
-    public static GameScreenFragment newInstance(int primaryColor, int accentColor) {
-        GameScreenFragment fragment = new GameScreenFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLOR_PRIMARY, primaryColor);
-        args.putInt(ARG_COLOR_ACCENT, accentColor);
-        fragment.setArguments(args);
-        return fragment;
+    private Colors mColors = Colors.getInstance();
+
+    public static GameScreenFragment newInstance() {
+        return new GameScreenFragment();
     }
 
     public GameScreenFragment() { }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mPrimaryColor = getArguments().getInt(ARG_COLOR_PRIMARY);
-            mAccentColor = getArguments().getInt(ARG_COLOR_ACCENT);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,12 +96,10 @@ public class GameScreenFragment extends Fragment {
 
     public void updateInfo(GameInformation info) {
         mReceivedGameInfo = true;
-        mPrimaryColor = info.getColorPrimary();
-        mAccentColor = info.getColorAccent();
         mTotalRounds = info.getRounds();
         mTotalPauses = info.getPauses();
 
-        mRemainingRounds.setText("0 of " + mTotalRounds);
+        mRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
     }
 
     public void stop() {
@@ -119,9 +107,9 @@ public class GameScreenFragment extends Fragment {
     }
 
     public void updateColors() {
-        mProgress.setThumbColor(mAccentColor);
-        mProgress.setProgressColor(mAccentColor);
-        mProgress.setProgressBackgroundColor(mPrimaryColor);
+        mProgress.setThumbColor(mColors.getAccent());
+        mProgress.setProgressColor(mColors.getAccent());
+        mProgress.setProgressBackgroundColor(mColors.getPrimary());
     }
 
     public void updateScreen(boolean isAmbient) {
