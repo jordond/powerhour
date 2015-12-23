@@ -118,8 +118,8 @@ public class GameActivity extends WearableActivity implements
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: disconnecting and removing listeners");
-        Wearable.DataApi.removeListener(mGoogleApiClient, this);
-        Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        //Wearable.DataApi.removeListener(mGoogleApiClient, this);
+        //Wearable.MessageApi.removeListener(mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
     }
 
@@ -153,6 +153,7 @@ public class GameActivity extends WearableActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Message.sendExiting(this);
         // TODO implement a notification so the user can easily reopen the app
     }
 
@@ -173,7 +174,6 @@ public class GameActivity extends WearableActivity implements
                         mGameScreen.updateInfo(info);
                         mControls.updateColors();
                         updateDisplay();
-                        Log.d(TAG, "onDataChanged: stuff: " + info.getRounds());
                         break;
                     case Consts.Paths.UPDATE_PROGRESS:
                         break;
@@ -190,7 +190,7 @@ public class GameActivity extends WearableActivity implements
                 Log.d(TAG, "onMessageReceived: Game has stopped");
                 mGameScreen.stop();
                 updateDisplay();
-                Message.sendReady(getApplicationContext());
+                Message.sendReady(this);
                 break;
         }
     }

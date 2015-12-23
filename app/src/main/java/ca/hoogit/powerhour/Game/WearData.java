@@ -18,7 +18,6 @@
 package ca.hoogit.powerhour.Game;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,7 +28,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
@@ -40,7 +38,6 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.TimeUnit;
 
 import ca.powerhour.common.DataLayer.Consts;
 
@@ -64,7 +61,14 @@ public class WearData implements
     private boolean mResolvingError = false;
 
     private boolean mWearIsReady = false;
-    private GameModel mQueuedGame;
+
+    public void setCurrentGame(GameModel currentGame) {
+        if (currentGame != null) {
+            this.mCurrentGame = currentGame;
+        }
+    }
+
+    private GameModel mCurrentGame;
 
     public WearData(Activity activity) {
         this.mActivity = activity;
@@ -102,9 +106,9 @@ public class WearData implements
     }
 
     public void sendGameInformation(GameModel game) {
+        mCurrentGame = game;
         if (!mWearIsReady) {
-            Log.i(TAG, "sendGameInformation: Wear is not yet ready, queueing game info");
-            mQueuedGame = game;
+            Log.i(TAG, "sendGameInformation: Wear is not yet ready for info");
             return;
         }
         PutDataMapRequest dataMap = game.toDataMap();
@@ -130,7 +134,6 @@ public class WearData implements
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected(): Successfully connected to Google API client");
         Wearable.MessageApi.addListener(mGoogleApiClient, this);
-        sendStartActivity();
     }
 
     @Override
@@ -174,17 +177,19 @@ public class WearData implements
         switch (messageEvent.getPath()) {
             case Consts.Paths.WEAR_READY:
                 mWearIsReady = true;
-                if (mQueuedGame != null) {
-                    sendGameInformation(mQueuedGame);
-                    mQueuedGame = null;
+                if (mCurrentGame != null) {
+                    sendGameInformation(mCurrentGame);
                 }
+                break;
+            case Consts.Paths.WEAR_EXIT:
+                mWearIsReady = false;
                 break;
         }
     }
 
     public class Message implements Runnable {
 
-        private static final String TAG = "SendStringToNode";
+        private final String TAG = Message.class.getSimpleName();
         private byte[] mObjectArray;
         private String mPath;
 

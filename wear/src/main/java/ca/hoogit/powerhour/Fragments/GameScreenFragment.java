@@ -1,6 +1,7 @@
 package ca.hoogit.powerhour.Fragments;
 
 
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,10 +19,12 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Utils.Colors;
+import ca.powerhour.common.DataLayer.Consts;
 
 public class GameScreenFragment extends Fragment {
 
@@ -60,6 +64,8 @@ public class GameScreenFragment extends Fragment {
     private int mTotalRounds;
     private int mCurrentRound = 0;
     private int mTotalPauses;
+    private int mCurrentPauses = 0;
+    private long mRemainingMillis = 60 * 1000;
 
     private Colors mColors = Colors.getInstance();
 
@@ -98,6 +104,9 @@ public class GameScreenFragment extends Fragment {
         mReceivedGameInfo = true;
         mTotalRounds = info.getRounds();
         mTotalPauses = info.getPauses();
+        mCurrentRound = info.getCurrentRound();
+        mCurrentPauses = info.getCurrentPauses();
+        mRemainingMillis = info.getRemainingMillis();
 
         mRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
     }
@@ -110,6 +119,17 @@ public class GameScreenFragment extends Fragment {
         mProgress.setThumbColor(mColors.getAccent());
         mProgress.setProgressColor(mColors.getAccent());
         mProgress.setProgressBackgroundColor(mColors.getPrimary());
+    }
+
+    public void updateProgress() {
+        int seconds = (int) (mRemainingMillis / 1000.0);
+        mRemainingSeconds.setText(String.valueOf(seconds));
+        Log.d(TAG, "updateProgress: remaining: " + mRemainingMillis);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress",
+                (float) mRemainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS);
+        anim.setDuration(1000);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.start();
     }
 
     public void updateScreen(boolean isAmbient) {
@@ -138,6 +158,7 @@ public class GameScreenFragment extends Fragment {
                 mActiveLayout.setVisibility(View.VISIBLE);
                 mAmbientLayout.setVisibility(View.GONE);
                 updateColors();
+                updateProgress();
             }
         }
     }

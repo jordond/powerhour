@@ -31,6 +31,7 @@ public class Consts {
         public static final String GAME_INFORMATION = "/game-info";
         public static final String UPDATE_PROGRESS = "/update";
         public static final String WEAR_READY = "/ready";
+        public static final String WEAR_EXIT = "/exit";
         public static final String GAME_START = "/start";
         public static final String GAME_PAUSE = "/pause";
         public static final String GAME_STOP = "/stop";
@@ -42,8 +43,17 @@ public class Consts {
         public static final String COLOR_ACCENT = "accent";
         public static final String MAX_ROUNDS = "max_rounds";
         public static final String MAX_PAUSES = "max_pauses";
+        public static final String CURRENT_ROUND = "current_round";
+        public static final String CURRENT_PAUSES = "current_pauses";
+        public static final String REMAINING_MILLIS = "millis";
         public static final String MUTED = "muted";
         public static final String STARTED = "started";
+    }
+
+    public static class Game {
+        public static final int ROUND_DURATION_SECONDS = 60; // TODO change back to 60 (1 min)
+        public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
+        public static final long PROGRESS_WHEEL_ANIMATION_DURATION = 300;
     }
 
 }

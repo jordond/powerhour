@@ -49,6 +49,10 @@ public class Message implements Runnable {
         Message ready = new Message(Consts.Paths.WEAR_READY, "", context);
     }
 
+    public static void sendExiting(Context context) {
+        Message exit = new Message(Consts.Paths.WEAR_EXIT, "", context);
+    }
+
     public Message(String path, String textToSend, Context context) {
         mContext = context;
         mPath = path;

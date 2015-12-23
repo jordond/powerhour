@@ -152,6 +152,7 @@ public class MainActivity extends BaseActivity  {
         }
     }
 
+    int count = 0;
     @Subscribe
     public void onGameEvent(final GameEvent event) {
         switch (event.action) {
@@ -161,6 +162,13 @@ public class MainActivity extends BaseActivity  {
                     Log.i(TAG, "Game already exists, resuming game");
                 } else {
                     Log.d(TAG, "Game already active");
+                }
+                break;
+            case UPDATE:
+                count++;
+                if (count >= 10) {
+                    mWearData.sendGameInformation(event.game);
+                    count = 0;
                 }
                 break;
             case STOP:
@@ -290,6 +298,7 @@ public class MainActivity extends BaseActivity  {
         }
         ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
+        mWearData.sendStartActivity();
         mWearData.sendGameInformation(gameModel);
     }
 

@@ -37,20 +37,11 @@ public class GameInformation implements Serializable {
     private int colorAccent;
     private int rounds;
     private int pauses;
+    private int currentRound;
+    private int currentPauses;
+    private long remainingMillis;
     private boolean muted;
     private boolean started;
-
-    public static PutDataMapRequest toDataMap(int primary, int accent, int rounds, int pauses, boolean muted, boolean started) {
-        PutDataMapRequest data = PutDataMapRequest.create(Consts.Paths.GAME_INFORMATION);
-
-        data.getDataMap().putInt(Consts.Keys.COLOR_PRIMARY, primary);
-        data.getDataMap().putInt(Consts.Keys.COLOR_ACCENT, accent);
-        data.getDataMap().putInt(Consts.Keys.MAX_ROUNDS, rounds);
-        data.getDataMap().putInt(Consts.Keys.MAX_PAUSES, pauses);
-        data.getDataMap().putBoolean(Consts.Keys.MUTED, muted);
-        data.getDataMap().putBoolean(Consts.Keys.STARTED, started);
-        return data;
-    }
 
     public static GameInformation fromDataMap(DataMap data) {
         GameInformation info = new GameInformation();
@@ -58,6 +49,9 @@ public class GameInformation implements Serializable {
         info.setColorAccent(data.getInt(Consts.Keys.COLOR_ACCENT));
         info.setRounds(data.getInt(Consts.Keys.MAX_ROUNDS));
         info.setPauses(data.getInt(Consts.Keys.MAX_PAUSES));
+        info.setCurrentRound(data.getInt(Consts.Keys.CURRENT_ROUND));
+        info.setCurrentPauses(data.getInt(Consts.Keys.CURRENT_PAUSES));
+        info.setRemainingMillis(data.getLong(Consts.Keys.REMAINING_MILLIS));
         info.setMuted(data.getBoolean(Consts.Keys.MUTED));
         info.setStarted(data.getBoolean(Consts.Keys.STARTED));
         return info;
@@ -74,6 +68,30 @@ public class GameInformation implements Serializable {
         this.pauses = pauses;
         this.muted = muted;
         this.started = started;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public int getCurrentPauses() {
+        return currentPauses;
+    }
+
+    public void setCurrentPauses(int currentPauses) {
+        this.currentPauses = currentPauses;
+    }
+
+    public long getRemainingMillis() {
+        return remainingMillis;
+    }
+
+    public void setRemainingMillis(long remainingMillis) {
+        this.remainingMillis = remainingMillis;
     }
 
     public int getColorPrimary() {
