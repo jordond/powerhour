@@ -23,6 +23,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
@@ -118,7 +119,7 @@ public class GameActivity extends WearableActivity implements
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: disconnecting and removing listeners");
-        // TODO need to investigate how to handle the listener removal properly
+        // TODO need to investigate how to handle the listener removal properly, maybe onStop()?
         //Wearable.DataApi.removeListener(mGoogleApiClient, this);
         //Wearable.MessageApi.removeListener(mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
@@ -182,14 +183,19 @@ public class GameActivity extends WearableActivity implements
     }
 
     @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        Log.d(TAG, "onMessageReceived: " + messageEvent);
-        switch (messageEvent.getPath()) {
+    public void onMessageReceived(MessageEvent event) {
+        Log.d(TAG, "onMessageReceived: " + event);
+        switch (event.getPath()) {
             case Consts.Paths.GAME_STOP:
-                Log.d(TAG, "onMessageReceived: Game has stopped");
-                mGameScreen.stop();
-                updateDisplay();
-                Message.sendReady(this);
+                if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_SOFT)) {
+                    Log.d(TAG, "onMessageReceived: Game has stopped");
+                    mGameScreen.stop();
+                    updateDisplay();
+                    Message.sendReady(this);
+                } else if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_HARD)) {
+                    Log.i(TAG, "onMessageReceived: Hard stop received, finishing Activity");
+                    finish();
+                }
                 break;
         }
     }

@@ -175,14 +175,15 @@ public class MainActivity extends BaseActivity  {
                 if (event.game != null && event.game.hasStarted()) {
                     Intent gameOver = new Intent(getApplication(), GameOver.class);
                     gameOver.putExtra("game", event.game);
+                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP_HARD);
                     startActivity(gameOver);
                     finish();
                 } else {
                     Fragment fragment = findFragment("gameScreen");
                     mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                     reset();
+                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP_SOFT);
                 }
-                mWearData.sendMessage(Consts.Paths.GAME_STOP, "stopped");
                 Log.i(TAG, "Game was stopped early");
                 break;
             case FINISH:

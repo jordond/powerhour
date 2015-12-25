@@ -55,6 +55,8 @@ public class Consts {
         public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
         public static final long PROGRESS_WHEEL_ANIMATION_DURATION = 300;
         public static final long WEAR_UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // One second
+        public static final String FLAG_GAME_STOP_SOFT = "soft_stop";
+        public static final String FLAG_GAME_STOP_HARD = "hard_stop";
     }
 
 }

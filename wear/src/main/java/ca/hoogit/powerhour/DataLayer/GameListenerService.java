@@ -10,8 +10,10 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import ca.hoogit.powerhour.FinishActivity;
 import ca.hoogit.powerhour.GameActivity;
 import ca.powerhour.common.DataLayer.Consts;
 
@@ -43,10 +45,9 @@ public class GameListenerService extends WearableListenerService {
 //    }
 
     @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        String path = messageEvent.getPath();
+    public void onMessageReceived(MessageEvent event) {
+        String path = event.getPath();
         Log.d(TAG, "onMessageReceived: Path " + path);
-        Log.d(TAG, "onMessageReceived: " + messageEvent);
 
         switch (path) {
             case Consts.Paths.START_ACTIVITY:
@@ -54,7 +55,14 @@ public class GameListenerService extends WearableListenerService {
                 start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(start);
                 break;
+            case Consts.Paths.GAME_STOP:
+                if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_HARD)) {
+                    Intent finish = new Intent(this, FinishActivity.class);
+                    finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(finish);
+                }
+                break;
         }
-        super.onMessageReceived(messageEvent);
+        super.onMessageReceived(event);
     }
 }

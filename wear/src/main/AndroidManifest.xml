@@ -36,6 +36,11 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".FinishActivity"
+            android:label="@string/title_activity_finish"
+            android:theme="@android:style/Theme.DeviceDefault.Light"></activity>
     </application>
 
 </manifest>

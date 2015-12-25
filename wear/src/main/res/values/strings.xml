@@ -12,4 +12,5 @@
     <string name="title_activity_intro">Intro</string>
     <string name="intro_waiting">Waiting for game info</string>
     <string name="intro_waiting_more">Launch app on mobile device</string>
+    <string name="title_activity_finish">FinishActivity</string>
 </resources>
