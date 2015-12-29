@@ -58,6 +58,7 @@ public class GameListenerService extends WearableListenerService {
                         finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(finish);
                         mShouldLaunchFinish = false;
+                        Log.d(TAG, "onDataChanged: launching Finish activity");
                     }
                     break;
             }

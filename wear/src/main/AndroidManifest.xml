@@ -40,7 +40,8 @@
         <activity
             android:name=".FinishActivity"
             android:label="@string/title_activity_finish"
-            android:theme="@android:style/Theme.DeviceDefault.Light"></activity>
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.DeviceDefault.Light" />
     </application>
 
 </manifest>

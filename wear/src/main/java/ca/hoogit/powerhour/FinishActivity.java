@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
@@ -24,7 +26,7 @@ import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.powerhour.common.DataLayer.Consts;
 
-public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks {
+public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
 
     private static final String TAG = FinishActivity.class.getSimpleName();
 
@@ -35,9 +37,9 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
     private HoloCircularProgressBar mRoundProgress;
     private TextView mTotalRoundsTextView;
 
-    private float mProgress;
-
     private Colors mColors = Colors.getInstance();
+    private float mProgress;
+    private GoogleApiClient mGoogleApiClient;
 
     private Runnable mAnimateProgress = new Runnable() {
         @Override
@@ -72,11 +74,12 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
         mRoundProgress.setProgress(0);
         mRoundProgress.setProgressColor(mColors.getAccent());
         mRoundProgress.setThumbColor(mColors.getAccent());
-        mRoundProgress.setProgressBackgroundColor(mColors.getPrimary());
         Handler handler = new Handler();
         handler.postDelayed(mAnimateProgress, 2000);
 
-        new GoogleApiClient.Builder(this)
+        updateDisplay(false); // Force ambient off
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
@@ -89,7 +92,15 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected: Connected to Google Api");
+        Wearable.MessageApi.addListener(mGoogleApiClient, this);
         Message.sendReady(this);
     }
 
@@ -99,30 +110,47 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
     }
 
     @Override
+    protected void onStop() {
+        Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        super.onStop();
+    }
+
+    @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);
-        updateDisplay();
+        updateDisplay(isAmbient());
     }
 
     @Override
     public void onUpdateAmbient() {
         super.onUpdateAmbient();
-        updateDisplay();
+        updateDisplay(isAmbient());
     }
 
     @Override
     public void onExitAmbient() {
-        updateDisplay();
+        updateDisplay(isAmbient());
         super.onExitAmbient();
     }
 
-    private void updateDisplay() {
-        if (isAmbient()) {
+    private void updateDisplay(boolean isAmbient) {
+        if (isAmbient) {
             mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
             mRoundProgress.setVisibility(View.INVISIBLE);
         } else {
             mContainerView.setBackgroundColor(mColors.getPrimary());
             mRoundProgress.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.d(TAG, "onMessageReceived: " + messageEvent.getPath());
+        switch (messageEvent.getPath()) {
+            case Consts.Paths.START_ACTIVITY:
+                Log.d(TAG, "onMessageReceived: New activity starting, finishing current");
+                finish();
+                break;
         }
     }
 }

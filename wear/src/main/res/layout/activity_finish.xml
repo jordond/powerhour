@@ -51,7 +51,7 @@
             android:layout_centerHorizontal="true"
             app:cpb_countdown="false"
             app:cpb_progress="0"
-            app:cpb_progress_background_color="@color/primary"
+            app:cpb_progress_background_color="@color/white"
             app:cpb_progress_color="@color/accent"
             app:cpb_stroke_width="7dp" />
 

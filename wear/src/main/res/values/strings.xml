@@ -11,7 +11,7 @@
     <string name="controls_stop">Stop game</string>
     <string name="title_activity_intro">Intro</string>
     <string name="intro_waiting">Waiting for game info</string>
-    <string name="intro_waiting_more">Launch app on mobile device</string>
+    <string name="intro_waiting_more">Start game on mobile device</string>
     <string name="title_activity_finish">FinishActivity</string>
     <string name="finished">finished</string>
     <string name="completed_rounds_placeholder">0</string>
