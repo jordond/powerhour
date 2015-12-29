@@ -1,8 +1,6 @@
 package ca.hoogit.powerhour.Selection;
 
 import android.content.Intent;
-import android.content.IntentSender;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,21 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 import com.squareup.otto.Subscribe;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.Bind;
@@ -175,14 +160,14 @@ public class MainActivity extends BaseActivity  {
                 if (event.game != null && event.game.hasStarted()) {
                     Intent gameOver = new Intent(getApplication(), GameOver.class);
                     gameOver.putExtra("game", event.game);
-                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP_HARD);
+                    mWearData.sendFinish(event.game);
                     startActivity(gameOver);
                     finish();
                 } else {
                     Fragment fragment = findFragment("gameScreen");
                     mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                     reset();
-                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP_SOFT);
+                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP);
                 }
                 Log.i(TAG, "Game was stopped early");
                 break;
@@ -192,6 +177,7 @@ public class MainActivity extends BaseActivity  {
                     public void run() {
                         Intent gameOver = new Intent(getApplication(), GameOver.class);
                         gameOver.putExtra("game", event.game);
+                        mWearData.sendFinish(event.game);
                         reset();
                         startActivity(gameOver);
                         finish();

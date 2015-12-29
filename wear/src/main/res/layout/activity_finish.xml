@@ -1,18 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
     tools:context="ca.hoogit.powerhour.FinishActivity"
     tools:deviceIds="wear">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        tools:ignore="UselessParent">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/round_progress"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="45dp"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/finished"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/rounds_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/round_progress"
+            android:layout_alignEnd="@+id/round_progress"
+            android:layout_alignStart="@+id/round_progress"
+            android:layout_alignTop="@+id/round_progress"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/completed_rounds_placeholder"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="50sp" />
+
+        <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
+            android:id="@+id/round_progress"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:cpb_countdown="false"
+            app:cpb_progress="0"
+            app:cpb_progress_background_color="@color/primary"
+            app:cpb_progress_color="@color/accent"
+            app:cpb_stroke_width="7dp" />
+
+        <TextView
+            android:id="@+id/total_rounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/rounds_complete"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/max_rounds_placeholder"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

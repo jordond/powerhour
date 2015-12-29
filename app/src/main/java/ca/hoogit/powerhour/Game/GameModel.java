@@ -64,7 +64,11 @@ public class GameModel implements Serializable {
     }
 
     public PutDataMapRequest toDataMap() {
-        PutDataMapRequest data = PutDataMapRequest.create(Consts.Paths.GAME_INFORMATION);
+        return toDataMap(Consts.Paths.GAME_INFORMATION);
+    }
+
+    public PutDataMapRequest toDataMap(String uri) {
+        PutDataMapRequest data = PutDataMapRequest.create(uri);
         data.getDataMap().putInt(Consts.Keys.COLOR_PRIMARY, this.options.getBackgroundColor());
         data.getDataMap().putInt(Consts.Keys.COLOR_ACCENT, this.options.getAccentColor());
         data.getDataMap().putInt(Consts.Keys.MAX_ROUNDS, this.totalRounds);

@@ -23,11 +23,9 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
-import ca.hoogit.powerhour.DataLayer.GoogleApiManager;
 import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Fragments.ControlsFragment;
 import ca.hoogit.powerhour.Fragments.GameScreenFragment;
@@ -155,7 +153,7 @@ public class GameActivity extends WearableActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Message.sendExiting(this);
+        Message.sendNotReady(this);
         // TODO implement a notification so the user can easily reopen the app
     }
 
@@ -171,8 +169,7 @@ public class GameActivity extends WearableActivity implements
                     case Consts.Paths.GAME_INFORMATION:
                         DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
                         GameInformation info = GameInformation.fromDataMap(item.getDataMap());
-                        mColors.setPrimary(info.getColorPrimary());
-                        mColors.setAccent(info.getColorAccent());
+                        mColors.update(info);
                         mGameScreen.updateInfo(info);
                         mControls.updateColors();
                         updateDisplay();
@@ -187,15 +184,16 @@ public class GameActivity extends WearableActivity implements
         Log.d(TAG, "onMessageReceived: " + event);
         switch (event.getPath()) {
             case Consts.Paths.GAME_STOP:
-                if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_SOFT)) {
-                    Log.d(TAG, "onMessageReceived: Game has stopped");
-                    mGameScreen.stop();
-                    updateDisplay();
-                    Message.sendReady(this);
-                } else if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_HARD)) {
-                    Log.i(TAG, "onMessageReceived: Hard stop received, finishing Activity");
-                    finish();
-                }
+                Log.d(TAG, "onMessageReceived: Game has stopped");
+                mGameScreen.stop();
+                updateDisplay();
+                Message.sendReady(this);
+                break;
+            case Consts.Paths.GAME_FINISH:
+                Log.i(TAG, "onMessageReceived: Game has finished");
+                Wearable.DataApi.removeListener(mGoogleApiClient, this);
+                Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+                finish();
                 break;
         }
     }

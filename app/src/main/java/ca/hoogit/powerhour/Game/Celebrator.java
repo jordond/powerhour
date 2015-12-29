@@ -43,7 +43,7 @@ public class Celebrator implements AudioPlayer.OnPlayback {
     private static final String TAG = Celebrator.class.getSimpleName();
 
     private static final int STREAM_TYPE = AudioManager.STREAM_ALARM;
-    private static final long DEFAULT_DELAY = 1000;
+    private static final long DEFAULT_DELAY = 4000;
 
     private AudioPlayer mAudioPlayer;
     private GameOptions mOptions;
@@ -110,6 +110,9 @@ public class Celebrator implements AudioPlayer.OnPlayback {
                         if (celebrate()) {
                             isActive = true;
                         } else {
+                            Log.d(TAG, "onGameEvent: Delaying resume by "
+                                    +(DEFAULT_DELAY / 1000) + " seconds");
+                            mBus.post(new CelebrationEvent(CelebrationEvent.ACTION_START));
                             delayResume(DEFAULT_DELAY);
                         }
                     } else if (event.game.is(State.ACTIVE) && isActive) {

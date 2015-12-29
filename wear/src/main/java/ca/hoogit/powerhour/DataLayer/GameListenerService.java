@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
@@ -21,7 +23,8 @@ public class GameListenerService extends WearableListenerService {
 
     private static final String TAG = GameListenerService.class.getSimpleName();
 
-    GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
+    private boolean mShouldLaunchFinish;
 
     @Override
     public void onCreate() {
@@ -32,17 +35,34 @@ public class GameListenerService extends WearableListenerService {
         mGoogleApiClient.connect();
     }
 
-//    @Override
-//    public void onDataChanged(DataEventBuffer dataEvents) {
-//        Log.d(TAG, "onDataChanged: " + dataEvents);
-//        if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting()) {
-//            ConnectionResult result = mGoogleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-//            if (!result.isSuccess()) {
-//                Log.e(TAG, "onDataChanged: Failed to connect to GoogleApiClient, error: "
-//                        + result.getErrorCode());
-//            }
-//        }
-//    }
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        Log.d(TAG, "onDataChanged: " + dataEvents);
+        if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting()) {
+            ConnectionResult result = mGoogleApiClient.blockingConnect(30, TimeUnit.SECONDS);
+            if (!result.isSuccess()) {
+                Log.e(TAG, "onDataChanged: Failed to connect to GoogleApiClient, error: "
+                        + result.getErrorCode());
+                return;
+            }
+        }
+
+        for (DataEvent event : dataEvents) {
+            switch (event.getDataItem().getUri().getPath()) {
+                case Consts.Paths.GAME_FINISH:
+                    if (mShouldLaunchFinish) {
+                        Intent finish = new Intent(this, FinishActivity.class);
+                        DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
+                        GameInformation info = GameInformation.fromDataMap(item.getDataMap());
+                        finish.putExtra(Consts.Keys.GAME_DATA, info);
+                        finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(finish);
+                        mShouldLaunchFinish = false;
+                    }
+                    break;
+            }
+        }
+    }
 
     @Override
     public void onMessageReceived(MessageEvent event) {
@@ -54,13 +74,10 @@ public class GameListenerService extends WearableListenerService {
                 Intent start = new Intent(this, GameActivity.class);
                 start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(start);
+                mShouldLaunchFinish = true;
                 break;
-            case Consts.Paths.GAME_STOP:
-                if (new String(event.getData()).equals(Consts.Game.FLAG_GAME_STOP_HARD)) {
-                    Intent finish = new Intent(this, FinishActivity.class);
-                    finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(finish);
-                }
+            case Consts.Paths.GAME_FINISH:
+                mShouldLaunchFinish = true;
                 break;
         }
         super.onMessageReceived(event);

@@ -43,10 +43,9 @@ import ca.powerhour.common.DataLayer.Consts;
 
 /**
  * @author jordon
- *
- * Date    22/12/15
- * Description
- *
+ *         <p/>
+ *         Date    22/12/15
+ *         Description
  */
 public class WearData implements
         GoogleApiClient.ConnectionCallbacks,
@@ -130,6 +129,27 @@ public class WearData implements
         }
     }
 
+    public void sendFinish(GameModel game) {
+        if (game == null) {
+            Log.e(TAG, "sendFinish: Game model is null, aborting sending message");
+            return;
+        }
+        PutDataMapRequest dataMap = game.toDataMap(Consts.Paths.GAME_FINISH);
+        PutDataRequest req = dataMap.asPutDataRequest();
+        sendMessage(Consts.Paths.GAME_FINISH, "");
+        if (mGoogleApiClient.isConnected()) {
+            Wearable.DataApi.putDataItem(mGoogleApiClient, req)
+                    .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                        @Override
+                        public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
+                            if (dataItemResult.getStatus().isSuccess()) {
+                                Log.d(TAG, "onResult: Successfully sent finish info");
+                            }
+                        }
+                    });
+        }
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected(): Successfully connected to Google API client");
@@ -181,7 +201,7 @@ public class WearData implements
                     sendGameInformation(mCurrentGame);
                 }
                 break;
-            case Consts.Paths.WEAR_EXIT:
+            case Consts.Paths.WEAR_NOT_READY:
                 mWearIsReady = false;
                 break;
         }
@@ -195,7 +215,7 @@ public class WearData implements
 
         public Message(String path, String textToSend) {
             mPath = path;
-            if(textToSend != null){
+            if (textToSend != null) {
                 mObjectArray = textToSend.getBytes();
             } else {
                 mObjectArray = "".getBytes();

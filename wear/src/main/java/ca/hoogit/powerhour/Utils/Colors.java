@@ -17,6 +17,8 @@
  */
 package ca.hoogit.powerhour.Utils;
 
+import ca.hoogit.powerhour.DataLayer.GameInformation;
+
 /**
  * @author jordon
  *
@@ -35,6 +37,15 @@ public class Colors {
     private int mAccent;
 
     private Colors() {
+    }
+
+    public void update(GameInformation gameInformation) {
+        this.update(gameInformation.getColorPrimary(), gameInformation.getColorAccent());
+    }
+
+    public void update(int primary, int accent) {
+        this.mPrimary = primary;
+        this.mAccent = accent;
     }
 
     public int getPrimary() {

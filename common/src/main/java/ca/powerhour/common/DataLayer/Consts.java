@@ -31,10 +31,11 @@ public class Consts {
         public static final String GAME_INFORMATION = "/game-info";
         public static final String UPDATE_PROGRESS = "/update";
         public static final String WEAR_READY = "/ready";
-        public static final String WEAR_EXIT = "/exit";
+        public static final String WEAR_NOT_READY = "/not_ready";
         public static final String GAME_START = "/start";
         public static final String GAME_PAUSE = "/pause";
         public static final String GAME_STOP = "/stop";
+        public static final String GAME_FINISH = "/finish";
     }
 
     public static class Keys {
@@ -51,12 +52,11 @@ public class Consts {
     }
 
     public static class Game {
-        public static final int ROUND_DURATION_SECONDS = 60; // TODO change back to 60 (1 min)
+        public static final int ROUND_DURATION_SECONDS = 10; // TODO change back to 60 (1 min)
         public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
         public static final long PROGRESS_WHEEL_ANIMATION_DURATION = 300;
         public static final long WEAR_UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // One second
-        public static final String FLAG_GAME_STOP_SOFT = "soft_stop";
-        public static final String FLAG_GAME_STOP_HARD = "hard_stop";
+        public static final String FLAG_GAME_STOP = "stop";
     }
 
 }

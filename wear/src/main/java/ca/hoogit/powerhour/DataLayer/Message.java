@@ -46,11 +46,11 @@ public class Message implements Runnable {
     // TODO implement some default message paths to send
 
     public static void sendReady(Context context) {
-        Message ready = new Message(Consts.Paths.WEAR_READY, "", context);
+        new Message(Consts.Paths.WEAR_READY, "", context);
     }
 
-    public static void sendExiting(Context context) {
-        Message exit = new Message(Consts.Paths.WEAR_EXIT, "", context);
+    public static void sendNotReady(Context context) {
+        new Message(Consts.Paths.WEAR_NOT_READY, "", context);
     }
 
     public Message(String path, String textToSend, Context context) {

@@ -120,7 +120,7 @@ public class GameScreenFragment extends Fragment {
     }
 
     public void updateProgress() {
-        int seconds = (int) (mRemainingMillis / 1000.0) - 1;
+        int seconds = (int) (mRemainingMillis / 1000.0);
         mRemainingSeconds.setText(String.valueOf(seconds));
         Log.d(TAG, "updateProgress: remaining: " + mRemainingMillis);
         ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress",
