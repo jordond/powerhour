@@ -43,8 +43,6 @@ public class Message implements Runnable {
     private Context mContext;
     private String mPath;
 
-    // TODO implement some default message paths to send
-
     public static void sendReady(Context context) {
         new Message(Consts.Paths.WEAR_READY, "", context);
     }

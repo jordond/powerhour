@@ -14,7 +14,6 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.FinishActivity;

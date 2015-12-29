@@ -19,8 +19,6 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
-import org.w3c.dom.Text;
-
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Utils.Colors;
@@ -29,8 +27,6 @@ import ca.powerhour.common.DataLayer.Consts;
 public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
 
     private static final String TAG = FinishActivity.class.getSimpleName();
-
-    // TODO receive the finished game information
 
     private RelativeLayout mContainerView;
     private TextView mCompletedRoundsTextView;

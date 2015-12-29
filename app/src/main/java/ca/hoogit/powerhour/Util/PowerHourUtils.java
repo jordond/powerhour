@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import ca.hoogit.powerhour.Game.Action;
-import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.R;
 
 /**

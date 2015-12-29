@@ -186,7 +186,6 @@ public class GameActivity extends WearableActivity implements
             case Consts.Paths.GAME_SHOT:
                 Log.d(TAG, "onMessageReceived: SHOT TIME");
                 mGameScreen.showShotMessage();
-                // TODO edit the text view to show shot time
                 break;
             case Consts.Paths.GAME_STOP:
                 Log.d(TAG, "onMessageReceived: Game has stopped");

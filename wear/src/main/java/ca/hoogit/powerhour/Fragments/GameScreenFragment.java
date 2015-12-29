@@ -2,8 +2,8 @@ package ca.hoogit.powerhour.Fragments;
 
 
 import android.animation.ObjectAnimator;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
