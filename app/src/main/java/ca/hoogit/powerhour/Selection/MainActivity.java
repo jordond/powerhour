@@ -25,6 +25,7 @@ import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameModel;
+import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.Game.WearData;
 import ca.hoogit.powerhour.GameOver.GameOver;
 import ca.hoogit.powerhour.Notifications.Constants;
@@ -151,7 +152,9 @@ public class MainActivity extends BaseActivity  {
                 break;
             case UPDATE:
                 count += 100;
-                if (count >= Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS) {
+                if (event.game.is(State.NEW_ROUND)) {
+                    mWearData.sendMessage(Consts.Paths.GAME_SHOT, "");
+                } else if (count >= Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS) {
                     mWearData.sendGameInformation(event.game);
                     count = 0;
                 }

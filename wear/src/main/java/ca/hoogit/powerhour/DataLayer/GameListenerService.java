@@ -1,6 +1,8 @@
 package ca.hoogit.powerhour.DataLayer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,7 +25,10 @@ public class GameListenerService extends WearableListenerService {
 
     private static final String TAG = GameListenerService.class.getSimpleName();
 
+    private static final long[] VIBRATE_PATTERN = {200, 300, 200, 300, 200, 300, 300, 300, 200};
+
     private GoogleApiClient mGoogleApiClient;
+    private Vibrator mVibrator;
     private boolean mShouldLaunchFinish;
 
     @Override
@@ -33,6 +38,7 @@ public class GameListenerService extends WearableListenerService {
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -79,6 +85,12 @@ public class GameListenerService extends WearableListenerService {
                 break;
             case Consts.Paths.GAME_FINISH:
                 mShouldLaunchFinish = true;
+                break;
+            case Consts.Paths.GAME_SHOT:
+                mVibrator.vibrate(VIBRATE_PATTERN, -1);
+                break;
+            case Consts.Paths.GAME_INFORMATION:
+                mVibrator.cancel();
                 break;
         }
         super.onMessageReceived(event);

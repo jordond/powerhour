@@ -183,6 +183,11 @@ public class GameActivity extends WearableActivity implements
     public void onMessageReceived(MessageEvent event) {
         Log.d(TAG, "onMessageReceived: " + event);
         switch (event.getPath()) {
+            case Consts.Paths.GAME_SHOT:
+                Log.d(TAG, "onMessageReceived: SHOT TIME");
+                mGameScreen.showShotMessage();
+                // TODO edit the text view to show shot time
+                break;
             case Consts.Paths.GAME_STOP:
                 Log.d(TAG, "onMessageReceived: Game has stopped");
                 mGameScreen.stop();

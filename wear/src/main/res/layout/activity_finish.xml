@@ -41,7 +41,7 @@
             android:text="@string/completed_rounds_placeholder"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="50sp" />
+            android:textSize="65sp" />
 
         <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
             android:id="@+id/round_progress"
@@ -62,7 +62,7 @@
             android:layout_alignBottom="@+id/rounds_complete"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="45dp"
             android:fontFamily="sans-serif-thin"
             android:gravity="center"
             android:text="@string/max_rounds_placeholder"

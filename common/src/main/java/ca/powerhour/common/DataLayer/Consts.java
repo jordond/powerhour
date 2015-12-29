@@ -35,6 +35,7 @@ public class Consts {
         public static final String GAME_START = "/start";
         public static final String GAME_PAUSE = "/pause";
         public static final String GAME_STOP = "/stop";
+        public static final String GAME_SHOT = "/shot";
         public static final String GAME_FINISH = "/finish";
     }
 
@@ -57,6 +58,7 @@ public class Consts {
         public static final long PROGRESS_WHEEL_ANIMATION_DURATION = 300;
         public static final long WEAR_UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // One second
         public static final String FLAG_GAME_STOP = "stop";
+        public static final long DEFAULT_SHOT_TIME_DELAY = 4000;
     }
 
 }

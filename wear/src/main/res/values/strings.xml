@@ -16,4 +16,5 @@
     <string name="finished">finished</string>
     <string name="completed_rounds_placeholder">0</string>
     <string name="max_rounds_placeholder">of 60 rounds</string>
+    <string name="end_of_round_message">SHOT</string>
 </resources>

@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import java.text.SimpleDateFormat;
@@ -71,7 +73,8 @@ public class GameScreenFragment extends Fragment {
         return new GameScreenFragment();
     }
 
-    public GameScreenFragment() { }
+    public GameScreenFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,11 +126,8 @@ public class GameScreenFragment extends Fragment {
         int seconds = (int) (mRemainingMillis / 1000.0);
         mRemainingSeconds.setText(String.valueOf(seconds));
         Log.d(TAG, "updateProgress: remaining: " + mRemainingMillis);
-        ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress",
-                (float) mRemainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS);
-        anim.setDuration(Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS);
-        anim.setInterpolator(new LinearInterpolator());
-        anim.start();
+        animateProgress((float) mRemainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS,
+                Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS);
     }
 
     public void updateScreen(boolean isAmbient) {
@@ -160,6 +160,23 @@ public class GameScreenFragment extends Fragment {
                 updateProgress();
             }
         }
+    }
+
+    public void showShotMessage() {
+        updateScreen(false);
+        mProgress.setProgress(0);
+        animateProgress(1f, Consts.Game.DEFAULT_SHOT_TIME_DELAY);
+        mRemainingSeconds.setText(R.string.end_of_round_message);
+        YoYo.with(Techniques.Flash)
+                .duration(Consts.Game.DEFAULT_SHOT_TIME_DELAY)
+                .playOn(mRemainingSeconds);
+    }
+
+    private void animateProgress(float progress, long duration) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress", progress);
+        anim.setDuration(duration);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.start();
     }
 
 }
