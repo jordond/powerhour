@@ -22,7 +22,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':common')
+    compile project(':shared')
 
     // Personal repo
     compile 'com.android.support:support-v13:23.1.1'

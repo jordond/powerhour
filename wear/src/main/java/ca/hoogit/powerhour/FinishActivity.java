@@ -22,7 +22,7 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Utils.Colors;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
 

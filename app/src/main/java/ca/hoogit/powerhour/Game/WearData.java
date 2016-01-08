@@ -39,7 +39,7 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.Collection;
 import java.util.HashSet;
 
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon

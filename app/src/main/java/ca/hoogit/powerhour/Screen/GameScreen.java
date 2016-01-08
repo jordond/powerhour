@@ -21,7 +21,7 @@ import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * A simple {@link Fragment} subclass.

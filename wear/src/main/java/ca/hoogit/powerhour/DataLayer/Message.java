@@ -28,7 +28,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.concurrent.TimeUnit;
 
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon

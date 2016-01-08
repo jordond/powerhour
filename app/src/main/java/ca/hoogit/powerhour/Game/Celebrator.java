@@ -30,7 +30,7 @@ import ca.hoogit.powerhour.Audio.AudioPlayer;
 import ca.hoogit.powerhour.Audio.SoundRecorder;
 import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.Util.BusProvider;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon

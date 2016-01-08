@@ -30,7 +30,7 @@ import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Fragments.ControlsFragment;
 import ca.hoogit.powerhour.Fragments.GameScreenFragment;
 import ca.hoogit.powerhour.Utils.Colors;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameActivity extends WearableActivity implements
         GoogleApiClient.ConnectionCallbacks,

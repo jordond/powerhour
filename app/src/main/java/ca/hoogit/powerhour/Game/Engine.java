@@ -35,7 +35,7 @@ import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.Notifications.Foreground;
 import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.Util.BusProvider;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class Engine extends Service {
 

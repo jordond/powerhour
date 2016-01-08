@@ -36,7 +36,7 @@ import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.SharedPrefs;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends BaseActivity  {

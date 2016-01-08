@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.FinishActivity;
 import ca.hoogit.powerhour.GameActivity;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameListenerService extends WearableListenerService {
 

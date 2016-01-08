@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.Configure.GameOptions;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon

@@ -24,7 +24,7 @@ import java.util.Locale;
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Utils.Colors;
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameScreenFragment extends Fragment {
 

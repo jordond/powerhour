@@ -21,7 +21,7 @@ import com.google.android.gms.wearable.DataMap;
 
 import java.io.Serializable;
 
-import ca.powerhour.common.DataLayer.Consts;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon
