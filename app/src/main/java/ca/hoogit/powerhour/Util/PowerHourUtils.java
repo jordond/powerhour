@@ -20,6 +20,7 @@ package ca.hoogit.powerhour.Util;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -29,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import ca.hoogit.powerhour.Game.Action;
-import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -66,47 +65,37 @@ public class PowerHourUtils {
     }
 
     public static ArrayList<SoundFile> getSounds() {
-        Field[] fields = R.raw.class.getFields();
+        Field[] fields = R.raw.class.getDeclaredFields();
         ArrayList<SoundFile> sounds = new ArrayList<>();
         try {
             for (Field field : fields) {
-                SoundFile s = new SoundFile(field.getName(), field.getInt(field));
+                SoundFile s = new SoundFile(field.getName());
                 if (Arrays.asList(mSoundFileNames).contains(s.name)) {
                     sounds.add(s);
                 }
             }
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return  sounds;
+        return sounds;
     }
 
-    public static int[] soundArrayListToIdArray(ArrayList<SoundFile> list) {
+    public static int[] soundArrayListToIdArray(Context context, ArrayList<SoundFile> list) {
+        Resources res = context.getResources();
         int[] ids = new int[list.size()];
         int count = 0;
         for (SoundFile s : list) {
-            ids[count] = s.id;
+            ids[count] = res.getIdentifier(s.name, "raw", context.getPackageName());
             count++;
         }
         return ids;
     }
 
-    public static String soundIdToName(ArrayList<SoundFile> list, int id) {
-        for (SoundFile sound : list) {
-            if (sound.id == id) {
-                return sound.name;
-            }
-        }
-        return "custom";
-    }
-
     public static class SoundFile {
         String name;
-        int id;
 
-        public SoundFile(String name, int id) {
+        public SoundFile(String name) {
             this.name = name;
-            this.id = id;
         }
     }
 

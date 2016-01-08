@@ -18,10 +18,8 @@
 package ca.hoogit.powerhour.About;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 

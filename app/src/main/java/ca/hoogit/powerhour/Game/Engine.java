@@ -19,7 +19,6 @@
 package ca.hoogit.powerhour.Game;
 
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
@@ -36,6 +35,7 @@ import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.Notifications.Foreground;
 import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.Util.BusProvider;
+import ca.powerhour.common.DataLayer.Consts;
 
 public class Engine extends Service {
 
@@ -222,6 +222,7 @@ public class Engine extends Service {
             started = false;
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
+                mVibrator.cancel();
             }
             Log.i(TAG, "Stopping game on round " + mGame.currentRound());
         }
@@ -235,7 +236,7 @@ public class Engine extends Service {
                 public void onTick(long millisUntilFinished) {
                     mRoundCounter += TICK_LENGTH;
                     mGame.updateGameMilliseconds(millisUntilFinished, mRoundCounter);
-                    if (mRoundCounter != GameModel.ROUND_DURATION_MILLIS) {
+                    if (mRoundCounter != Consts.Game.ROUND_DURATION_MILLIS) {
                         mGame.setState(State.ACTIVE);
                     } else {
                         onNewRound();

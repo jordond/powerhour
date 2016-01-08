@@ -18,7 +18,6 @@
 
 package ca.hoogit.powerhour.About;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;

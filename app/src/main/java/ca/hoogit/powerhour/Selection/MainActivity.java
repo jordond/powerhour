@@ -25,6 +25,8 @@ import ca.hoogit.powerhour.Game.Action;
 import ca.hoogit.powerhour.Game.Engine;
 import ca.hoogit.powerhour.Game.GameEvent;
 import ca.hoogit.powerhour.Game.GameModel;
+import ca.hoogit.powerhour.Game.State;
+import ca.hoogit.powerhour.Game.WearData;
 import ca.hoogit.powerhour.GameOver.GameOver;
 import ca.hoogit.powerhour.Notifications.Constants;
 import ca.hoogit.powerhour.R;
@@ -34,11 +36,12 @@ import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.SharedPrefs;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameTypeItem;
+import ca.powerhour.common.DataLayer.Consts;
 import io.fabric.sdk.android.Fabric;
 
+public class MainActivity extends BaseActivity  {
 
-public class MainActivity extends BaseActivity {
-
+    private static final int REQUEST_RESOLVE_ERROR = 1000;
     private final String TAG = MainActivity.class.getSimpleName();
 
     @Bind({R.id.type_power_hour, R.id.type_century_club, R.id.type_spartan, R.id.type_custom})
@@ -46,6 +49,9 @@ public class MainActivity extends BaseActivity {
 
     private FragmentManager mFragmentManager;
 
+    private WearData mWearData;
+    private boolean mResolvingError = false;
+    
     private boolean mChosen;
 
     @Override
@@ -87,7 +93,21 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, TourActivity.class));
         }
 
+        mWearData = new WearData(this);
+
         setupListeners();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mWearData.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mWearData.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -118,6 +138,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    int count = 0;
     @Subscribe
     public void onGameEvent(final GameEvent event) {
         switch (event.action) {
@@ -129,16 +150,27 @@ public class MainActivity extends BaseActivity {
                     Log.d(TAG, "Game already active");
                 }
                 break;
+            case UPDATE:
+                count += 100;
+                if (event.game.is(State.NEW_ROUND)) {
+                    mWearData.sendMessage(Consts.Paths.GAME_SHOT, "");
+                } else if (count >= Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS) {
+                    mWearData.sendGameInformation(event.game);
+                    count = 0;
+                }
+                break;
             case STOP:
                 if (event.game != null && event.game.hasStarted()) {
                     Intent gameOver = new Intent(getApplication(), GameOver.class);
                     gameOver.putExtra("game", event.game);
+                    mWearData.sendFinish(event.game);
                     startActivity(gameOver);
                     finish();
                 } else {
                     Fragment fragment = findFragment("gameScreen");
                     mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                     reset();
+                    mWearData.sendMessage(Consts.Paths.GAME_STOP, Consts.Game.FLAG_GAME_STOP);
                 }
                 Log.i(TAG, "Game was stopped early");
                 break;
@@ -148,6 +180,7 @@ public class MainActivity extends BaseActivity {
                     public void run() {
                         Intent gameOver = new Intent(getApplication(), GameOver.class);
                         gameOver.putExtra("game", event.game);
+                        mWearData.sendFinish(event.game);
                         reset();
                         startActivity(gameOver);
                         finish();
@@ -255,6 +288,9 @@ public class MainActivity extends BaseActivity {
         }
         ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
+        // TODO implement 'wear mode' to auto disable sound and screen
+        mWearData.sendStartActivity();
+        mWearData.sendGameInformation(gameModel);
     }
 
     public Fragment findFragment(String name) {

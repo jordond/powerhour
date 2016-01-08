@@ -3,7 +3,7 @@
     package="ca.hoogit.powerhour">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -30,7 +30,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.hoogit.powerhour.Selection.MainActivity" />
         </activity>
-
         <activity
             android:name=".GameOver.GameOver"
             android:label="@string/title_activity_game_over"
@@ -39,7 +38,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.hoogit.powerhour.Selection.MainActivity" />
         </activity>
-
         <activity
             android:name=".About.TourActivity"
             android:label="@string/tour_activity_title"
@@ -57,7 +55,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="894d182b0e0c98734be894889a1e2b0bf7e4a957" />
-
     </application>
 
 </manifest>

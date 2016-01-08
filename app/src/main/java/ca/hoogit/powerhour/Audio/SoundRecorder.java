@@ -20,7 +20,6 @@ package ca.hoogit.powerhour.Audio;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.IOException;

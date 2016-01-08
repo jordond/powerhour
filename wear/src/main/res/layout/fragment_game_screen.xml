@@ -1,0 +1,141 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/game_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:deviceIds="wear_round">
+
+    <LinearLayout
+        android:id="@+id/waiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/waiting_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/waiting_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/intro_waiting"
+            android:textColor="@color/text"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/waiting_text_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/intro_waiting_more"
+            android:textColor="@color/text"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/active"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/rounds_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/progress_seconds_circle"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="45dp"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/placeholder_rounds_remaining"
+            android:textColor="@color/text"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/progress_seconds_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/progress_seconds_circle"
+            android:layout_alignEnd="@+id/progress_seconds_circle"
+            android:layout_alignStart="@+id/progress_seconds_circle"
+            android:layout_alignTop="@+id/progress_seconds_circle"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/placeholder_seconds_remaining"
+            android:textAlignment="center"
+            android:textColor="@color/text"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/seconds_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/progress_seconds_circle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="45dp"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:text="@string/seconds"
+            android:textColor="@color/text"
+            android:textSize="18sp" />
+
+        <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
+            android:id="@+id/progress_seconds_circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            app:cpb_countdown="true"
+            app:cpb_progress="1"
+            app:cpb_progress_background_color="@color/primary"
+            app:cpb_progress_color="@color/accent"
+            app:cpb_stroke_width="7dp"
+            app:cpb_thumb_color="@color/accent" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ambient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/rounds_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/round"
+            android:textColor="#fff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/ambient_rounds_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/placeholder_rounds_remaining"
+            android:textColor="#fff"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

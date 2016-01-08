@@ -19,10 +19,13 @@ package ca.hoogit.powerhour.Game;
 
 import android.util.Log;
 
+import com.google.android.gms.wearable.PutDataMapRequest;
+
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.powerhour.common.DataLayer.Consts;
 
 /**
  * @author jordon
@@ -32,9 +35,6 @@ import ca.hoogit.powerhour.Configure.GameOptions;
  */
 public class GameModel implements Serializable {
 
-    public static final int ROUND_DURATION_SECONDS = 60; // TODO change back to 60 (1 min)
-    public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
-
     private boolean started = false;
     private State state;
     private int round = 0;
@@ -42,7 +42,7 @@ public class GameModel implements Serializable {
     private int pauses = 0;
     private int maxPauses;
     private long millisRemainingGame;
-    private long millisRemainingRound = ROUND_DURATION_MILLIS;
+    private long millisRemainingRound = Consts.Game.ROUND_DURATION_MILLIS;
     private boolean muted;
     private boolean autoStart;
 
@@ -60,7 +60,25 @@ public class GameModel implements Serializable {
         this.maxPauses = options.getMaxPauses();
         this.autoStart = options.isAutoStart();
         this.options = options;
-        this.millisRemainingGame = this.totalRounds * ROUND_DURATION_MILLIS;
+        this.millisRemainingGame = this.totalRounds * Consts.Game.ROUND_DURATION_MILLIS;
+    }
+
+    public PutDataMapRequest toDataMap() {
+        return toDataMap(Consts.Paths.GAME_INFORMATION);
+    }
+
+    public PutDataMapRequest toDataMap(String uri) {
+        PutDataMapRequest data = PutDataMapRequest.create(uri);
+        data.getDataMap().putInt(Consts.Keys.COLOR_PRIMARY, this.options.getBackgroundColor());
+        data.getDataMap().putInt(Consts.Keys.COLOR_ACCENT, this.options.getAccentColor());
+        data.getDataMap().putInt(Consts.Keys.MAX_ROUNDS, this.totalRounds);
+        data.getDataMap().putInt(Consts.Keys.MAX_PAUSES, this.maxPauses);
+        data.getDataMap().putInt(Consts.Keys.CURRENT_ROUND, this.round);
+        data.getDataMap().putInt(Consts.Keys.CURRENT_PAUSES, this.pauses);
+        data.getDataMap().putLong(Consts.Keys.REMAINING_MILLIS, this.millisRemainingRound);
+        data.getDataMap().putBoolean(Consts.Keys.MUTED, this.muted);
+        data.getDataMap().putBoolean(Consts.Keys.STARTED, this.started);
+        return data;
     }
 
     public void incrementRound() {
@@ -84,7 +102,7 @@ public class GameModel implements Serializable {
     }
 
     public long gameMillis() {
-        return this.totalRounds * ROUND_DURATION_MILLIS;
+        return this.totalRounds * Consts.Game.ROUND_DURATION_MILLIS;
     }
 
     public long gameMillisToMinutes() {
@@ -104,10 +122,10 @@ public class GameModel implements Serializable {
      */
 
     public void updateGameMilliseconds(long millis, long roundCount) {
-        long roundMillis = ROUND_DURATION_MILLIS - roundCount;
+        long roundMillis = Consts.Game.ROUND_DURATION_MILLIS - roundCount;
         this.millisRemainingGame = millis;
         this.millisRemainingRound = roundCount == this.totalRounds
-                ? ROUND_DURATION_MILLIS : roundMillis;
+                ? Consts.Game.ROUND_DURATION_MILLIS : roundMillis;
     }
 
     public long totalRoundsLeftToMilliseconds() {
@@ -115,7 +133,7 @@ public class GameModel implements Serializable {
     }
 
     public long roundsToMilliseconds(int rounds) {
-        int seconds = rounds * GameModel.ROUND_DURATION_SECONDS;
+        int seconds = rounds * Consts.Game.ROUND_DURATION_SECONDS;
         return TimeUnit.SECONDS.toMillis(seconds);
     }
 

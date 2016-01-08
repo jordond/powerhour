@@ -420,7 +420,7 @@ public class ConfigureGameFragment extends Fragment {
         if (mSoundFiles == null) {
             mSoundFiles = PowerHourUtils.getSounds();
         }
-        int[] soundIds = PowerHourUtils.soundArrayListToIdArray(mSoundFiles);
+        int[] soundIds = PowerHourUtils.soundArrayListToIdArray(getContext(), mSoundFiles);
         SoundChooserDialog dialog = SoundChooserDialog.newInstance("Choose a drinking alarm",
                 soundIds, mPrimaryColor, 5, SoundChooserDialog.SIZE_SMALL);
         dialog.setAudioStreamType(AudioManager.STREAM_ALARM);
