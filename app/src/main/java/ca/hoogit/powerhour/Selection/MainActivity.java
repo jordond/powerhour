@@ -288,6 +288,7 @@ public class MainActivity extends BaseActivity  {
         }
         ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
+        // TODO implement 'wear mode' to auto disable sound and screen
         mWearData.sendStartActivity();
         mWearData.sendGameInformation(gameModel);
     }
