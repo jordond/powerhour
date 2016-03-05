@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour.Fragments;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -67,6 +68,7 @@ public class GameScreen extends LinearLayout {
     private int mCurrentRound = 0;
     private int mTotalPauses;
     private int mCurrentPauses = 0;
+    private boolean mShotAnimatorIsRunning;
     private long mRemainingMillis = 60 * 1000;
 
     private Colors mColors = Colors.getInstance();
@@ -121,6 +123,9 @@ public class GameScreen extends LinearLayout {
     }
 
     public void updateScreen(boolean isAmbient) {
+        if (mShotAnimatorIsRunning) {
+            return;
+        }
         if (isAmbient) {
             if (!mReceivedGameInfo) {
                 mWaitingLayout.setVisibility(View.VISIBLE);
@@ -160,7 +165,28 @@ public class GameScreen extends LinearLayout {
             mProgress.setProgressBackgroundColor(Color.BLACK);
         }
         mProgress.setProgress(0);
-        animateProgress(1f, Consts.Game.DEFAULT_SHOT_TIME_DELAY);
+        animateProgress(1f, Consts.Game.DEFAULT_SHOT_TIME_DELAY, new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mShotAnimatorIsRunning = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mShotAnimatorIsRunning = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mShotAnimatorIsRunning = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
         mRemainingSeconds.setText(R.string.end_of_round_message);
         YoYo.with(Techniques.Flash)
                 .duration(Consts.Game.DEFAULT_SHOT_TIME_DELAY)
@@ -168,9 +194,16 @@ public class GameScreen extends LinearLayout {
     }
 
     private void animateProgress(float progress, long duration) {
+        animateProgress(progress, duration, null);
+    }
+
+    private void animateProgress(float progress, long duration, Animator.AnimatorListener listener) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(mProgress, "progress", progress);
         anim.setDuration(duration);
         anim.setInterpolator(new LinearInterpolator());
+        if (listener != null) {
+            anim.addListener(listener);
+        }
         anim.start();
     }
 }
