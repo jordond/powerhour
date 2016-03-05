@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import ca.hoogit.powerhour.Game.FinishActivity;
 import ca.hoogit.powerhour.Game.GameActivity;
+import ca.hoogit.powerhour.Game.GameState;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameListenerService extends WearableListenerService {
@@ -28,6 +29,7 @@ public class GameListenerService extends WearableListenerService {
 
     private GoogleApiClient mGoogleApiClient;
     private Vibrator mVibrator;
+
     private boolean mShouldLaunchFinish;
 
     @Override
@@ -62,6 +64,7 @@ public class GameListenerService extends WearableListenerService {
                         finish.putExtra(Consts.Keys.GAME_DATA, info);
                         finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(finish);
+                        GameState.getInstance().stop();
                         mShouldLaunchFinish = false;
                         Log.d(TAG, "onDataChanged: launching Finish activity");
                     }
@@ -77,16 +80,21 @@ public class GameListenerService extends WearableListenerService {
 
         switch (path) {
             case Consts.Paths.START_ACTIVITY:
-                Intent start = new Intent(this, GameActivity.class);
-                start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(start);
-                mShouldLaunchFinish = true;
+            case Consts.Paths.GAME_SHOT:
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (Consts.Paths.GAME_SHOT.equals(path)) {
+                    intent.putExtra(Consts.Game.FLAG_GAME_IS_SHOT_TIME, true); // TODO handle in activity?
+                    GameState.getInstance().setIsShotTime(true);
+                    mVibrator.vibrate(VIBRATE_PATTERN, -1);
+                } else {
+                    mShouldLaunchFinish = true;
+                }
+                startActivity(intent);
                 break;
             case Consts.Paths.GAME_FINISH:
                 mShouldLaunchFinish = true;
-                break;
-            case Consts.Paths.GAME_SHOT:
-                mVibrator.vibrate(VIBRATE_PATTERN, -1);
+                mVibrator.cancel();
                 break;
             case Consts.Paths.GAME_INFORMATION:
                 mVibrator.cancel();

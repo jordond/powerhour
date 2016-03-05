@@ -59,6 +59,7 @@ public class Consts {
         public static final long WEAR_UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // One second
         public static final String FLAG_GAME_STOP = "stop";
         public static final long DEFAULT_SHOT_TIME_DELAY = 4000;
+        public static final String FLAG_GAME_IS_SHOT_TIME = "shot_time_drink_up";
     }
 
 }

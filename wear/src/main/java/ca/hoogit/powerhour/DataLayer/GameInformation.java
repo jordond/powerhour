@@ -34,7 +34,7 @@ public class GameInformation implements Serializable {
 
     private int colorPrimary;
     private int colorAccent;
-    private int rounds;
+    private int rounds = 0;
     private int pauses;
     private int currentRound;
     private int currentPauses;

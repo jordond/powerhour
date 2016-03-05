@@ -1,5 +1,6 @@
 package ca.hoogit.powerhour.Game;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -145,8 +146,8 @@ public class GameActivity extends WearableActivity implements
                     case Consts.Paths.GAME_INFORMATION:
                         DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
                         GameInformation info = GameInformation.fromDataMap(item.getDataMap());
+                        GameState.getInstance().update(info);
                         mColors.update(info);
-                        mGameScreen.updateInfo(info);
                         updateDisplay();
                         break;
                 }
@@ -164,7 +165,7 @@ public class GameActivity extends WearableActivity implements
                 break;
             case Consts.Paths.GAME_STOP:
                 Log.d(TAG, "onMessageReceived: Game has stopped");
-                mGameScreen.stop();
+                GameState.getInstance().stop();
                 updateDisplay();
                 Message.sendReady(this);
                 break;

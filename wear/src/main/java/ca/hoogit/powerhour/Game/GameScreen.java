@@ -63,13 +63,7 @@ public class GameScreen extends LinearLayout {
     @Bind(R.id.ambient_rounds_remaining) TextView mAmbientRemainingRounds;
     @Bind(R.id.ambient_clock) TextView mAmbientClock;
 
-    private boolean mReceivedGameInfo;
-    private int mTotalRounds;
-    private int mCurrentRound = 0;
-    private int mTotalPauses;
-    private int mCurrentPauses = 0;
     private boolean mShotAnimatorIsRunning;
-    private long mRemainingMillis = 60 * 1000;
 
     private Colors mColors = Colors.getInstance();
 
@@ -93,21 +87,6 @@ public class GameScreen extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void updateInfo(GameInformation info) {
-        mReceivedGameInfo = true;
-        mTotalRounds = info.getRounds();
-        mTotalPauses = info.getPauses();
-        mCurrentRound = info.getCurrentRound();
-        mCurrentPauses = info.getCurrentPauses();
-        mRemainingMillis = info.getRemainingMillis();
-
-        mRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
-    }
-
-    public void stop() {
-        mReceivedGameInfo = false;
-    }
-
     public void updateColors() {
         mProgress.setThumbColor(mColors.getAccent());
         mProgress.setProgressColor(mColors.getAccent());
@@ -115,19 +94,24 @@ public class GameScreen extends LinearLayout {
     }
 
     public void updateProgress() {
-        int seconds = (int) (mRemainingMillis / 1000.0);
+        long remainingMillis = GameState.getInstance().get().getRemainingMillis();
+        int seconds = (int) (remainingMillis / 1000.0);
         mRemainingSeconds.setText(String.valueOf(seconds));
-        Log.d(TAG, "updateProgress: remaining: " + mRemainingMillis);
-        animateProgress((float) mRemainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS,
+        Log.d(TAG, "updateProgress: remaining: " + remainingMillis);
+        animateProgress((float) remainingMillis / (float) Consts.Game.ROUND_DURATION_MILLIS,
                 Consts.Game.WEAR_UPDATE_INTERVAL_IN_MILLISECONDS);
     }
 
     public void updateScreen(boolean isAmbient) {
         if (mShotAnimatorIsRunning) {
+            if (!isAmbient) {
+                mProgress.setProgressBackgroundColor(Colors.getInstance().getPrimary());
+            }
             return;
         }
+        GameInformation info = GameState.getInstance().get();
         if (isAmbient) {
-            if (!mReceivedGameInfo) {
+            if (!GameState.getInstance().hasGameInfo()) {
                 mWaitingLayout.setVisibility(View.VISIBLE);
                 mWaitingText.setTextSize(FONT_SIZE_AMBIENT);
                 mWaitingMoreText.setVisibility(View.GONE);
@@ -138,13 +122,13 @@ public class GameScreen extends LinearLayout {
                 mActiveLayout.setVisibility(View.GONE);
                 mAmbientLayout.setVisibility(View.VISIBLE);
                 mRoundsText.getPaint().setAntiAlias(false);
-                mAmbientRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
+                mAmbientRemainingRounds.setText(info.getCurrentRound() + " of " + info.getRounds());
                 mAmbientRemainingRounds.getPaint().setAntiAlias(false);
                 mAmbientClock.setVisibility(View.VISIBLE);
                 mAmbientClock.setText(AMBIENT_DATE_FORMAT.format(new Date()));
             }
         } else {
-            if (!mReceivedGameInfo) {
+            if (!GameState.getInstance().hasGameInfo()) {
                 mWaitingLayout.setVisibility(View.VISIBLE);
                 mWaitingText.setTextSize(FONT_SIZE_ACTIVE);
                 mWaitingMoreText.setVisibility(View.VISIBLE);
@@ -153,6 +137,7 @@ public class GameScreen extends LinearLayout {
                 mWaitingLayout.setVisibility(View.GONE);
                 mActiveLayout.setVisibility(View.VISIBLE);
                 mAmbientLayout.setVisibility(View.GONE);
+                mRemainingRounds.setText(info.getCurrentRound() + " of " + info.getRounds());
                 updateColors();
                 updateProgress();
             }
