@@ -185,7 +185,7 @@ public class GameActivity extends WearableActivity implements
         switch (event.getPath()) {
             case Consts.Paths.GAME_SHOT:
                 Log.d(TAG, "onMessageReceived: SHOT TIME");
-                mGameScreen.showShotMessage();
+                mGameScreen.showShotMessage(isAmbient());
                 break;
             case Consts.Paths.GAME_STOP:
                 Log.d(TAG, "onMessageReceived: Game has stopped");

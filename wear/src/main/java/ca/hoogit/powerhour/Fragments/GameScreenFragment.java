@@ -3,6 +3,7 @@ package ca.hoogit.powerhour.Fragments;
 
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ public class GameScreenFragment extends Fragment {
     private LinearLayout mAmbientLayout;
     private TextView mRoundsText;
     private TextView mAmbientRemainingRounds;
+    private TextView mAmbientClock;
 
     private boolean mReceivedGameInfo;
     private int mTotalRounds;
@@ -92,6 +94,7 @@ public class GameScreenFragment extends Fragment {
         mRemainingRounds = (TextView) view.findViewById(R.id.rounds_remaining);
         mRemainingSeconds = (TextView) view.findViewById(R.id.progress_seconds_text);
         mProgress = (HoloCircularProgressBar) view.findViewById(R.id.progress_seconds_circle);
+        mAmbientClock = (TextView) view.findViewById(R.id.ambient_clock);
 
         // Ambient components
         mAmbientLayout = (LinearLayout) view.findViewById(R.id.ambient);
@@ -145,6 +148,8 @@ public class GameScreenFragment extends Fragment {
                 mRoundsText.getPaint().setAntiAlias(false);
                 mAmbientRemainingRounds.setText(mCurrentRound + " of " + mTotalRounds);
                 mAmbientRemainingRounds.getPaint().setAntiAlias(false);
+                mAmbientClock.setVisibility(View.VISIBLE);
+                mAmbientClock.setText(AMBIENT_DATE_FORMAT.format(new Date()));
             }
         } else {
             if (!mReceivedGameInfo) {
@@ -162,8 +167,11 @@ public class GameScreenFragment extends Fragment {
         }
     }
 
-    public void showShotMessage() {
+    public void showShotMessage(boolean isAmbient) {
         updateScreen(false);
+        if (isAmbient) {
+            mProgress.setProgressBackgroundColor(Color.BLACK);
+        }
         mProgress.setProgress(0);
         animateProgress(1f, Consts.Game.DEFAULT_SHOT_TIME_DELAY);
         mRemainingSeconds.setText(R.string.end_of_round_message);
