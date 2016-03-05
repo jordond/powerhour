@@ -1,6 +1,8 @@
 package ca.hoogit.powerhour;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,7 +31,7 @@ import java.util.List;
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
 import ca.hoogit.powerhour.Fragments.ControlsFragment;
-import ca.hoogit.powerhour.Fragments.GameScreenFragment;
+import ca.hoogit.powerhour.Fragments.GameScreen;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
@@ -42,13 +45,8 @@ public class GameActivity extends WearableActivity implements
      * Containing layout
      */
     private RelativeLayout mContainer;
-    private GridViewPager mPager;
 
-    /**
-     * Fragments
-     */
-    private GameScreenFragment mGameScreen;
-    private ControlsFragment mControls;
+    private GameScreen mGameScreen;
 
     private GoogleApiClient mGoogleApiClient;
     private Colors mColors = Colors.getInstance();
@@ -58,28 +56,16 @@ public class GameActivity extends WearableActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         setAmbientEnabled();
+
         final WatchViewStub viewStub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         viewStub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mContainer = (RelativeLayout) stub.findViewById(R.id.game_screen);
-                mPager = (GridViewPager) stub.findViewById(R.id.pager);
-                mPager.setOffscreenPageCount(1);
-                DotsPageIndicator indicator = (DotsPageIndicator) stub.findViewById(R.id.page_indicator);
-                indicator.setDotSpacing((int) getResources().getDimension(R.dimen.dots_spacing));
-                indicator.setPager(mPager);
+                mContainer = (RelativeLayout) stub.findViewById(R.id.container_game_screen);
+                mGameScreen = (GameScreen) stub.findViewById(R.id.game_screen_view);
 
                 mColors.setPrimary(ContextCompat.getColor(getApplicationContext(), R.color.primary));
                 mColors.setAccent(ContextCompat.getColor(getApplicationContext(), R.color.accent));
-                mGameScreen = GameScreenFragment.newInstance();
-                mControls = ControlsFragment.newInstance();
-
-                List<Fragment> pages = new ArrayList<>();
-                pages.add(mGameScreen);
-                pages.add(mControls);
-
-                final GamePagerAdapter adapter = new GamePagerAdapter(getFragmentManager(), pages);
-                mPager.setAdapter(adapter);
             }
         });
 
@@ -89,7 +75,7 @@ public class GameActivity extends WearableActivity implements
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult result) {
-                    Log.e(TAG, "onConnectionFailed " + result.toString());
+                        Log.e(TAG, "onConnectionFailed " + result.toString());
                     }
                 })
                 .build();
@@ -141,11 +127,11 @@ public class GameActivity extends WearableActivity implements
         super.onExitAmbient();
     }
 
+    @SuppressWarnings("ResourceAsColor")
     private void updateDisplay() {
         Log.d(TAG, "updateDisplay: Ambient mode " + isAmbient());
         int color = isAmbient() ? ContextCompat.getColor(getApplicationContext(),
                 android.R.color.black) : mColors.getPrimary();
-        mPager.setCurrentItem(0, 0, false);
         mContainer.setBackgroundColor(color);
         mGameScreen.updateScreen(isAmbient());
     }
@@ -171,7 +157,6 @@ public class GameActivity extends WearableActivity implements
                         GameInformation info = GameInformation.fromDataMap(item.getDataMap());
                         mColors.update(info);
                         mGameScreen.updateInfo(info);
-                        mControls.updateColors();
                         updateDisplay();
                         break;
                 }

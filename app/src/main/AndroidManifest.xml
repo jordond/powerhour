@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.hoogit.powerhour">
+          package="ca.hoogit.powerhour">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -17,9 +17,9 @@
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
@@ -28,7 +28,7 @@
             android:parentActivityName=".Selection.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
+                android:value="ca.hoogit.powerhour.Selection.MainActivity"/>
         </activity>
         <activity
             android:name=".GameOver.GameOver"
@@ -36,7 +36,7 @@
             android:parentActivityName=".Selection.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
+                android:value="ca.hoogit.powerhour.Selection.MainActivity"/>
         </activity>
         <activity
             android:name=".About.TourActivity"
@@ -44,17 +44,17 @@
             android:parentActivityName=".Selection.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.hoogit.powerhour.Selection.MainActivity" />
+                android:value="ca.hoogit.powerhour.Selection.MainActivity"/>
         </activity>
 
         <service
             android:name=".Game.Engine"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="894d182b0e0c98734be894889a1e2b0bf7e4a957" />
+            android:value="894d182b0e0c98734be894889a1e2b0bf7e4a957"/>
     </application>
 
 </manifest>

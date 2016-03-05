@@ -1,14 +1,11 @@
 package ca.hoogit.powerhour.Fragments;
 
-
 import android.animation.ObjectAnimator;
-import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,16 +19,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
-public class GameScreenFragment extends Fragment {
+/**
+ * Handle all the views related to the game
+ */
+public class GameScreen extends LinearLayout {
 
-    private static final String TAG = GameScreenFragment.class.getSimpleName();
-    private static final String ARG_COLOR_PRIMARY = "color_primary";
-    private static final String ARG_COLOR_ACCENT = "color_accent";
+    private static final String TAG = GameScreen.class.getSimpleName();
 
     private static final int FONT_SIZE_AMBIENT = 12;
     private static final int FONT_SIZE_ACTIVE = 18;
@@ -41,26 +41,26 @@ public class GameScreenFragment extends Fragment {
     /**
      * Waiting components
      */
-    private LinearLayout mWaitingLayout;
-    private TextView mWaitingText;
-    private TextView mWaitingMoreText;
-    private TextView mWaitingClock;
+    @Bind(R.id.waiting) LinearLayout mWaitingLayout;
+    @Bind(R.id.waiting_text) TextView mWaitingText;
+    @Bind(R.id.waiting_text_more) TextView mWaitingMoreText;
+    @Bind(R.id.waiting_clock) TextView mWaitingClock;
 
     /**
      * Active layout components
      */
-    private RelativeLayout mActiveLayout;
-    private TextView mRemainingRounds;
-    private TextView mRemainingSeconds;
-    private HoloCircularProgressBar mProgress;
+    @Bind(R.id.active) RelativeLayout mActiveLayout;
+    @Bind(R.id.rounds_remaining) TextView mRemainingRounds;
+    @Bind(R.id.progress_seconds_text) TextView mRemainingSeconds;
+    @Bind(R.id.progress_seconds_circle) HoloCircularProgressBar mProgress;
 
     /**
      * Ambient layout components
      */
-    private LinearLayout mAmbientLayout;
-    private TextView mRoundsText;
-    private TextView mAmbientRemainingRounds;
-    private TextView mAmbientClock;
+    @Bind(R.id.ambient) LinearLayout mAmbientLayout;
+    @Bind(R.id.rounds_text) TextView mRoundsText;
+    @Bind(R.id.ambient_rounds_remaining) TextView mAmbientRemainingRounds;
+    @Bind(R.id.ambient_clock) TextView mAmbientClock;
 
     private boolean mReceivedGameInfo;
     private int mTotalRounds;
@@ -71,37 +71,24 @@ public class GameScreenFragment extends Fragment {
 
     private Colors mColors = Colors.getInstance();
 
-    public static GameScreenFragment newInstance() {
-        return new GameScreenFragment();
+    public GameScreen(Context context) {
+        super(context);
+        init(context, null, 0);
     }
 
-    public GameScreenFragment() {
+    public GameScreen(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs, 0);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_game_screen, container, false);
+    public GameScreen(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs, defStyle);
+    }
 
-        // Waiting for game components
-        mWaitingLayout = (LinearLayout) view.findViewById(R.id.waiting);
-        mWaitingText = (TextView) view.findViewById(R.id.waiting_text);
-        mWaitingMoreText = (TextView) view.findViewById(R.id.waiting_text_more);
-        mWaitingClock = (TextView) view.findViewById(R.id.waiting_clock);
-
-        // Active components
-        mActiveLayout = (RelativeLayout) view.findViewById(R.id.active);
-        mRemainingRounds = (TextView) view.findViewById(R.id.rounds_remaining);
-        mRemainingSeconds = (TextView) view.findViewById(R.id.progress_seconds_text);
-        mProgress = (HoloCircularProgressBar) view.findViewById(R.id.progress_seconds_circle);
-        mAmbientClock = (TextView) view.findViewById(R.id.ambient_clock);
-
-        // Ambient components
-        mAmbientLayout = (LinearLayout) view.findViewById(R.id.ambient);
-        mRoundsText = (TextView) view.findViewById(R.id.rounds_text);
-        mAmbientRemainingRounds = (TextView) view.findViewById(R.id.ambient_rounds_remaining);
-
-        return view;
+    private void init(Context context, AttributeSet attrs, int defStyle) {
+        inflate(getContext(), R.layout.view_game_screen, this);
+        ButterKnife.bind(this);
     }
 
     public void updateInfo(GameInformation info) {
@@ -186,5 +173,4 @@ public class GameScreenFragment extends Fragment {
         anim.setInterpolator(new LinearInterpolator());
         anim.start();
     }
-
 }
