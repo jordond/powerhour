@@ -247,7 +247,7 @@ public class ScreenView {
     }
 
     public void setRemainingMinutes(long minutesInMillis) {
-        int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(minutesInMillis);
+        int minutes = (int) Math.ceil(TimeUnit.MILLISECONDS.toMinutes(minutesInMillis));
         String text;
         if (minutes == 0) {
             text = "less than a minute";
