@@ -222,10 +222,10 @@ public class Engine extends Service {
             started = false;
             if (mGame.is(State.ACTIVE)) {
                 mTimer.cancel();
-                mVibrator.cancel();
             }
             Log.i(TAG, "Stopping game on round " + mGame.currentRound());
         }
+        mVibrator.cancel();
         finish();
     }
 
