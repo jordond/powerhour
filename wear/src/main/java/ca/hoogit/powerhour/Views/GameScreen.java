@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour.Fragments;
+package ca.hoogit.powerhour.Views;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;

@@ -7,10 +7,10 @@
                 android:background="@color/primary"
                 tools:deviceIds="wear_round">
 
-    <ca.hoogit.powerhour.Fragments.GameScreen
+    <ca.hoogit.powerhour.Views.GameScreen
         android:id="@+id/game_screen_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ca.hoogit.powerhour.Fragments.GameScreen>
+    </ca.hoogit.powerhour.Views.GameScreen>
 
 </RelativeLayout>

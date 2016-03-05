@@ -1,18 +1,12 @@
 package ca.hoogit.powerhour;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.activity.WearableActivity;
-import android.support.wearable.view.DotsPageIndicator;
-import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,13 +19,9 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
-import ca.hoogit.powerhour.Fragments.ControlsFragment;
-import ca.hoogit.powerhour.Fragments.GameScreen;
+import ca.hoogit.powerhour.Views.GameScreen;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
