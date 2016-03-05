@@ -18,6 +18,7 @@
 package ca.hoogit.powerhour.Utils;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
+import ca.hoogit.powerhour.Game.GameState;
 
 /**
  * @author jordon
@@ -29,7 +30,7 @@ import ca.hoogit.powerhour.DataLayer.GameInformation;
 public class Colors {
     private static Colors ourInstance = new Colors();
 
-    public static Colors getInstance() {
+    public static Colors getInstance2() {
         return ourInstance;
     }
 
@@ -37,6 +38,9 @@ public class Colors {
     private int mAccent;
 
     private Colors() {
+        GameInformation info = GameState.getInstance().get();
+        this.mPrimary = info.getColorPrimary();
+        this.mAccent = info.getColorAccent();
     }
 
     public void update(GameInformation gameInformation) {

@@ -65,8 +65,6 @@ public class GameScreen extends LinearLayout {
 
     private boolean mShotAnimatorIsRunning;
 
-    private Colors mColors = Colors.getInstance();
-
     public GameScreen(Context context) {
         super(context);
         init(context, null, 0);
@@ -88,9 +86,10 @@ public class GameScreen extends LinearLayout {
     }
 
     public void updateColors() {
-        mProgress.setThumbColor(mColors.getAccent());
-        mProgress.setProgressColor(mColors.getAccent());
-        mProgress.setProgressBackgroundColor(mColors.getPrimary());
+        GameState state = GameState.getInstance();
+        mProgress.setThumbColor(state.getAccent());
+        mProgress.setProgressColor(state.getAccent());
+        mProgress.setProgressBackgroundColor(state.getPrimary());
     }
 
     public void updateProgress() {
@@ -103,15 +102,16 @@ public class GameScreen extends LinearLayout {
     }
 
     public void updateScreen(boolean isAmbient) {
+        GameState state = GameState.getInstance();
         if (mShotAnimatorIsRunning) {
+            Log.d(TAG, "updateScreen: Animator is running skipping");
             if (!isAmbient) {
-                mProgress.setProgressBackgroundColor(Colors.getInstance().getPrimary());
+                mProgress.setProgressBackgroundColor(state.getPrimary());
             }
             return;
         }
-        GameInformation info = GameState.getInstance().get();
         if (isAmbient) {
-            if (!GameState.getInstance().hasGameInfo()) {
+            if (!state.hasGameInfo()) {
                 mWaitingLayout.setVisibility(View.VISIBLE);
                 mWaitingText.setTextSize(FONT_SIZE_AMBIENT);
                 mWaitingMoreText.setVisibility(View.GONE);
@@ -122,33 +122,41 @@ public class GameScreen extends LinearLayout {
                 mActiveLayout.setVisibility(View.GONE);
                 mAmbientLayout.setVisibility(View.VISIBLE);
                 mRoundsText.getPaint().setAntiAlias(false);
-                mAmbientRemainingRounds.setText(info.getCurrentRound() + " of " + info.getRounds());
+                mAmbientRemainingRounds
+                        .setText(state.get().getCurrentRound() + " of " + state.get().getRounds());
                 mAmbientRemainingRounds.getPaint().setAntiAlias(false);
                 mAmbientClock.setVisibility(View.VISIBLE);
                 mAmbientClock.setText(AMBIENT_DATE_FORMAT.format(new Date()));
             }
+            mProgress.setProgressBackgroundColor(Color.BLACK);
         } else {
-            if (!GameState.getInstance().hasGameInfo()) {
+            if (!state.hasGameInfo()) {
                 mWaitingLayout.setVisibility(View.VISIBLE);
                 mWaitingText.setTextSize(FONT_SIZE_ACTIVE);
                 mWaitingMoreText.setVisibility(View.VISIBLE);
                 mWaitingClock.setVisibility(View.GONE);
             } else {
-                mWaitingLayout.setVisibility(View.GONE);
-                mActiveLayout.setVisibility(View.VISIBLE);
-                mAmbientLayout.setVisibility(View.GONE);
-                mRemainingRounds.setText(info.getCurrentRound() + " of " + info.getRounds());
-                updateColors();
+                displayMainViews();
                 updateProgress();
             }
         }
+        if (state.isShotTime()) {
+            Log.d(TAG, "updateScreen: Is shot time, showing celebration");
+            displayMainViews();
+            showShotMessage();
+        }
     }
 
-    public void showShotMessage(boolean isAmbient) {
-        updateScreen(false);
-        if (isAmbient) {
-            mProgress.setProgressBackgroundColor(Color.BLACK);
-        }
+    public void displayMainViews() {
+        GameInformation info = GameState.getInstance().get();
+        mWaitingLayout.setVisibility(View.GONE);
+        mActiveLayout.setVisibility(View.VISIBLE);
+        mAmbientLayout.setVisibility(View.GONE);
+        mRemainingRounds.setText(info.getCurrentRound() + " of " + info.getRounds());
+        updateColors();
+    }
+
+    public void showShotMessage() {
         mProgress.setProgress(0);
         animateProgress(1f, Consts.Game.DEFAULT_SHOT_TIME_DELAY, new Animator.AnimatorListener() {
             @Override

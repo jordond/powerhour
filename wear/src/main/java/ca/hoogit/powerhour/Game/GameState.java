@@ -1,6 +1,10 @@
 package ca.hoogit.powerhour.Game;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+
 import ca.hoogit.powerhour.DataLayer.GameInformation;
+import ca.hoogit.powerhour.R;
 
 /**
  * Created by jordon on 05/03/16.
@@ -9,15 +13,23 @@ import ca.hoogit.powerhour.DataLayer.GameInformation;
 public class GameState {
     private static GameState ourInstance = new GameState();
 
+    private GameInformation mInformation = new GameInformation();
+    private boolean mIsShotTime = false;
+
+    private int mDefaultPrimaryColor;
+    private int mDefaultAccentColor;
+
     public static GameState getInstance() {
         return ourInstance;
     }
 
-    private GameState() {
+    public void init(Context context) {
+        this.mDefaultPrimaryColor = ContextCompat.getColor(context, R.color.primary);
+        this.mDefaultAccentColor = ContextCompat.getColor(context, R.color.accent);
     }
 
-    private GameInformation mInformation = new GameInformation();
-    private boolean mIsShotTime = false;
+    private GameState() {
+    }
 
     public void update(GameInformation info) {
         this.mInformation = info;
@@ -42,5 +54,19 @@ public class GameState {
     public void stop() {
         this.mInformation = new GameInformation();
         this.mIsShotTime = false;
+    }
+
+    public int getPrimary() {
+        if (mInformation.getColorPrimary() != 0) {
+            return mInformation.getColorPrimary();
+        }
+        return mDefaultPrimaryColor;
+    }
+
+    public int getAccent() {
+        if (mInformation.getColorAccent() != 0) {
+            return mInformation.getColorAccent();
+        }
+        return mDefaultAccentColor;
     }
 }

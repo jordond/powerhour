@@ -34,7 +34,6 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
     private HoloCircularProgressBar mRoundProgress;
     private TextView mTotalRoundsTextView;
 
-    private Colors mColors = Colors.getInstance();
     private float mProgress;
     private GoogleApiClient mGoogleApiClient;
 
@@ -56,21 +55,20 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
 
         Intent intent = getIntent();
         GameInformation gameInfo = (GameInformation) intent.getSerializableExtra(Consts.Keys.GAME_DATA);
-        mColors.update(gameInfo);
 
         mContainerView = (RelativeLayout) findViewById(R.id.container);
         mCompletedRoundsTextView = (TextView) findViewById(R.id.rounds_complete);
         mRoundProgress = (HoloCircularProgressBar) findViewById(R.id.round_progress);
         mTotalRoundsTextView = (TextView) findViewById(R.id.total_rounds);
 
-        mContainerView.setBackgroundColor(mColors.getPrimary());
+        mContainerView.setBackgroundColor(GameState.getInstance().getPrimary());
         mCompletedRoundsTextView.setText(String.valueOf(gameInfo.getCurrentRound()));
         mTotalRoundsTextView.setText("of " + gameInfo.getRounds() + " rounds");
 
         mProgress = (float) gameInfo.getCurrentRound() / gameInfo.getRounds();
         mRoundProgress.setProgress(0);
-        mRoundProgress.setProgressColor(mColors.getAccent());
-        mRoundProgress.setThumbColor(mColors.getAccent());
+        mRoundProgress.setProgressColor(GameState.getInstance().getAccent());
+        mRoundProgress.setThumbColor(GameState.getInstance().getAccent());
         Handler handler = new Handler();
         handler.postDelayed(mAnimateProgress, 2000);
 
@@ -135,7 +133,7 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
             mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
             mRoundProgress.setVisibility(View.INVISIBLE);
         } else {
-            mContainerView.setBackgroundColor(mColors.getPrimary());
+            mContainerView.setBackgroundColor(GameState.getInstance().getPrimary());
             mRoundProgress.setVisibility(View.VISIBLE);
         }
     }

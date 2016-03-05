@@ -9,6 +9,7 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,7 +41,6 @@ public class GameActivity extends WearableActivity implements
     private GameScreen mGameScreen;
 
     private GoogleApiClient mGoogleApiClient;
-    private Colors mColors = Colors.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,7 @@ public class GameActivity extends WearableActivity implements
                 mContainer = (RelativeLayout) stub.findViewById(R.id.container_game_screen);
                 mGameScreen = (GameScreen) stub.findViewById(R.id.game_screen_view);
 
-                mColors.setPrimary(ContextCompat.getColor(getApplicationContext(), R.color.primary));
-                mColors.setAccent(ContextCompat.getColor(getApplicationContext(), R.color.accent));
+                updateDisplay();
             }
         });
 
@@ -122,7 +121,7 @@ public class GameActivity extends WearableActivity implements
     private void updateDisplay() {
         Log.d(TAG, "updateDisplay: Ambient mode " + isAmbient());
         int color = isAmbient() ? ContextCompat.getColor(getApplicationContext(),
-                android.R.color.black) : mColors.getPrimary();
+                android.R.color.black) : GameState.getInstance().getPrimary();
         mContainer.setBackgroundColor(color);
         mGameScreen.updateScreen(isAmbient());
     }
@@ -147,7 +146,6 @@ public class GameActivity extends WearableActivity implements
                         DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
                         GameInformation info = GameInformation.fromDataMap(item.getDataMap());
                         GameState.getInstance().update(info);
-                        mColors.update(info);
                         updateDisplay();
                         break;
                 }
@@ -161,7 +159,8 @@ public class GameActivity extends WearableActivity implements
         switch (event.getPath()) {
             case Consts.Paths.GAME_SHOT:
                 Log.d(TAG, "onMessageReceived: SHOT TIME");
-                mGameScreen.showShotMessage(isAmbient());
+                GameState.getInstance().setIsShotTime(true);
+                mGameScreen.updateScreen(isAmbient());
                 break;
             case Consts.Paths.GAME_STOP:
                 Log.d(TAG, "onMessageReceived: Game has stopped");

@@ -81,11 +81,13 @@ public class GameListenerService extends WearableListenerService {
         switch (path) {
             case Consts.Paths.START_ACTIVITY:
             case Consts.Paths.GAME_SHOT:
+                boolean isGameShot = Consts.Paths.GAME_SHOT.equals(path);
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (Consts.Paths.GAME_SHOT.equals(path)) {
-                    intent.putExtra(Consts.Game.FLAG_GAME_IS_SHOT_TIME, true); // TODO handle in activity?
-                    GameState.getInstance().setIsShotTime(true);
+                intent.putExtra(Consts.Game.FLAG_GAME_IS_SHOT_TIME, isGameShot);
+
+                GameState.getInstance().setIsShotTime(isGameShot);
+                if (isGameShot) {
                     mVibrator.vibrate(VIBRATE_PATTERN, -1);
                 } else {
                     mShouldLaunchFinish = true;
@@ -97,6 +99,7 @@ public class GameListenerService extends WearableListenerService {
                 mVibrator.cancel();
                 break;
             case Consts.Paths.GAME_INFORMATION:
+                GameState.getInstance().setIsShotTime(false);
                 mVibrator.cancel();
                 break;
         }
