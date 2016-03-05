@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    tools:context=".wear.Game.FinishActivity"
-    tools:deviceIds="wear">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primary"
+                android:gravity="center"
+                tools:context=".wear.Game.FinishActivity"
+                tools:deviceIds="wear">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
         tools:ignore="UselessParent">
 
         <TextView
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:text="@string/finished"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/rounds_complete"
@@ -41,7 +41,7 @@
             android:text="@string/completed_rounds_placeholder"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="65sp" />
+            android:textSize="65sp"/>
 
         <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
             android:id="@+id/round_progress"
@@ -53,7 +53,7 @@
             app:cpb_progress="0"
             app:cpb_progress_background_color="@color/white"
             app:cpb_progress_color="@color/accent"
-            app:cpb_stroke_width="7dp" />
+            app:cpb_stroke_width="7dp"/>
 
         <TextView
             android:id="@+id/total_rounds"
@@ -67,7 +67,7 @@
             android:gravity="center"
             android:text="@string/max_rounds_placeholder"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
     </RelativeLayout>
 

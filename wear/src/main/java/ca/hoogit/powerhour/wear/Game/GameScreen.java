@@ -3,6 +3,7 @@ package ca.hoogit.powerhour.wear.Game;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -80,7 +81,12 @@ public class GameScreen extends LinearLayout {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.view_game_screen, this);
+        TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.GameScreen, 0, 0);
+        boolean isRect = attr.getBoolean(R.styleable.GameScreen_screenIsRectangle, false);
+        attr.recycle();
+
+        int layoutId = isRect ? R.layout.view_game_screen_rect : R.layout.view_game_screen;
+        inflate(context, layoutId, this);
         ButterKnife.bind(this);
     }
 

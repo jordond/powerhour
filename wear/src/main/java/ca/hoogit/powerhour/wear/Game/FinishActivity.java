@@ -2,6 +2,7 @@ package ca.hoogit.powerhour.wear.Game;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -19,6 +20,8 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.wear.DataLayer.Message;
 import ca.hoogit.powerhour.R;
@@ -28,12 +31,13 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
 
     private static final String TAG = FinishActivity.class.getSimpleName();
 
-    private RelativeLayout mContainerView;
-    private TextView mCompletedRoundsTextView;
-    private HoloCircularProgressBar mRoundProgress;
-    private TextView mTotalRoundsTextView;
+    @Bind(R.id.container) RelativeLayout mContainerView;
+    @Bind(R.id.rounds_complete) TextView mCompletedRoundsTextView;
+    @Bind(R.id.round_progress) HoloCircularProgressBar mRoundProgress;
+    @Bind(R.id.total_rounds) TextView mTotalRoundsTextView;
 
     private float mProgress;
+    private int mPrimaryColor;
     private GoogleApiClient mGoogleApiClient;
 
     private Runnable mAnimateProgress = new Runnable() {
@@ -50,24 +54,22 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish);
+        ButterKnife.bind(this);
         setAmbientEnabled();
 
         Intent intent = getIntent();
         GameInformation gameInfo = (GameInformation) intent.getSerializableExtra(Consts.Keys.GAME_DATA);
 
-        mContainerView = (RelativeLayout) findViewById(R.id.container);
-        mCompletedRoundsTextView = (TextView) findViewById(R.id.rounds_complete);
-        mRoundProgress = (HoloCircularProgressBar) findViewById(R.id.round_progress);
-        mTotalRoundsTextView = (TextView) findViewById(R.id.total_rounds);
+        mPrimaryColor = gameInfo.getColorPrimary();
 
-        mContainerView.setBackgroundColor(GameState.getInstance().getPrimary());
+        mContainerView.setBackgroundColor(mPrimaryColor);
         mCompletedRoundsTextView.setText(String.valueOf(gameInfo.getCurrentRound()));
         mTotalRoundsTextView.setText("of " + gameInfo.getRounds() + " rounds");
 
         mProgress = (float) gameInfo.getCurrentRound() / gameInfo.getRounds();
         mRoundProgress.setProgress(0);
-        mRoundProgress.setProgressColor(GameState.getInstance().getAccent());
-        mRoundProgress.setThumbColor(GameState.getInstance().getAccent());
+        mRoundProgress.setProgressColor(gameInfo.getColorAccent());
+        mRoundProgress.setThumbColor(gameInfo.getColorAccent());
         Handler handler = new Handler();
         handler.postDelayed(mAnimateProgress, 2000);
 
@@ -129,10 +131,10 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
 
     private void updateDisplay(boolean isAmbient) {
         if (isAmbient) {
-            mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
+            mContainerView.setBackgroundColor(Color.BLACK);
             mRoundProgress.setVisibility(View.INVISIBLE);
         } else {
-            mContainerView.setBackgroundColor(GameState.getInstance().getPrimary());
+            mContainerView.setBackgroundColor(mPrimaryColor);
             mRoundProgress.setVisibility(View.VISIBLE);
         }
     }
