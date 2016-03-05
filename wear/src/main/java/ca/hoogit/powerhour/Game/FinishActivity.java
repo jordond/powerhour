@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour;
+package ca.hoogit.powerhour.Game;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
+import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 

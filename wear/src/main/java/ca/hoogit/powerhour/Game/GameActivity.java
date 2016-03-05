@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour;
+package ca.hoogit.powerhour.Game;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +21,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import ca.hoogit.powerhour.DataLayer.GameInformation;
 import ca.hoogit.powerhour.DataLayer.Message;
-import ca.hoogit.powerhour.Views.GameScreen;
+import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 

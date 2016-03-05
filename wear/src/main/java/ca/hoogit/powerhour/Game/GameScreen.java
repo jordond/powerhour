@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour.Views;
+package ca.hoogit.powerhour.Game;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;

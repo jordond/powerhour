@@ -16,8 +16,8 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.concurrent.TimeUnit;
 
-import ca.hoogit.powerhour.FinishActivity;
-import ca.hoogit.powerhour.GameActivity;
+import ca.hoogit.powerhour.Game.FinishActivity;
+import ca.hoogit.powerhour.Game.GameActivity;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameListenerService extends WearableListenerService {
