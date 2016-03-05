@@ -1,9 +1,9 @@
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.wear.Game;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 
-import ca.hoogit.powerhour.DataLayer.GameInformation;
+import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
 
 /**

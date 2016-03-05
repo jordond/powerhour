@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.wear.Game;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -22,9 +22,8 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ca.hoogit.powerhour.DataLayer.GameInformation;
+import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**

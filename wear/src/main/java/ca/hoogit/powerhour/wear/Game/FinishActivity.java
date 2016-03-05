@@ -1,4 +1,4 @@
-package ca.hoogit.powerhour.Game;
+package ca.hoogit.powerhour.wear.Game;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -19,10 +19,9 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
-import ca.hoogit.powerhour.DataLayer.GameInformation;
-import ca.hoogit.powerhour.DataLayer.Message;
+import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
+import ca.hoogit.powerhour.wear.DataLayer.Message;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Utils.Colors;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {

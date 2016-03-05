@@ -1,8 +1,8 @@
-package ca.hoogit.powerhour.test;
+package ca.hoogit.powerhour.wear;
 
 import android.app.Application;
 
-import ca.hoogit.powerhour.Game.GameState;
+import ca.hoogit.powerhour.wear.Game.GameState;
 
 /**
  * Created by jordon on 05/03/16.
