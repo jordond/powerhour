@@ -22,6 +22,7 @@ import com.google.android.gms.wearable.Wearable;
 import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.wear.DataLayer.Message;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.wear.DataLayer.NotificationManager;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameActivity extends WearableActivity implements
@@ -89,6 +90,10 @@ public class GameActivity extends WearableActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        if (GameState.getInstance().isActive()) {
+            NotificationManager.build(this).show();
+        }
+
         Log.d(TAG, "onPause: disconnecting and removing listeners");
         // TODO need to investigate how to handle the listener removal properly, maybe onStop()?
         //Wearable.DataApi.removeListener(mGoogleApiClient, this);
@@ -127,7 +132,6 @@ public class GameActivity extends WearableActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Message.sendNotReady(this);
-        // TODO implement a notification so the user can easily reopen the app
     }
 
     @Override

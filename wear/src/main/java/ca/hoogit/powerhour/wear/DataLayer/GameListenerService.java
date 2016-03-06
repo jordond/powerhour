@@ -97,12 +97,10 @@ public class GameListenerService extends WearableListenerService {
                 break;
             case Consts.Paths.GAME_FINISH:
                 mShouldLaunchFinish = true;
-                NotificationManager.remove(this);
                 mVibrator.cancel();
                 break;
             case Consts.Paths.GAME_INFORMATION:
                 GameState.getInstance().setIsShotTime(false);
-                NotificationManager.build(this).show();
                 mVibrator.cancel();
                 break;
         }
