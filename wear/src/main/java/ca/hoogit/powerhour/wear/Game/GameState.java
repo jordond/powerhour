@@ -69,4 +69,8 @@ public class GameState {
         }
         return mDefaultAccentColor;
     }
+
+    public boolean isActive() {
+        return mInformation.isStarted();
+    }
 }

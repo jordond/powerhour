@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.wear.DataLayer.Message;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhour.wear.DataLayer.NotificationManager;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class FinishActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
@@ -74,6 +75,7 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
         handler.postDelayed(mAnimateProgress, 2000);
 
         updateDisplay(false); // Force ambient off
+        NotificationManager.remove(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)

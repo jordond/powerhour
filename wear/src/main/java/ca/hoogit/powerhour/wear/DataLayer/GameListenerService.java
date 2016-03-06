@@ -66,6 +66,7 @@ public class GameListenerService extends WearableListenerService {
                         startActivity(finish);
                         GameState.getInstance().stop();
                         mShouldLaunchFinish = false;
+                        NotificationManager.remove(this);
                         Log.d(TAG, "onDataChanged: launching Finish activity");
                     }
                     break;
