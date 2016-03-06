@@ -66,6 +66,7 @@ public class GameListenerService extends WearableListenerService {
                         startActivity(finish);
                         GameState.getInstance().stop();
                         mShouldLaunchFinish = false;
+                        NotificationManager.remove(this);
                         Log.d(TAG, "onDataChanged: launching Finish activity");
                     }
                     break;
@@ -96,10 +97,12 @@ public class GameListenerService extends WearableListenerService {
                 break;
             case Consts.Paths.GAME_FINISH:
                 mShouldLaunchFinish = true;
+                NotificationManager.remove(this);
                 mVibrator.cancel();
                 break;
             case Consts.Paths.GAME_INFORMATION:
                 GameState.getInstance().setIsShotTime(false);
+                NotificationManager.build(this).show();
                 mVibrator.cancel();
                 break;
         }

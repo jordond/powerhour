@@ -62,4 +62,9 @@ public class Consts {
         public static final String FLAG_GAME_IS_SHOT_TIME = "shot_time_drink_up";
     }
 
+    public static class Wear {
+        public static final String NOTIFICATION_INTENT_ACTION = "ca.hoogit.powerhour.wear.gameactivity";
+        public static final int NOTIFICATION_ID = 548853;
+    }
+
 }
