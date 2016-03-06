@@ -19,6 +19,7 @@ package ca.hoogit.powerhour.About;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
@@ -28,45 +29,60 @@ import ca.hoogit.powerhour.Selection.MainActivity;
 
 /**
  * @author jordon
- *
- * Date    29/07/15
- * Description 
- *
- *  First time user tour of application
- *
+ *         <p/>
+ *         Date    29/07/15
+ *         Description
+ *         <p/>
+ *         First time user tour of application
  */
 public class TourActivity extends AppIntro2 {
     @Override
     public void init(Bundle bundle) {
         int primary = getResources().getColor(R.color.primary);
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_1_title),
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_1_title),
                 getString(R.string.tour_slide_1_desc),
-                R.drawable.tour_start, primary));
+                R.drawable.tour_start,
+                primary));
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_2_title),
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_2_title),
                 getString(R.string.tour_slide_2_desc),
-                R.drawable.tour_configure, getResources().getColor(R.color.md_teal_500)));
+                R.drawable.tour_configure,
+                ContextCompat.getColor(this, R.color.md_teal_500)));
 
 
         addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_3_title),
                 getString(R.string.tour_slide_3_desc),
-                R.drawable.tour_progress, getResources().getColor(R.color.md_red_500)));
+                R.drawable.tour_progress,
+                ContextCompat.getColor(this, R.color.md_red_500)));
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_4_title),
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_4_title),
                 getString(R.string.tour_slide_4_desc),
-                R.drawable.tour_drink, getResources().getColor(R.color.md_amber_500)));
+                R.drawable.tour_drink,
+                ContextCompat.getColor(this, R.color.md_amber_500)));
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_5_title),
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_5_title),
                 getString(R.string.tour_slide_5_desc),
-                R.drawable.tour_game_over, getResources().getColor(R.color.md_deep_purple_500)));
+                R.drawable.tour_game_over,
+                ContextCompat.getColor(this, R.color.md_deep_purple_500)));
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.tour_slide_6_title),
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_wear_title),
+                getString(R.string.tour_slide_wear_text),
+                R.drawable.tour_wear_shot,
+                ContextCompat.getColor(this, R.color.md_pink_500)));
+
+        addSlide(AppIntroFragment.newInstance(
+                getString(R.string.tour_slide_6_title),
                 getString(R.string.tour_slide_6_desc),
                 R.drawable.tour_start, primary));
 
-//        setBarColor(primary);
-//        setSeparatorColor(primary);
+        showStatusBar(false);
+        setProgressButtonEnabled(true);
     }
 
     private void launchMainActivity() {
@@ -82,5 +98,15 @@ public class TourActivity extends AppIntro2 {
     @Override
     public void onDonePressed() {
         launchMainActivity();
+    }
+
+    @Override
+    public void onNextPressed() {
+
+    }
+
+    @Override
+    public void onSlideChanged() {
+
     }
 }
