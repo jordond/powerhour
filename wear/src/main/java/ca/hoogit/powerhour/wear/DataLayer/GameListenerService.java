@@ -26,52 +26,16 @@ public class GameListenerService extends WearableListenerService {
     private static final String TAG = GameListenerService.class.getSimpleName();
 
     private static final long[] VIBRATE_PATTERN = {200, 300, 200, 300, 200, 300, 300, 300, 200};
-
-    private GoogleApiClient mGoogleApiClient;
     private Vibrator mVibrator;
-
-    private boolean mShouldLaunchFinish;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    }
-
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d(TAG, "onDataChanged: " + dataEvents);
-        if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting()) {
-            ConnectionResult result = mGoogleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-            if (!result.isSuccess()) {
-                Log.e(TAG, "onDataChanged: Failed to connect to GoogleApiClient, error: "
-                        + result.getErrorCode());
-                return;
-            }
-        }
-
-        for (DataEvent event : dataEvents) {
-            switch (event.getDataItem().getUri().getPath()) {
-                case Consts.Paths.GAME_FINISH:
-                    if (mShouldLaunchFinish) {
-                        Intent finish = new Intent(this, FinishActivity.class);
-                        DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
-                        GameInformation info = GameInformation.fromDataMap(item.getDataMap());
-                        finish.putExtra(Consts.Keys.GAME_DATA, info);
-                        finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(finish);
-                        GameState.getInstance().stop();
-                        mShouldLaunchFinish = false;
-                        NotificationManager.remove(this);
-                        Log.d(TAG, "onDataChanged: launching Finish activity");
-                    }
-                    break;
-            }
-        }
     }
 
     @Override
@@ -90,14 +54,20 @@ public class GameListenerService extends WearableListenerService {
                 GameState.getInstance().setIsShotTime(isGameShot);
                 if (isGameShot) {
                     mVibrator.vibrate(VIBRATE_PATTERN, -1);
-                } else {
-                    mShouldLaunchFinish = true;
                 }
                 startActivity(intent);
                 break;
             case Consts.Paths.GAME_FINISH:
-                mShouldLaunchFinish = true;
+                Intent finish = new Intent(this, FinishActivity.class);
+                finish.putExtra(Consts.Keys.GAME_DATA, GameState.getInstance().get());
+                finish.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                GameState.getInstance().stop();
+                NotificationManager.remove(this);
                 mVibrator.cancel();
+
+                startActivity(finish);
+                Log.d(TAG, "onDataChanged: launching Finish activity");
                 break;
             case Consts.Paths.GAME_INFORMATION:
                 GameState.getInstance().setIsShotTime(false);
