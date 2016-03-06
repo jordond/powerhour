@@ -25,6 +25,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.wear.DataLayer.GameInformation;
 import ca.hoogit.powerhour.R;
+import ca.hoogit.powerhourshared.DataLayer.ColorUtil;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
@@ -94,7 +95,7 @@ public class GameScreen extends LinearLayout {
         GameState state = GameState.getInstance();
         mProgress.setThumbColor(state.getAccent());
         mProgress.setProgressColor(state.getAccent());
-        mProgress.setProgressBackgroundColor(state.getPrimary());
+        mProgress.setProgressBackgroundColor(ColorUtil.darken(state.getPrimary(), 0.02f));
     }
 
     public void updateProgress() {
@@ -111,7 +112,7 @@ public class GameScreen extends LinearLayout {
         if (mShotAnimatorIsRunning) {
             Log.d(TAG, "updateScreen: Animator is running skipping");
             if (!isAmbient) {
-                mProgress.setProgressBackgroundColor(state.getPrimary());
+                mProgress.setProgressBackgroundColor(ColorUtil.darken(state.getPrimary(), 0.02f));
             }
             return;
         }

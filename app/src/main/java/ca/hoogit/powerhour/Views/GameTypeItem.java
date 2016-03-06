@@ -15,7 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.R;
-import ca.hoogit.powerhour.Util.ColorUtil;
+import ca.hoogit.powerhourshared.DataLayer.ColorUtil;
 
 /**
  * Created by jordon on 07/07/15.

@@ -33,7 +33,7 @@ import ca.hoogit.powerhour.Audio.AudioPlayer;
 import ca.hoogit.powerhour.Audio.SoundRecorder;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.BusProvider;
-import ca.hoogit.powerhour.Util.ColorUtil;
+import ca.hoogit.powerhourshared.DataLayer.ColorUtil;
 import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.PowerHourUtils.SoundFile;
 import ca.hoogit.powerhour.Util.StatusBarUtil;

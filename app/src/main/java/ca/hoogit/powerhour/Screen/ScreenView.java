@@ -40,6 +40,7 @@ import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
 import ca.hoogit.powerhour.Views.GameControlButtons;
+import ca.hoogit.powerhourshared.DataLayer.ColorUtil;
 
 /**
  * @author jordon
@@ -139,7 +140,7 @@ public class ScreenView {
         mProgressRounds.setProgressColor(secondary);
         mProgressSeconds.setThumbColor(secondary);
         mProgressSeconds.setProgressColor(secondary);
-        mProgressSeconds.setProgressBackgroundColor(primary);
+        mProgressSeconds.setProgressBackgroundColor(ColorUtil.darken(primary, 0.02f));
 
         mControl.setColor(secondary);
     }

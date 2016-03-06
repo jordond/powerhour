@@ -1,9 +1,10 @@
-package ca.hoogit.powerhour.Util;
+package ca.hoogit.powerhourshared.DataLayer;
 
 import android.graphics.Color;
 
 /**
  * Created by jordon on 09/07/15.
+ * Work magic on some colors
  */
 public class ColorUtil {
     public static int lighten(int color, float fraction) {
