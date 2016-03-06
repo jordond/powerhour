@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.text.format.DateUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -106,9 +107,10 @@ public class PowerHourUtils {
         try {
             context.startActivity(goToMarket);
         } catch (ActivityNotFoundException e) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             context.startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" +
-                            context.getPackageName())));
+                    Uri.parse("https://play.google.com/store/apps/details?id=ca.hoogit.powerhour")));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
     }
 
@@ -124,6 +126,22 @@ public class PowerHourUtils {
 
     public interface OnDelay {
         void run();
+    }
+
+    /**
+     * Create a relative from now time string
+     *
+     * @param timestamp Time since epoch
+     * @return Formatted string ie. "2 Minutes from now"
+     * @see <a href="https://github.com/jordond/garagepi-android/blob/master/app/src/main/java/ca/hoogit/garagepi/Utils/Helpers.java#L89">Source</a>
+     */
+    public static String epochToFromNow(long timestamp) {
+        return DateUtils
+                .getRelativeTimeSpanString(
+                        timestamp,
+                        System.currentTimeMillis(),
+                        DateUtils.MINUTE_IN_MILLIS)
+                .toString();
     }
 
 }

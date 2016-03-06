@@ -145,8 +145,8 @@
     <orderEntry type="library" exported="" name="design-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="fabbutton-1.2.0" level="project" />
-    <orderEntry type="library" exported="" name="circularprogressbar-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="circularprogressbar-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="answers-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="soundchooser-1.1.0" level="project" />

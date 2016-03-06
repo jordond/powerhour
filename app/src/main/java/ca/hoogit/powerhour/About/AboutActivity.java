@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import ca.hoogit.powerhour.BaseActivity;
+import ca.hoogit.powerhour.BuildConfig;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.PowerHourUtils;
 import de.psdev.licensesdialog.LicensesDialog;
@@ -79,13 +80,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         mRate.setOnClickListener(this);
         mLicenses.setOnClickListener(this);
 
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String versionName = pInfo.versionName;
-            mVersion.setText(versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Could not get PackageInfo");
-        }
+        String versionName = "v" + BuildConfig.VERSION_NAME +
+                "\nAPK Built\n" + PowerHourUtils.epochToFromNow(BuildConfig.BuildDate);
+        mVersion.setText(versionName);
     }
 
     @Override
