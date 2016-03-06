@@ -107,7 +107,6 @@ public class WearData implements
     public void sendGameInformation(GameModel game) {
         mCurrentGame = game;
         if (!mWearIsReady) {
-            Log.i(TAG, "sendGameInformation: Wear is not yet ready for info");
             return;
         }
         PutDataMapRequest dataMap = game.toDataMap();

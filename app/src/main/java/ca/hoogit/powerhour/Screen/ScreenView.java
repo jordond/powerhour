@@ -156,15 +156,15 @@ public class ScreenView {
 
         if (!keepOn) {
             Snackbar
-                .make(mView, mActivity.getString(R.string.screen_on_warning),
-                        Snackbar.LENGTH_LONG)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        toggleKeepOnFlags(!keepOn);
-                        mControl.toggleScreenLock(!keepOn);
-                    }
-                }).show();
+                    .make(mView, mActivity.getString(R.string.screen_on_warning),
+                            Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            toggleKeepOnFlags(true);
+                            mControl.toggleScreenLock(true);
+                        }
+                    }).show();
         }
     }
 
@@ -248,14 +248,18 @@ public class ScreenView {
     }
 
     public void setRemainingMinutes(long minutesInMillis) {
-        int minutes = (int) Math.ceil(TimeUnit.MILLISECONDS.toMinutes(minutesInMillis));
+        int seconds = (int) ((minutesInMillis / 1000) % 60);
+        int minutes = (int) ((minutesInMillis / (1000 * 60)) % 60);
+        int hours = (int) ((minutesInMillis / (1000 * 60 * 60)) % 24);
         String text;
-        if (minutes == 0) {
+        if (minutes <= 1) {
             text = "less than a minute";
-        } else if (minutes == 1) {
-            text = "one minute remaining";
         } else {
-            text = minutes + " minutes remaining";
+            if (hours >= 1) {
+                text = String.format("%d:%d:%02d", hours, minutes, seconds) + " remaining";
+            } else {
+                text = String.format("%d:%02d", minutes, seconds) + " remaining";
+            }
         }
         mRemainingMinutes.setText(text);
     }

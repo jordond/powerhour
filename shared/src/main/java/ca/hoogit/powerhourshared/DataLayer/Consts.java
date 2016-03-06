@@ -53,7 +53,7 @@ public class Consts {
     }
 
     public static class Game {
-        public static final int ROUND_DURATION_SECONDS = 10; // TODO change back to 60 (1 min)
+        public static final int ROUND_DURATION_SECONDS = 60; // TODO change back to 60 (1 min)
         public static final long ROUND_DURATION_MILLIS = ROUND_DURATION_SECONDS * 1000;
         public static final long PROGRESS_WHEEL_ANIMATION_DURATION = 300;
         public static final long WEAR_UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // One second
