@@ -7,12 +7,14 @@
                 android:layout_height="match_parent"
                 android:background="@color/primary"
                 android:gravity="center"
+                android:layout_gravity="center"
                 tools:context=".wear.Game.FinishActivity"
                 tools:deviceIds="wear">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         tools:ignore="UselessParent">
 
         <TextView
