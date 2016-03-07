@@ -21,11 +21,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Selection.MainActivity;
+import ca.hoogit.powerhour.Util.SharedPrefs;
 
 /**
  * @author jordon
@@ -83,6 +86,11 @@ public class TourActivity extends AppIntro2 {
 
         showStatusBar(false);
         setProgressButtonEnabled(true);
+
+        Answers.getInstance().logCustom(new CustomEvent("Viewed Tour")
+                .putCustomAttribute(
+                        "IsFirstRun",
+                        SharedPrefs.get(this).isFirstRun() ? "Yes" : "No"));
     }
 
     private void launchMainActivity() {

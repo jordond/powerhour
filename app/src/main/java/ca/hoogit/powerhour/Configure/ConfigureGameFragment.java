@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.gc.materialdesign.views.Slider;
 import com.gc.materialdesign.views.Switch;
 import com.gc.materialdesign.widgets.ColorSelector;
@@ -306,6 +308,7 @@ public class ConfigureGameFragment extends Fragment {
                     mPlay.reset();
                 }
                 mRecorder.toggle(!mRecorder.isActive());
+                Answers.getInstance().logCustom(new CustomEvent("Recorded Own Sound"));
             }
         });
 
@@ -433,6 +436,8 @@ public class ConfigureGameFragment extends Fragment {
             @Override
             public void onPositive(DialogInterface dialogInterface, int i) {
                 mShotSound = i;
+                Answers.getInstance().logCustom(
+                        new CustomEvent("Chose Custom Alarm").putCustomAttribute("Sound ID", i));
             }
 
             @Override
@@ -468,6 +473,7 @@ public class ConfigureGameFragment extends Fragment {
         options.setShotSound(mShotSound);
         options.setAutoStart(true);
         options.setKeepScreenOn(mKeepScreenOn.isCheck());
+        options.setWasConfigured(true);
 
         return options;
     }

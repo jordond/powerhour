@@ -30,6 +30,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+
 import butterknife.Bind;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.BuildConfig;
@@ -83,6 +86,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         String versionName = "v" + BuildConfig.VERSION_NAME +
                 "\nAPK Built\n" + PowerHourUtils.epochToFromNow(BuildConfig.BuildDate);
         mVersion.setText(versionName);
+
+        Answers.getInstance().logCustom(new CustomEvent("Viewed About"));
     }
 
     @Override

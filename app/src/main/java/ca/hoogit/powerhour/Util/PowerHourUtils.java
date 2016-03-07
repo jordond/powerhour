@@ -26,11 +26,16 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.format.DateUtils;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -112,6 +117,8 @@ public class PowerHourUtils {
                     Uri.parse("https://play.google.com/store/apps/details?id=ca.hoogit.powerhour")));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
+
+        Answers.getInstance().logCustom(new CustomEvent("Rate App"));
     }
 
     public static void delay(long duration, final OnDelay listener) {
@@ -126,6 +133,26 @@ public class PowerHourUtils {
 
     public interface OnDelay {
         void run();
+    }
+
+    /**
+     * Using the Fabric Answers track which game mode was used
+     *
+     * @param action Game Action ie. finished/cancelled/configured
+     * @param game   Game information object
+     */
+    public static void logGameTypeEvent(String action, GameModel game) {
+        GameOptions options = game.options();
+        Answers.getInstance().logCustom(
+                new CustomEvent(action)
+                        .putCustomAttribute("Name", options.getTitle())
+                        .putCustomAttribute("Type", options.getType().name())
+                        .putCustomAttribute("Total Rounds", options.getRounds())
+                        .putCustomAttribute("Completed Rounds", game.currentRound())
+                        .putCustomAttribute("Total Pauses", options.getMaxPauses())
+                        .putCustomAttribute("Remaining Pauses", game.getPauses())
+                        .putCustomAttribute("Muted", game.isMuted() ? "Yes" : "No")
+                        .putCustomAttribute("Configured", options.wasConfigured() ? "Yes" : "No"));
     }
 
     /**

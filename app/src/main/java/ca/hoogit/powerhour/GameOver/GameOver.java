@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
@@ -117,6 +118,8 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
                 p.set(progress, 2500);
             }
         });
+
+        PowerHourUtils.logGameTypeEvent("Finished Game", mGame);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;

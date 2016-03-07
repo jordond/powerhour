@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -39,7 +41,7 @@ import ca.hoogit.powerhour.Views.GameTypeItem;
 import ca.hoogit.powerhourshared.DataLayer.Consts;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends BaseActivity  {
+public class MainActivity extends BaseActivity {
 
     private static final int REQUEST_RESOLVE_ERROR = 1000;
     private final String TAG = MainActivity.class.getSimpleName();
@@ -51,7 +53,7 @@ public class MainActivity extends BaseActivity  {
 
     private WearData mWearData;
     private boolean mResolvingError = false;
-    
+
     private boolean mChosen;
 
     @Override
@@ -139,6 +141,7 @@ public class MainActivity extends BaseActivity  {
     }
 
     int count = 0;
+
     @Subscribe
     public void onGameEvent(final GameEvent event) {
         switch (event.action) {
@@ -202,6 +205,8 @@ public class MainActivity extends BaseActivity  {
                     public void onClick(View v) {
                         if (!mChosen) {
                             Log.d(TAG, "Configure button for " + options.getType().name() + " was pressed");
+                            Answers.getInstance().logCustom(new CustomEvent("Configuring Game")
+                                    .putCustomAttribute("Type", options.getType().name()));
                             configureGame(options);
                             mChosen = true;
                         } else {
@@ -215,6 +220,8 @@ public class MainActivity extends BaseActivity  {
                 public void onClick(View v) {
                     if (!mChosen) {
                         Log.d(TAG, options.getType().name() + " mode was selected");
+                        Answers.getInstance().logCustom(new CustomEvent("Game Chosen")
+                                .putCustomAttribute("Type", options.getType().name()));
                         if (options.getType() == GameOptions.Type.CUSTOM) {
                             configureGame(options);
                         } else {
@@ -288,7 +295,7 @@ public class MainActivity extends BaseActivity  {
         }
         ft.replace(R.id.container, gameScreen, "gameScreen");
         ft.commit();
-        // TODO implement 'wear mode' to auto disable sound and screen
+
         mWearData.sendStartActivity();
         mWearData.sendGameInformation(gameModel);
     }
