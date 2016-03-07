@@ -23,6 +23,7 @@ Version 2.0.1
 - Fatal bug when exiting and resuming active game
 - Display bug on android wear on game finish
 - Made Android wear less annoying on game finish
+- Fix some Wear display issues, and vibrating issues
 Version 2.0
 - BIG update
 - Added Android Wear support
