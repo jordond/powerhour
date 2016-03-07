@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:background="@color/accent"
-                    app:max="301"
+                    app:max="300"
                     app:min="0" />
 
             </LinearLayout>
