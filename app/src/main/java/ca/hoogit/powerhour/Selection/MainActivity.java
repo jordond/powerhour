@@ -83,8 +83,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mFragmentManager = getSupportFragmentManager();
         Fabric.with(this, new Crashlytics());
+        mFragmentManager = getSupportFragmentManager();
+        mWearData = new WearData(this);
 
         super.onCreate(savedInstanceState);
 
@@ -95,7 +96,6 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, TourActivity.class));
         }
 
-        mWearData = new WearData(this);
 
         setupListeners();
     }

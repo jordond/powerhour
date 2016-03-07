@@ -19,6 +19,10 @@ Or grab the apk [here](https://ci.hoogit.ca/job/PowerHour.master/), or better ye
 
 ##Changelog
 ```
+Version 2.0.1
+- Fatal bug when exiting and resuming active game
+- Display bug on android wear on game finish
+- Bump version for google play services wear
 Version 2.0
 - BIG update
 - Added Android Wear support
