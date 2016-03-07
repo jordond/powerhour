@@ -28,7 +28,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 2
-        versionName "2.0"
+        versionName "2.0.1"
         buildConfigField "long", "BuildDate", System.currentTimeMillis() + "L"
     }
     buildTypes {
