@@ -8,12 +8,12 @@ Develop [![Build Status](https://ci.hoogit.ca/job/PowerHour.develop/badge/icon)]
 An application to aid in the playing of a classic drinking game called Power Hour, or Century club.
 With the goal being consume a shot of beer every minute for an hour, or one hundred minutes.
 
-![Choose](raw/screen_start.png)
-![Game](raw/screen_progress.png)
-![Wear](raw/screen_wear_shot.png)
+<img alt="Start Screen" src="raw/screen_start.png" width="200px"></img>
+<img alt="Active Game" src="raw/screen_progress.png" width="200px"></img>
+<img alt="Android Wear Support" src="raw/screen_wear_shot.png" width="300px"></img>
 
 ##Get It
-[![PlayStore](https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png)](https://play.google.com/store/apps/details?id=ca.hoogit.powerhour&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1)
+<a href="https://play.google.com/store/apps/details?id=ca.hoogit.powerhour&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="150px" /></a>
 
 Or grab the apk [here](https://ci.hoogit.ca/job/PowerHour.master/), or better yet clone and build yourself.
 
@@ -34,6 +34,15 @@ Version 1.1
  - Initial release to play store
 ```
 
+##Features
+- Beautiful Material Design elements
+- Completely customizable game modes
+- Use of foreground services and wake locks to keep the game active with the screen off
+- Change background and accent colors
+- Choose a notification sound or record your own
+- Android Wear support!
+- **FREE & AD FREE**
+
 ##TODO
 - Before & After shots, stitched together at end of game
 - Sharing said photos to facebook/instagram/tweeeeter etc.
@@ -45,17 +54,9 @@ Version 1.1
   - Enable/disable wear feature
 - Update TargetSDK to Marshmallow aka implement new permissions "feature"
 
-##Features
-- Beautiful Material Design elements
-- Completely customizable game modes
-- Use of foreground services and wake locks to keep the game active with the screen off
-- Change background and accent colors
-- Choose a notification sound or record your own
-- Android Wear support!
-- FREE & AD FREE
-
 ##Android Wear
 **It just Works™**
+
 In theory as long as a Wear device is paired it should receive updates and information.
 I have tried my best to make it work with many Wear devices, but I only have the emulator to work with.
 If there is anyone out there using that feature and something looks wrong let me know!
