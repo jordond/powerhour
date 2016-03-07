@@ -27,7 +27,7 @@ public class GameListenerService extends WearableListenerService {
 
     private GoogleApiClient mGoogleApiClient;
 
-    private static final long[] VIBRATE_PATTERN = {200, 300, 200, 300, 200, 300, 300, 300, 200};
+    private static final long[] VIBRATE_PATTERN = {0, 500, 50, 300, 50, 300, 300, 500, 200};
     private Vibrator mVibrator;
 
     @Override
@@ -81,17 +81,13 @@ public class GameListenerService extends WearableListenerService {
 
         switch (path) {
             case Consts.Paths.START_ACTIVITY:
+                startActivity(createActivityIntent(false));
+                break;
             case Consts.Paths.GAME_SHOT:
-                boolean isGameShot = Consts.Paths.GAME_SHOT.equals(path);
-                Intent intent = new Intent(this, GameActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(Consts.Game.FLAG_GAME_IS_SHOT_TIME, isGameShot);
+                GameState.getInstance().setIsShotTime(true);
+                mVibrator.vibrate(VIBRATE_PATTERN, -1);
 
-                GameState.getInstance().setIsShotTime(isGameShot);
-                if (isGameShot) {
-                    mVibrator.vibrate(VIBRATE_PATTERN, -1);
-                }
-                startActivity(intent);
+                startActivity(createActivityIntent(true));
                 break;
             case Consts.Paths.GAME_INFORMATION:
                 GameState.getInstance().setIsShotTime(false);
@@ -99,5 +95,12 @@ public class GameListenerService extends WearableListenerService {
                 break;
         }
         super.onMessageReceived(event);
+    }
+
+    private Intent createActivityIntent(boolean isShotTime) {
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Consts.Game.FLAG_GAME_IS_SHOT_TIME, isShotTime);
+        return intent;
     }
 }

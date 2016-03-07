@@ -146,7 +146,8 @@ public class FinishActivity extends WearableActivity implements GoogleApiClient.
         Log.d(TAG, "onMessageReceived: " + messageEvent.getPath());
         switch (messageEvent.getPath()) {
             case Consts.Paths.START_ACTIVITY:
-                Log.d(TAG, "onMessageReceived: New activity starting, finishing current");
+            case Consts.Paths.GAME_CLOSE:
+                Log.d(TAG, "onMessageReceived: finishing activity");
                 finish();
                 break;
         }

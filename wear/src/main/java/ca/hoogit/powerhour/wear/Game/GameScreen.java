@@ -113,6 +113,8 @@ public class GameScreen extends LinearLayout {
             Log.d(TAG, "updateScreen: Animator is running skipping");
             if (!isAmbient) {
                 mProgress.setProgressBackgroundColor(ColorUtil.darken(state.getPrimary(), 0.02f));
+            } else {
+                mProgress.setProgressBackgroundColor(Color.BLACK);
             }
             return;
         }
