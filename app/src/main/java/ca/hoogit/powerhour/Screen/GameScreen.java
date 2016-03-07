@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
@@ -22,6 +21,7 @@ import ca.hoogit.powerhour.Game.State;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.BusProvider;
 import ca.hoogit.powerhour.Views.GameControlButtons.GameControl;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -160,7 +160,7 @@ public class GameScreen extends Fragment implements GameControl {
                 mGame = event.game;
 
                 mRoundsUpdater.set(calculateRounds(mGame.gameMillis()));
-                mSecondsUpdater.set(calculateSeconds(GameModel.ROUND_DURATION_MILLIS));
+                mSecondsUpdater.set(calculateSeconds(Consts.Game.ROUND_DURATION_MILLIS));
                 break;
         }
     }
@@ -183,7 +183,7 @@ public class GameScreen extends Fragment implements GameControl {
     private float calculateSeconds(long milliseconds) {
         float secondsLeft = milliseconds / 1000.0f;
         mScreenView.setCountdownText(String.format("%.1f", secondsLeft));
-        return (float) milliseconds / GameModel.ROUND_DURATION_MILLIS;
+        return (float) milliseconds / Consts.Game.ROUND_DURATION_MILLIS;
     }
 
     private float calculateRounds(long milliseconds) {

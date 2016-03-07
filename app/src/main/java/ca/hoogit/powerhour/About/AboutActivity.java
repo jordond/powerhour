@@ -18,7 +18,6 @@
 
 package ca.hoogit.powerhour.About;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -31,8 +30,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+
 import butterknife.Bind;
 import ca.hoogit.powerhour.BaseActivity;
+import ca.hoogit.powerhour.BuildConfig;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Util.PowerHourUtils;
 import de.psdev.licensesdialog.LicensesDialog;
@@ -80,13 +83,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         mRate.setOnClickListener(this);
         mLicenses.setOnClickListener(this);
 
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String versionName = pInfo.versionName;
-            mVersion.setText(versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Could not get PackageInfo");
-        }
+        String versionName = "v" + BuildConfig.VERSION_NAME +
+                "\nAPK Built\n" + PowerHourUtils.epochToFromNow(BuildConfig.BuildDate);
+        mVersion.setText(versionName);
+
+        Answers.getInstance().logCustom(new CustomEvent("Viewed About"));
     }
 
     @Override

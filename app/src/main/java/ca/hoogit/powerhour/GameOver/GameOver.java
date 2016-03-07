@@ -20,9 +20,6 @@ package ca.hoogit.powerhour.GameOver;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,12 +27,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
 import com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar;
 
 import butterknife.Bind;
 import ca.hoogit.powerhour.About.AboutActivity;
 import ca.hoogit.powerhour.BaseActivity;
 import ca.hoogit.powerhour.Game.GameModel;
+import ca.hoogit.powerhour.Game.WearData;
 import ca.hoogit.powerhour.R;
 import ca.hoogit.powerhour.Screen.ProgressUpdater;
 import ca.hoogit.powerhour.Selection.MainActivity;
@@ -60,6 +59,7 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
     @Bind(R.id.okay) Button mOkay;
 
     private GameModel mGame;
+    private WearData mWearData;
 
     @Override
     protected int getToolbarColor() {
@@ -107,6 +107,8 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
         setPauseCount(mGame.getPauses());
         setBeerCount(mGame.currentRound());
 
+        mWearData = new WearData(this);
+
         mProgress.setProgress(0);
         PowerHourUtils.delay(2000, new PowerHourUtils.OnDelay() {
             @Override
@@ -116,11 +118,25 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
                 p.set(progress, 2500);
             }
         });
+
+        PowerHourUtils.logGameTypeEvent("Finished Game", mGame);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mWearData.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mWearData.disconnect();
+        super.onStop();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
@@ -165,6 +181,7 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
 
     private void launchHome() {
         startActivity(new Intent(this, MainActivity.class));
+        mWearData.sendStartActivity();
         finish();
     }
 

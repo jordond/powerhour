@@ -13,11 +13,13 @@ public class GameOptions implements Serializable {
 
     private final String TAG = GameOptions.class.getSimpleName();
 
-    public enum Type {
-        NONE, POWER_HOUR, CENTURY, SPARTAN, CUSTOM
-    }
 
+
+    public enum Type {
+        NONE, POWER_HOUR, CENTURY, SPARTAN, CUSTOM;
+    }
     private String title;
+
     private Type type;
     private int rounds;
     private int maxPauses;
@@ -27,7 +29,7 @@ public class GameOptions implements Serializable {
     private boolean isMuted;
     private boolean autoStart;
     private boolean keepScreenOn;
-
+    private boolean wasConfigured;
     public GameOptions() {
     }
 
@@ -188,5 +190,13 @@ public class GameOptions implements Serializable {
 
     public void setIsMuted(boolean isMuted) {
         this.isMuted = isMuted;
+    }
+
+    public void setWasConfigured(boolean configured) {
+        this.wasConfigured = configured;
+    }
+
+    public boolean wasConfigured() {
+        return this.wasConfigured;
     }
 }

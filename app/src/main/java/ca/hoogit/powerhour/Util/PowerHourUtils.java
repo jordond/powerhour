@@ -20,17 +20,22 @@ package ca.hoogit.powerhour.Util;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.text.format.DateUtils;
+
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import ca.hoogit.powerhour.Game.Action;
-import ca.hoogit.powerhour.Game.GameEvent;
+import ca.hoogit.powerhour.Configure.GameOptions;
+import ca.hoogit.powerhour.Game.GameModel;
 import ca.hoogit.powerhour.R;
 
 /**
@@ -66,47 +71,37 @@ public class PowerHourUtils {
     }
 
     public static ArrayList<SoundFile> getSounds() {
-        Field[] fields = R.raw.class.getFields();
+        Field[] fields = R.raw.class.getDeclaredFields();
         ArrayList<SoundFile> sounds = new ArrayList<>();
         try {
             for (Field field : fields) {
-                SoundFile s = new SoundFile(field.getName(), field.getInt(field));
+                SoundFile s = new SoundFile(field.getName());
                 if (Arrays.asList(mSoundFileNames).contains(s.name)) {
                     sounds.add(s);
                 }
             }
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return  sounds;
+        return sounds;
     }
 
-    public static int[] soundArrayListToIdArray(ArrayList<SoundFile> list) {
+    public static int[] soundArrayListToIdArray(Context context, ArrayList<SoundFile> list) {
+        Resources res = context.getResources();
         int[] ids = new int[list.size()];
         int count = 0;
         for (SoundFile s : list) {
-            ids[count] = s.id;
+            ids[count] = res.getIdentifier(s.name, "raw", context.getPackageName());
             count++;
         }
         return ids;
     }
 
-    public static String soundIdToName(ArrayList<SoundFile> list, int id) {
-        for (SoundFile sound : list) {
-            if (sound.id == id) {
-                return sound.name;
-            }
-        }
-        return "custom";
-    }
-
     public static class SoundFile {
         String name;
-        int id;
 
-        public SoundFile(String name, int id) {
+        public SoundFile(String name) {
             this.name = name;
-            this.id = id;
         }
     }
 
@@ -117,10 +112,13 @@ public class PowerHourUtils {
         try {
             context.startActivity(goToMarket);
         } catch (ActivityNotFoundException e) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             context.startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" +
-                            context.getPackageName())));
+                    Uri.parse("https://play.google.com/store/apps/details?id=ca.hoogit.powerhour")));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
+
+        Answers.getInstance().logCustom(new CustomEvent("Rate App"));
     }
 
     public static void delay(long duration, final OnDelay listener) {
@@ -135,6 +133,42 @@ public class PowerHourUtils {
 
     public interface OnDelay {
         void run();
+    }
+
+    /**
+     * Using the Fabric Answers track which game mode was used
+     *
+     * @param action Game Action ie. finished/cancelled/configured
+     * @param game   Game information object
+     */
+    public static void logGameTypeEvent(String action, GameModel game) {
+        GameOptions options = game.options();
+        Answers.getInstance().logCustom(
+                new CustomEvent(action)
+                        .putCustomAttribute("Name", options.getTitle())
+                        .putCustomAttribute("Type", options.getType().name())
+                        .putCustomAttribute("Total Rounds", options.getRounds())
+                        .putCustomAttribute("Completed Rounds", game.currentRound())
+                        .putCustomAttribute("Total Pauses", options.getMaxPauses())
+                        .putCustomAttribute("Remaining Pauses", game.getPauses())
+                        .putCustomAttribute("Muted", game.isMuted() ? "Yes" : "No")
+                        .putCustomAttribute("Configured", options.wasConfigured() ? "Yes" : "No"));
+    }
+
+    /**
+     * Create a relative from now time string
+     *
+     * @param timestamp Time since epoch
+     * @return Formatted string ie. "2 Minutes from now"
+     * @see <a href="https://github.com/jordond/garagepi-android/blob/master/app/src/main/java/ca/hoogit/garagepi/Utils/Helpers.java#L89">Source</a>
+     */
+    public static String epochToFromNow(long timestamp) {
+        return DateUtils
+                .getRelativeTimeSpanString(
+                        timestamp,
+                        System.currentTimeMillis(),
+                        DateUtils.MINUTE_IN_MILLIS)
+                .toString();
     }
 
 }

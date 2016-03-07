@@ -56,4 +56,6 @@
     <string name="tour_slide_5_desc">After the last round of drinking you will be shown some statistics about your game, although you might be too gone to read ;)</string>
     <string name="tour_slide_6_title">That\'s It!</string>
     <string name="tour_slide_6_desc">Now choose a game mode and get drinking!</string>
+    <string name="tour_slide_wear_title">Android Wear Enabled!</string>
+    <string name="tour_slide_wear_text">That\'s right! Nobody asked for it, but it\'s here!  If your device is paired to an Android Wear device prepare to be amazed.  No configuration needed, batteries sold separately.</string>
 </resources>

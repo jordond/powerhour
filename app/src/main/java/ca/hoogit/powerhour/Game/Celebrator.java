@@ -30,6 +30,7 @@ import ca.hoogit.powerhour.Audio.AudioPlayer;
 import ca.hoogit.powerhour.Audio.SoundRecorder;
 import ca.hoogit.powerhour.Configure.GameOptions;
 import ca.hoogit.powerhour.Util.BusProvider;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 /**
  * @author jordon
@@ -43,7 +44,6 @@ public class Celebrator implements AudioPlayer.OnPlayback {
     private static final String TAG = Celebrator.class.getSimpleName();
 
     private static final int STREAM_TYPE = AudioManager.STREAM_ALARM;
-    private static final long DEFAULT_DELAY = 1000;
 
     private AudioPlayer mAudioPlayer;
     private GameOptions mOptions;
@@ -110,7 +110,10 @@ public class Celebrator implements AudioPlayer.OnPlayback {
                         if (celebrate()) {
                             isActive = true;
                         } else {
-                            delayResume(DEFAULT_DELAY);
+                            Log.d(TAG, "onGameEvent: Delaying resume by "
+                                    + (Consts.Game.DEFAULT_SHOT_TIME_DELAY / 1000) + " seconds");
+                            mBus.post(new CelebrationEvent(CelebrationEvent.ACTION_START));
+                            delayResume(Consts.Game.DEFAULT_SHOT_TIME_DELAY);
                         }
                     } else if (event.game.is(State.ACTIVE) && isActive) {
                         stop();
