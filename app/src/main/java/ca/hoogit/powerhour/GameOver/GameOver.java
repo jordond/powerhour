@@ -40,6 +40,7 @@ import ca.hoogit.powerhour.Screen.ProgressUpdater;
 import ca.hoogit.powerhour.Selection.MainActivity;
 import ca.hoogit.powerhour.Util.PowerHourUtils;
 import ca.hoogit.powerhour.Util.StatusBarUtil;
+import ca.hoogit.powerhourshared.DataLayer.Consts;
 
 public class GameOver extends BaseActivity implements View.OnClickListener {
 
@@ -181,7 +182,7 @@ public class GameOver extends BaseActivity implements View.OnClickListener {
 
     private void launchHome() {
         startActivity(new Intent(this, MainActivity.class));
-        mWearData.sendStartActivity();
+        mWearData.sendMessage(Consts.Paths.GAME_CLOSE, "done");
         finish();
     }
 

@@ -37,6 +37,7 @@ public class Consts {
         public static final String GAME_STOP = "/stop";
         public static final String GAME_SHOT = "/shot";
         public static final String GAME_FINISH = "/finish";
+        public static final String GAME_CLOSE = "/close";
     }
 
     public static class Keys {
