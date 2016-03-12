@@ -83,10 +83,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //TODO DEBUGGING A FAILED BUILD
-        this IS a failed build
-
         Fabric.with(this, new Crashlytics());
         mFragmentManager = getSupportFragmentManager();
         mWearData = new WearData(this);
