@@ -8,6 +8,8 @@ Develop [![Build Status](https://ci.hoogit.ca/job/PowerHour.develop/badge/icon)]
 An application to aid in the playing of a classic drinking game called Power Hour, or Century club.
 With the goal being consume a shot of beer every minute for an hour, or one hundred minutes.
 
+Official website [Power Hour App](https://powerhourapp.ca)
+
 <img alt="Start Screen" src="raw/screen_start.png" width="200px"></img>
 <img alt="Active Game" src="raw/screen_progress.png" width="200px"></img>
 <img alt="Android Wear Support" src="raw/screen_wear_shot.png" width="300px"></img>
