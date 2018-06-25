@@ -14,12 +14,12 @@ Official website [Power Hour App](https://powerhourapp.ca)
 <img alt="Active Game" src="raw/screen_progress.png" width="200px"></img>
 <img alt="Android Wear Support" src="raw/screen_wear_shot.png" width="300px"></img>
 
-##Get It
+## Get It
 <a href="https://play.google.com/store/apps/details?id=ca.hoogit.powerhour&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="150px" /></a>
 
 Or grab the apk [here](https://ci.hoogit.ca/job/PowerHour.master/), or better yet clone and build yourself.
 
-##Changelog
+## Changelog
 ```
 Version 2.0.1
 - Fatal bug when exiting and resuming active game
@@ -41,7 +41,7 @@ Version 1.1
  - Initial release to play store
 ```
 
-##Features
+## Features
 - Beautiful Material Design elements
 - Completely customizable game modes
 - Use of foreground services and wake locks to keep the game active with the screen off
@@ -50,7 +50,7 @@ Version 1.1
 - Android Wear support!
 - **FREE & AD FREE**
 
-##TODO
+## TODO
 - Before & After shots, stitched together at end of game
 - Sharing said photos to facebook/instagram/tweeeeter etc.
 - Add camera button to game controls, take picture any time you want? Stitch together at end
@@ -61,20 +61,20 @@ Version 1.1
   - Enable/disable wear feature
 - Update TargetSDK to Marshmallow aka implement new permissions "feature"
 
-##Android Wear
+## Android Wear
 **It just Works™**
 
 In theory as long as a Wear device is paired it should receive updates and information.
 I have tried my best to make it work with many Wear devices, but I only have the emulator to work with.
 If there is anyone out there using that feature and something looks wrong let me know!
 
-##Permissions Breakdown
+## Permissions Breakdown
 - Record Audio - For recording your own sound to be played at the end of each round
 - Vibrate - Used with the audio to alert you the round has finished
 - Internet - Used for the crash reporting analytics
 - Wake Lock - So the countdown will continue to be active if the screen is turned off
 
-##Libraries used
+## Libraries used
 ```groovy
 compile 'de.psdev.licensesdialog:licensesdialog:1.7.0'
 compile 'com.jakewharton:butterknife:7.0.1'
@@ -95,7 +95,7 @@ compile 'ca.hoogit:soundchooser:1.1.0'
 compile 'com.nineoldandroids:library:2.4.0'
 ```
 
-##License
+## License
 
 Power Hour
 Copyright (C) 2015  Jordon de Hoog
